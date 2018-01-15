@@ -8,22 +8,26 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-
+import { mapGetters } from 'Vuex'
 export default {
   data () {
     return {
       username: '',
       password: ''
-    }
+    }  
+  },
+  computed: {
+    ...mapGetters(['loginState'])
   },
   methods: {
-    ...mapActions(['login']),
     login () {
       this.$store.dispatch('login', {
         username: this.username,
         password: this.password
       })
+      .then(() => {
+        console.log(`loginState:${this.loginState}`)
+      }, () => Promise.reject())
     }
   }
 }
