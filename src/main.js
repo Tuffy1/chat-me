@@ -2,6 +2,7 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import Vuex from 'Vuex'
+import axios from 'axios'
 import App from './App'
 import router from './router'
 import store from './store'
@@ -12,6 +13,7 @@ Vue.config.productionTip = false
 
 Vue.use(iView)
 Vue.use(Vuex)
+Vue.prototype.$http = axios
 
 /* eslint-disable no-new */
 new Vue({

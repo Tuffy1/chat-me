@@ -28,6 +28,11 @@ export default {
       .then(() => {
         console.log(`loginState:${this.loginState}`)
       }, () => Promise.reject())
+      // this.$http.post('/api/login', {
+      //   username: this.username,
+      //   password: this.password
+      // })
+      // .then(result => Promise.resolve(), msg => Promise.reject(msg))
     }
   }
 }
