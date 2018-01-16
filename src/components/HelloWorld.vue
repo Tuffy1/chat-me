@@ -8,13 +8,14 @@
 </template>
 
 <script>
-import { mapGetters } from 'Vuex'
+import { mapGetters } from 'vuex'
+
 export default {
   data () {
     return {
       username: '',
       password: ''
-    }  
+    }
   },
   computed: {
     ...mapGetters(['loginState'])
@@ -27,7 +28,7 @@ export default {
       })
       .then(() => {
         console.log(`loginState:${this.loginState}`)
-      }, () => Promise.reject())
+      }, (msg) => Promise.reject(msg))
       // this.$http.post('/api/login', {
       //   username: this.username,
       //   password: this.password

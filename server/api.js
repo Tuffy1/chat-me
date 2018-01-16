@@ -1,15 +1,11 @@
+const express = require('express')
+const router = express.Router()
 
-export default app => {
-  app.all('*', (req, res, next) => {
-    next()
+router.get('/api/user/login', (req, res) => {
+  res.send({
+    state: 200,
+    msg: 'success'
   })
-  app.get('/api/user/login', (req, res) => {
-    res.json({
-      code: 200,
-      msg: 'success'
-    })
-  })
-  app.get('*', (req, res) => {
-    res.end('404')
-  })
-}
+})
+
+module.exports = router
