@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export default form => {
-  return axios.post('/api/user/login', {
+  return axios.post('/api/user/register', {
     username: form.username,
     password: form.password
   })
