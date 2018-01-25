@@ -1,11 +1,11 @@
 <template>
-  <div class="login">
-    hello world!
-  </div>
+  <container-layout></container-layout>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+
+import containerLayout from '../components/container-layout'
 
 export default {
   data () {
@@ -32,6 +32,9 @@ export default {
       // })
       // .then(result => Promise.resolve(), msg => Promise.reject(msg))
     }
+  },
+  components: {
+    containerLayout
   }
 }
 </script>
