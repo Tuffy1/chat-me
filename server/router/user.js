@@ -1,9 +1,8 @@
 const express = require('express')
 const router = express.Router()
-const db = require('./db')
+const User = require('../models/user')
 
 router.post('/api/user/register', (req, res) => {
-  const User = db.User
   const theUser = new User({
     username: req.body.username,
     password: req.body.password
@@ -11,7 +10,7 @@ router.post('/api/user/register', (req, res) => {
   theUser.save((err) => console.log(err))
 })
 router.post('/api/user/login', (req, res) => {
-  db.User.findOne({username: req.body.username}, (err, doc) => {
+  User.findOne({username: req.body.username}, (err, doc) => {
     switch (true) {
       case !!err:
         console.log(err)
@@ -25,7 +24,7 @@ router.post('/api/user/login', (req, res) => {
       case doc.password !== req.body.password:
         res.send({state: 422, msg: '密码错误'})
         break
-      default :
+      default:
         res.send({state: 3, msg: '未知错误'})
     }
   })
