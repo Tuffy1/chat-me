@@ -1,11 +1,20 @@
 <template>
-  <container-layout></container-layout>
+  <container-layout>
+    <side-bar></side-bar>
+    <content-layout>
+      <side-bar-inner></side-bar-inner>
+      <router-view></router-view>
+    </content-layout>
+  </container-layout>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 
 import containerLayout from '../components/container-layout'
+import sideBar from '../components/side-bar'
+import contentLayout from '../components/content-layout'
+import sideBarInner from '../components/side-bar-inner'
 
 export default {
   data () {
@@ -34,7 +43,10 @@ export default {
     }
   },
   components: {
-    containerLayout
+    containerLayout,
+    sideBar,
+    contentLayout,
+    sideBarInner
   }
 }
 </script>

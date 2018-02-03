@@ -1,6 +1,6 @@
 <template>
   <div class="container-layout">
-    
+    <slot></slot>
   </div>
 </template>
 
@@ -12,9 +12,10 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .container-layout {
-  width: 700px;
-  height: 400px;
-  border: 1px solid #eee;
+  display: flex;
+  width: 950px;
+  height: 651px;
   margin: 30px auto;
+  border: 1px solid rgb(185, 182, 182);
 }
 </style>
