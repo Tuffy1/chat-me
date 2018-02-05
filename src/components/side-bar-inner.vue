@@ -8,6 +8,7 @@
            >
       </Input>
     </div>
+    <slot name="item-list"></slot>
   </div>
 </template>
 
@@ -24,16 +25,16 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .side-bar-inner {
-  width: 220px;
+  width: 221px;
   height: 650px;
   border-right: 1px solid rgb(185, 182, 182);
-  display: flex;
 }
 
 .side-bar-inner .search {
-  width: 220px;
+  width: 221px;
   height: 60px;
   border-bottom: 1px solid rgb(185, 182, 182);
+  margin-bottom: 10px;
 }
 .side-bar-inner .search .search-input {
    width: 200px;

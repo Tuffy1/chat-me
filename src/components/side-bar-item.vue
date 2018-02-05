@@ -18,7 +18,7 @@ export default {
     },
     goto: {
       type: String,
-      default: './center'
+      default: '/center'
     }
   },
   methods: {

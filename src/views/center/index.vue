@@ -1,23 +1,20 @@
 <template>
   <container-layout>
     <side-bar>
-      <side-bar-item type="avatar" to="./center">
-        <img slot="avatar" src="../assets/imgs/avatar.jpg" alt="avatar" ref="img" @error="showDefaultAvatar">
+      <side-bar-item type="avatar" goto="/center">
+        <img slot="avatar" src="../../assets/imgs/avatar.jpg" alt="avatar" ref="img" @error="showDefaultAvatar">
       </side-bar-item>
-      <side-bar-item type="icon" to="./center/chatting">
+      <side-bar-item type="icon" goto="/center/chatting">
         <Icon slot="icon" type="chatbubble" class="side-icon" size="30"></Icon>
       </side-bar-item>
-      <side-bar-item type="icon" to="./center/groupchat">
+      <side-bar-item type="icon" goto="/center/groupchat">
         <Icon slot="icon" type="person-stalker" class="side-icon" size="30"></Icon>
       </side-bar-item>
       <side-bar-item type="icon">
         <Icon slot="icon" type="android-settings" class="side-icon" size="30"></Icon>
       </side-bar-item>
     </side-bar>
-    <content-layout>
-      <side-bar-inner></side-bar-inner>
-      <router-view></router-view>
-    </content-layout>
+    <router-view></router-view>
   </container-layout>
 </template>
 
