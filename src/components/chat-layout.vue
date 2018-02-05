@@ -3,7 +3,7 @@
     <div class="chat-name">
       Joyee
     </div>
-    <slot></slot>
+    <slot name="chat-content" class="chat-content"></slot>
   </div>
 </template>
 
@@ -26,5 +26,8 @@ export default {
   text-align: left;
   padding: 20px 15px;
   font-size: 16px;
+}
+.chat-layout .chat-content {
+  padding: 20px 15px;
 }
 </style>

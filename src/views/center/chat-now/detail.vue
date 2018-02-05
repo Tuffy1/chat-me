@@ -1,11 +1,16 @@
 <template>
   <div class="chat-now">
-    <chat-layout></chat-layout>
+    <chat-layout>
+      <template slot="chat-content">
+        <chat-bubble :isMe="false"></chat-bubble>
+      </template>
+    </chat-layout>
   </div>
 </template>
 
 <script>
 import chatLayout from '../../../components/chat-layout'
+import chatBubble from '../../../components/chat-bubble'
 
 export default {
   data () {
@@ -27,7 +32,8 @@ export default {
     }
   },
   components: {
-    chatLayout
+    chatLayout,
+    chatBubble
   }
 }
 </script>
