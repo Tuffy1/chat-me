@@ -1,10 +1,10 @@
 <template>
-  <div class="chat-bubble" :class="isMe ? right : left">
+  <div class="chat-bubble" :class="isMe ? 'right' : 'left'">
     <div class="avatar-wrap">
       <img src="../assets/imgs/avatar.jpg" alt="avatar">
     </div>
     <div class="talk-wrap">
-      <div class="talk-bubble">123231231323</div>
+      <div class="talk-bubble">12323123132fdsafsafasfadsfasdfasfasfasfsafawertqwetqtertrtqertqert3</div>
     </div>
   </div>
 </template>
@@ -24,18 +24,29 @@ export default {
 <style scoped>
 .chat-bubble {
   display: flex;
+  margin-bottom: 12px;
 }
 .chat-bubble .avatar-wrap {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
+  margin: 0 12px;
 }
 .chat-bubble .avatar-wrap img {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
+}
+.chat-bubble .talk-wrap {
+  flex: 0 0 auto;
 }
 .chat-bubble .talk-wrap .talk-bubble {
+  text-align: left;
   background-color: antiquewhite;
-  border-radius: 3px;
+  border-radius: 5px;
+  font-size: 14px;
+  max-width: 300px;
+  word-wrap: break-word;
+  position: relative;
+  padding: 5px;
 }
 .left {
   justify-content: flex-start;

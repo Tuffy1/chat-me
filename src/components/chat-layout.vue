@@ -3,7 +3,12 @@
     <div class="chat-name">
       Joyee
     </div>
-    <slot name="chat-content" class="chat-content"></slot>
+    <div class="chat-content">
+      <slot name="chat-content"></slot>
+    </div>
+    <div class="chat-text">
+      <textarea name="" id=""></textarea>
+    </div>
   </div>
 </template>
 
@@ -17,6 +22,7 @@ export default {
 .chat-layout {
   width: 667px;
   height: 651px;
+  position: relative;
 }
 .chat-layout .chat-name {
   width: 100%;
@@ -28,6 +34,19 @@ export default {
   font-size: 16px;
 }
 .chat-layout .chat-content {
-  padding: 20px 15px;
+  padding: 10px 10px;
+}
+.chat-layout .chat-text {
+  border-top: 1px solid rgb(185, 182, 182);
+  width: 100%;
+  height: 140px;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+.chat-layout .chat-text textarea {
+  width: 100%;
+  height: 100%;
+  resize: none;
 }
 </style>

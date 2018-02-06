@@ -3,6 +3,7 @@
     <chat-layout>
       <template slot="chat-content">
         <chat-bubble :isMe="false"></chat-bubble>
+        <chat-bubble :isMe="true"></chat-bubble>
       </template>
     </chat-layout>
   </div>
