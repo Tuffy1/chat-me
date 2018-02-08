@@ -6,6 +6,8 @@ const userRouter = require('./router/user')
 const mongoose = require('mongoose')
 
 const app = express()
+const http = require('http').Server(app)
+const io = require('socket.io')(http)
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
@@ -17,10 +19,21 @@ app.get('*', (req, res) => {
   res.send(html)
 })
 
-app.listen(8088)
-console.log('success listen…………')
+http.listen(8088,() => {
+  console.log('listening on 8088...');
+})
 
-mongoose.connect('mongodb://localhost/chat')
-const db = mongoose.connection
-db.once('error', () => console.log('mongo connect error'))
-db.once('connected', () => console.log('mongo connect success'))
+io.on('connection', socket => {
+  console.log('a user connected');
+  socket.on('chat message', (msg) => {
+    console.log(msg);
+  });
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
+})
+
+// mongoose.connect('mongodb://localhost/chat')
+// const db = mongoose.connection
+// db.once('error', () => console.log('mongo connect error'))
+// db.once('connected', () => console.log('mongo connect success'))
