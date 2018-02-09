@@ -23,7 +23,6 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import io from 'socket.io-client'
 
 export default {
   data () {
@@ -40,9 +39,7 @@ export default {
   },
   methods: {
     test () {
-      const socket = io.connect('http://localhost:8088')
-      console.log(socket)
-      socket.emit('chat message', 'hey')
+      this.$socket.emit('chat message', 'hey')
     },
     toRegister () {
       this.$router.push('/register')
