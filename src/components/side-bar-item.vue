@@ -32,8 +32,8 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .side-bar-item {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   padding: 10px;
   position: relative;
 }
@@ -47,16 +47,18 @@ export default {
   background-color: rgb(24, 110, 160);
 }
 .item-wrap {
-  width: 40px;
-  height: 40px;
+  width: 35px;
+  height: 35px;
   overflow: hidden;
 }
 .item-wrap .wrap {
-  width: 40px;
-  height: 40px;
+  width: 35px;
+  height: 35px;
 }
 .avatar {
   border-radius: 50%;
+  margin-left: -3px;
+  margin-top: -3px;
 }
 .icon {
   display: block;

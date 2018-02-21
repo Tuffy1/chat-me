@@ -5,7 +5,8 @@ import Register from '@/views/register'
 import Center from '@/views/center/index'
 import chatNow from '@/views/center/chat-now/index'
 import chatNowDetail from '@/views/center/chat-now/detail'
-import groupChat from '@/views/center/group-chat'
+import groupChat from '@/views/center/group-chat/index'
+import groupChatDetail from '@/views/center/group-chat/detail'
 
 Vue.use(Router)
 
@@ -45,7 +46,14 @@ export default new Router({
         {
           path: '/center/groupchat',
           name: 'GroupChat',
-          component: groupChat
+          component: groupChat,
+          children: [
+            {
+              path: '/center/groupchat/detail',
+              name: 'GroupChatDetail',
+              component: groupChatDetail
+            }
+          ]
         }
       ]
     }

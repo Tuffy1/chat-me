@@ -19,21 +19,21 @@ app.get('*', (req, res) => {
   res.send(html)
 })
 
-http.listen(8088,() => {
-  console.log('listening on 8088...');
+http.listen(8088, () => {
+  console.log('listening on 8088...')
 })
 
 io.on('connection', socket => {
-  console.log('a user connected');
+  console.log('a user connected')
   socket.on('chat message', (msg) => {
-    console.log(msg);
-  });
+    console.log(msg)
+  })
   socket.on('disconnect', () => {
-    console.log('user disconnected');
-  });
+    console.log('user disconnected')
+  })
 })
 
-// mongoose.connect('mongodb://localhost/chat')
-// const db = mongoose.connection
-// db.once('error', () => console.log('mongo connect error'))
-// db.once('connected', () => console.log('mongo connect success'))
+mongoose.connect('mongodb://localhost/chat')
+const db = mongoose.connection
+db.once('error', () => console.log('mongo connect error'))
+db.once('connected', () => console.log('mongo connect success'))

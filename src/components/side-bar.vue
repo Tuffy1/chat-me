@@ -13,8 +13,8 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .side-bar {
-  width: 60px;
-  height: 650px;
+  width: 50px;
+  height: 500px;
   background-color: rgb(6, 103, 160);
 }
 </style>

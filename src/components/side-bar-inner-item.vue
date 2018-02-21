@@ -23,9 +23,9 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .side-bar-inner-item {
-  width: 220px;
-  height: 60px;
-  padding: 10px;
+  width: 170px;
+  height: 50px;
+  padding: 5px;
   position: relative;
 }
 .side-bar-inner-item:hover,

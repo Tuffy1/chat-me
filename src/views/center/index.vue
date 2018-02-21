@@ -5,13 +5,13 @@
         <img slot="avatar" src="../../assets/imgs/avatar.jpg" alt="avatar" ref="img" @error="showDefaultAvatar">
       </side-bar-item>
       <side-bar-item type="icon" goto="/center/chatting">
-        <Icon slot="icon" type="chatbubble" class="side-icon" size="30"></Icon>
+        <Icon slot="icon" type="chatbubble" class="side-icon" size="25"></Icon>
       </side-bar-item>
       <side-bar-item type="icon" goto="/center/groupchat">
-        <Icon slot="icon" type="person-stalker" class="side-icon" size="30"></Icon>
+        <Icon slot="icon" type="person-stalker" class="side-icon" size="25"></Icon>
       </side-bar-item>
       <side-bar-item type="icon">
-        <Icon slot="icon" type="android-settings" class="side-icon" size="30"></Icon>
+        <Icon slot="icon" type="android-settings" class="side-icon" size="25"></Icon>
       </side-bar-item>
     </side-bar>
     <router-view></router-view>
@@ -73,11 +73,11 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 img {
-  width: 40px;
-  height: 40px;
+  width: 35px;
+  height: 35px;
 }
 .side-icon {
   color: rgb(126, 181, 212);
-  margin: 5px;
+  margin: 4px 4px 0 0;
 }
 </style>

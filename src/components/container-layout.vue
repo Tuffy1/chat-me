@@ -13,8 +13,8 @@ export default {
 <style scoped>
 .container-layout {
   display: flex;
-  width: 950px;
-  height: 651px;
+  width: 800px;
+  height: 501px;
   margin: 30px auto;
   border: 1px solid rgb(185, 182, 182);
 }

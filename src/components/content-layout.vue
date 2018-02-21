@@ -12,8 +12,8 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .content-layout {
-  width: 890px;
-  height: 650px;
+  width: 720px;
+  height: 500px;
   background-color: rgb(247, 247, 247);
 }
 </style>
