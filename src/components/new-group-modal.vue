@@ -6,13 +6,13 @@
         @on-ok="submit"
         @on-cancel="cancel">
         <Select
-                v-model="model13"
-                filterable
-                remote
-                :remote-method="remoteMethod1"
-                :loading="loading1">
-                <Option v-for="(option, index) in options1" :value="option.value" :key="index">{{option.label}}</Option>
-            </Select>
+          v-model="newUser"
+          filterable
+          remote
+          :remote-method="remoteMethod"
+          :loading="loading">
+          <Option v-for="(user, index) in userList" :value="user.username" :key="index">{{user.username}}</Option>
+        </Select>
     </Modal>
   </div>
 </template>
@@ -20,7 +20,11 @@
 <script>
 export default {
   data () {
-    return {}
+    return {
+      loading: false,
+      newUser: '',
+      userList: []
+    }
   },
   props: {
     modalShow: {
@@ -32,7 +36,24 @@ export default {
   },
   methods: {
     submit () {},
-    cancel () {}
+    cancel () {},
+    remoteMethod (query) {
+      if (query !== '') {
+        this.loading = true
+        setTimeout(() => {
+          this.$store.dispatch('userSearch', {
+            query: query
+          })
+          .then((result) => {
+            this.loading = false
+            this.userList = result
+          }, (msg) => Promise.reject(msg))
+        }, 200)
+      } else {
+        this.loading = false
+        this.userList = []
+      }
+    }
   }
 }
 </script>
