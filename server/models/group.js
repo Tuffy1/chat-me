@@ -2,6 +2,10 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const GroupSchema = new Schema({
+  nickname: {
+    type: String,
+    trim: true,
+  },
   username: {
     type: String,
     trim: true,

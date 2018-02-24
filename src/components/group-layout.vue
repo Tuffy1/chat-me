@@ -12,14 +12,27 @@
       </div>
     </div>  
     <div class="btn-wrap">
-      <Button type="success">join</Button>
-      <Button type="error">delete</Button>
+      <Button type="success" @click="joinChat">聊天</Button>
+      <Button type="error">删除</Button>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
+  computed: {
+    ...mapState(['chatNow'])
+  },
+  props: ['userId'],
+  methods: {
+    joinChat () {
+      if (!this.chatNow.some(user => user._id === this.userId)) {
+        
+      }
+    }
+  }
 }
 </script>
 

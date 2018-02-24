@@ -28,6 +28,10 @@ const userSchema = new Schema({
   groups: [{
     type: Schema.Types.ObjectId,
     ref: 'Group'
+  }],
+  chatNow: [{
+    type: Schema.Types.ObjectId,
+    ref: 'User'
   }]
 })
 

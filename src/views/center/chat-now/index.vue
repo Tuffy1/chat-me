@@ -2,14 +2,10 @@
   <div class="chat-now">
     <side-bar-inner>
       <template slot="item-list">
-        <side-bar-inner-item goto="/center/chatting/detail?user='123'">
-          <user-item></user-item>
-        </side-bar-inner-item>
-        <side-bar-inner-item goto="/center/chatting/detail?user='124'">
-          <user-item></user-item>
-        </side-bar-inner-item>
-        <side-bar-inner-item goto="/center/chatting/detail?user='125'">
-          <user-item></user-item>
+        <side-bar-inner-item  v-for="(user, index) in chatNow"
+                              :key="index"
+                              goto="/center/chatting/detail?user='123'">
+          <user-item :user="user"></user-item>
         </side-bar-inner-item>
       </template>
     </side-bar-inner>
@@ -18,11 +14,16 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 import sideBarInner from '../../../components/side-bar-inner'
 import sideBarInnerItem from '../../../components/side-bar-inner-item'
 import userItem from '../../../components/user-item'
 
 export default {
+  computed: {
+    ...mapState(['chatNow'])
+  },
   components: {
     sideBarInner,
     sideBarInnerItem,

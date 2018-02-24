@@ -4,8 +4,8 @@
       <img src="../assets/imgs/avatar.jpg" alt="">
     </div>
     <div class="user-info">
-      <p>nickname</p>
-      <p>content</p>
+      <p>{{user.nickname}}</p>
+      <p>{{user.introduce}}</p>
     </div>
     <div class="time">
       <span>02.05</span>
@@ -16,6 +16,7 @@
 <script>
 
 export default {
+  props: ['user']
 }
 </script>
 
