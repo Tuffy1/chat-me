@@ -30,6 +30,7 @@ export default new Router({
       path: '/center',
       name: 'Center',
       component: Center,
+      redirect: '/center/chatting',
       children: [
         {
           path: '/center/chatting',

@@ -46,4 +46,18 @@ router.post('/api/user/userSearch', (req, res) => {
   })
 })
 
+// router.post('/api/user/addChatNow', (req, res) => {
+//   const query = {
+//     username: req.body.query
+//   }
+//   User.find(query, (err, doc) => {
+//     if (err) {
+//       console.log(err)
+//       res.send({code: 700, msg: '查询出错：' + err})
+//     } else {
+//       res.send({code: 200, msg: 'success', result: doc})
+//     }
+//   })
+// })
+
 module.exports = router

@@ -4,7 +4,7 @@
       <template slot="item-list">
         <side-bar-inner-item  v-for="(user, index) in chatNow"
                               :key="index"
-                              goto="/center/chatting/detail?user='123'">
+                              :goto="`/center/chatting/detail?user=${user._id}`">
           <user-item :user="user"></user-item>
         </side-bar-inner-item>
       </template>

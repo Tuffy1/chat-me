@@ -1,9 +1,9 @@
 <template>
   <div class="chat-now">
-    <group-layout :userId="userId">
+    <group-layout :userChatTo="userChatTo">
       <template slot="chat-user">
-        <p>username: Joyee</p>
-        <p>email: 704529989@qq.com</p>
+        <p>nickname: {{this.userChatTo.nickname}}</p>
+        <p>email: {{this.userChatTo.email}}</p>
       </template>
     </group-layout>
   </div>
@@ -18,7 +18,8 @@ import chatBubble from '../../../components/chat-bubble'
 export default {
   data () {
     return {
-      userId: ''
+      userId: '',
+      userChatTo: {}
     }
   },
   computed: {
@@ -35,7 +36,11 @@ export default {
   methods: {
     init () {
       this.userId = this.$route.query.user
-      this.
+      this.friends.forEach(friend => {
+        if (friend._id === this.userId) {
+          this.userChatTo = friend
+        }
+      })
     }
   },
   components: {

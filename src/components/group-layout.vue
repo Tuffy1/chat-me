@@ -13,7 +13,7 @@
     </div>  
     <div class="btn-wrap">
       <Button type="success" @click="joinChat">聊天</Button>
-      <Button type="error">删除</Button>
+      <Button type="error" @click="deleteUser">删除</Button>
     </div>
   </div>
 </template>
@@ -23,14 +23,27 @@ import { mapState } from 'vuex'
 
 export default {
   computed: {
-    ...mapState(['chatNow'])
+    ...mapState(['chatNow', 'friends'])
   },
-  props: ['userId'],
+  props: ['userChatTo'],
   methods: {
     joinChat () {
-      if (!this.chatNow.some(user => user._id === this.userId)) {
-        
+      if (!this.chatNow.some(user => user._id === this.userChatTo._id)) {
+        this.$store.commit('addChatNow', this.userChatTo)
       }
+      this.$router.push(`/center/chatting/detail?user=${this.userChatTo._id}`)
+    },
+    deleteUser () {
+      this.friends.forEach(friend => {
+        if (friend._id === this.userChatTo._id) {
+          this.$store.commit('deleteFriend', this.userChatTo)
+        }
+      })
+      this.chatNow.forEach(user => {
+        if (user._id === this.userChatTo._id) {
+          this.$store.commit('deleteChatNow', this.userChatTo)
+        }
+      })
     }
   }
 }

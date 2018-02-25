@@ -11,8 +11,14 @@
                 Change
             </a>
              <Form :model="form" ref="form" :rules="ruleValidate" class="form">
+               <FormItem prop="nickname">
+                 <input v-model="form.nickname" placeholder="输入昵称" size="large">
+               </FormItem>
                <FormItem prop="username">
                  <input v-model="form.username" placeholder="输入用户名" size="large">
+               </FormItem>
+               <FormItem prop="email">
+                 <input v-model="form.email" placeholder="输入邮箱" size="large">
                </FormItem>
                <FormItem prop="password">
                 <input v-model="form.password" placeholder="输入密码" size="large">
@@ -60,6 +66,9 @@ export default {
         passwordConfirm: ''
       },
       ruleValidate: {
+        nickname: [
+          { required: true, message: 'The name cannot be empty', trigger: 'blur' }
+        ],
         username: [
           { required: true, message: 'The name cannot be empty', trigger: 'blur' }
         ],
@@ -68,6 +77,9 @@ export default {
         ],
         passwordConfirm: [
           { required: true, validator: validatePassCheck, trigger: 'blur' }
+        ],
+        email: [
+          { required: true, message: 'The name cannot be empty', trigger: 'blur' }
         ]
       }
     }
@@ -91,11 +103,11 @@ export default {
           }, (msg) => Promise.reject(msg))
         }
       })
-      // this.$http.post('/api/login', {
-      //   username: this.username,
-      //   password: this.password
-      // })
-      // .then(result => Promise.resolve(), msg => Promise.reject(msg))
+      this.$http.post('/api/login', {
+        username: this.username,
+        password: this.password
+      })
+      .then(result => Promise.resolve(), msg => Promise.reject(msg))
     }
   }
 }

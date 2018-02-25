@@ -1,7 +1,7 @@
 <template>
   <div class="chat-layout">
     <div class="chat-name">
-      Joyee
+      {{userChatTo.nickname}}
     </div>
     <div class="chat-content">
       <slot name="chat-content"></slot>
@@ -14,6 +14,7 @@
 
 <script>
 export default {
+  props: ['userChatTo']
 }
 </script>
 

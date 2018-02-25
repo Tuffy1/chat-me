@@ -1,5 +1,5 @@
 <template>
-  <div class="new-group">
+  <div class="new-user">
     <Modal
         v-model="modalShow"
         title="添加新联系人"
