@@ -29,7 +29,7 @@ export default {
   methods: {
     joinChat () {
       if (!this.chatNow.some(user => user._id === this.userChatTo._id)) {
-        this.$store.commit('addChatNow', this.userChatTo)
+        this.$store.dispatch('addChatNow', this.userChatTo)
       }
       this.$router.push(`/center/chatting/detail?user=${this.userChatTo._id}`)
     },
