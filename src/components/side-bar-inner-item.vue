@@ -1,6 +1,11 @@
 <template>
-  <div class="side-bar-inner-item" @click="jumpTo">
-    <slot class="wrap"></slot>
+  <div>
+    <div class="side-bar-inner-item" @click="jumpTo" v-if="obj==='user'">
+      <slot class="wrap"></slot>
+    </div>
+    <div class="side-bar-inner-item-setting" @click="jumpTo" v-if="obj==='setting'">
+      <slot class="wrap"></slot>
+    </div>
   </div>
 </template>
 
@@ -10,6 +15,10 @@ export default {
     goto: {
       type: String,
       default: '/center/chatting'
+    },
+    obj: {
+      type: String,
+      default: 'user'
     }
   },
   methods: {
@@ -45,5 +54,23 @@ export default {
 .item-wrap .wrap {
   width: 40px;
   height: 40px;
+}
+
+.side-bar-inner-item-setting {
+  width: 150px;
+  height: 30px;
+  padding: 6px;
+  position: relative;
+  padding-left: 15px;
+  text-align: left;
+}
+.side-bar-inner-item-setting:hover,
+.side-bar-inner-item-setting:focus {
+  cursor: pointer;
+  background-color: rgb(235, 233, 233);
+}
+.side-bar-inner-item-setting:isactive,
+.side-bar-inner-item-setting:active {
+  background-color: rgb(235, 233, 233);
 }
 </style>

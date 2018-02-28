@@ -1,6 +1,6 @@
 <template>
   <div class="group-chat" id="group-chat">
-    <side-bar-inner>
+    <side-bar-inner :obj="'user'">
       <template slot="item-list">
         <Collapse v-model="group">
           <Panel name="user" class="panel">

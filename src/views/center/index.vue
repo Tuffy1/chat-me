@@ -10,7 +10,7 @@
       <side-bar-item type="icon" goto="/center/groupchat">
         <Icon slot="icon" type="person-stalker" class="side-icon" size="25"></Icon>
       </side-bar-item>
-      <side-bar-item type="icon">
+      <side-bar-item type="icon" goto="/center/setting">
         <Icon slot="icon" type="android-settings" class="side-icon" size="25"></Icon>
       </side-bar-item>
     </side-bar>

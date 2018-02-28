@@ -7,6 +7,9 @@ import chatNow from '@/views/center/chat-now/index'
 import chatNowDetail from '@/views/center/chat-now/detail'
 import groupChat from '@/views/center/group-chat/index'
 import groupChatDetail from '@/views/center/group-chat/detail'
+import Setting from '@/views/center/setting/index'
+import infoSetting from '@/views/center/setting/infoSetting'
+import passwordSetting from '@/views/center/setting/passwordSetting'
 
 Vue.use(Router)
 
@@ -53,6 +56,23 @@ export default new Router({
               path: '/center/groupchat/detail',
               name: 'GroupChatDetail',
               component: groupChatDetail
+            }
+          ]
+        },
+        {
+          path: '/center/setting',
+          name: 'Setting',
+          component: Setting,
+          children: [
+            {
+              path: '/center/setting/infoSetting',
+              name: 'infoSetting',
+              component: infoSetting
+            },
+            {
+              path: '/center/setting/passwordSetting',
+              name: 'passwordSetting',
+              component: passwordSetting
             }
           ]
         }

@@ -27,6 +27,6 @@ export default {
     .then(() => {
       commit('addChatNow', userChatTo)
       Promise.resolve()
-    }, msg => Promise.reject())
+    }, msg => Promise.reject(msg))
   }
 }
