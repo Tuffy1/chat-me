@@ -6,6 +6,7 @@
           <Panel name="user" class="panel">
             联系人 
             <div class="icon-plus link-like" @click="newUser()"><Icon type="plus"></Icon></div>
+            <p slot="content" v-if="friends">未添加联系人</p>
             <p slot="content">
               <side-bar-inner-item  v-for="user in friends"
                                     :key="user._id"
@@ -17,6 +18,7 @@
           <Panel name="group" class="panel">
             群聊
             <div class="icon-plus link-like" @click="newGroup()"><Icon type="plus"></Icon></div>
+            <p slot="content" v-if="groups">未添加群聊</p>
             <p slot="content">
               <side-bar-inner-item  v-for="group in groups"
                                     :key="group._id"

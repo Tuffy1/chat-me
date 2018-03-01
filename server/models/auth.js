@@ -6,8 +6,7 @@ const AuthSchema = new Schema({
   updateTime: { type: Date, default: Date.now },
 
   user: {
-    type: Schema.Types.ObjectId,
-    ref: 'User'
+    type: Schema.Types.ObjectId
   },
   clients: [
     {

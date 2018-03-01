@@ -4,6 +4,9 @@ export default {
   loginInit (state) {
     Vue.set(state, 'loginState', true)
   },
+  setChatNow (state, users) {
+    Vue.set(state, 'chatNow', users)
+  },
   addChatNow (state, user) {
     let users = state.chatNow
     users.unshift(user)
@@ -13,6 +16,14 @@ export default {
     let users = state.chatNow
     users.shift(user)
     Vue.set(state, 'chatNow', users)
+  },
+  setFriends (state, users) {
+    Vue.set(state, 'friends', users)
+  },
+  newFriend (state, user) {
+    let users = state.friends
+    users.push(user)
+    Vue.set(state, 'friends', users)
   },
   deleteFriend (state, user) {
     let users = state.friends

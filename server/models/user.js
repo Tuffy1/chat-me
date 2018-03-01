@@ -35,8 +35,7 @@ const userSchema = new Schema({
     ref: 'Group'
   }],
   chatNow: [{
-    type: Schema.Types.ObjectId,
-    ref: 'User'
+    type: Schema.Types.Mixed
   }]
 })
 

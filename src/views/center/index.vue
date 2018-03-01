@@ -39,26 +39,35 @@ export default {
   computed: {
     ...mapGetters(['loginState'])
   },
+  created () {
+    this.init()
+  },
   methods: {
     showDefaultAvatar () {
       if (this.$refs.img) {
         this.$refs.img.src = defaultAvatar
       }
     },
-    login () {
-      this.$store.dispatch('login', {
-        username: this.username,
-        password: this.password
-      })
-      .then(() => {
-        console.log(`loginState:${this.loginState}`)
-      }, (msg) => Promise.reject(msg))
+    init () {
+      this.$store.dispatch('getChatNow')
+      .then(() => {}, msg => this.$messge(msg))
+      this.$store.dispatch('getFriends')
+      .then(() => {}, msg => this.$messge(msg))
+    }
+    // login () {
+    //   this.$store.dispatch('login', {
+    //     username: this.username,
+    //     password: this.password
+    //   })
+    //   .then(() => {
+    //     console.log(`loginState:${this.loginState}`)
+    //   }, (msg) => Promise.reject(msg))
       // this.$http.post('/api/login', {
       //   username: this.username,
       //   password: this.password
       // })
       // .then(result => Promise.resolve(), msg => Promise.reject(msg))
-    }
+    // }
   },
   components: {
     containerLayout,

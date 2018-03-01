@@ -94,20 +94,23 @@ export default {
     register () {
       this.$refs['form'].validate((value) => {
         if (value) {
-          this.$store.dispatch('login', {
+          this.$store.dispatch('register', {
+            nickname: this.form.nickname,
             username: this.form.username,
-            password: this.form.password
+            password: this.form.password,
+            email: this.form.email
           })
           .then(() => {
+            this.$message('注册成功')
             this.$router.push('/login')
           }, (msg) => Promise.reject(msg))
         }
       })
-      this.$http.post('/api/login', {
-        username: this.username,
-        password: this.password
-      })
-      .then(result => Promise.resolve(), msg => Promise.reject(msg))
+      // this.$http.post('/api/login', {
+      //   username: this.username,
+      //   password: this.password
+      // })
+      // .then(result => Promise.resolve(), msg => Promise.reject(msg))
     }
   }
 }

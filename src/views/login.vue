@@ -34,13 +34,8 @@ export default {
   computed: {
     ...mapGetters(['loginState'])
   },
-  created () {
-    this.test()
-  },
+
   methods: {
-    test () {
-      this.$socket.emit('chat message', 'hey')
-    },
     toRegister () {
       this.$router.push('/register')
     },

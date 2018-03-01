@@ -18,6 +18,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   data () {
     return {
@@ -33,9 +35,23 @@ export default {
     }
   },
   computed: {
+    ...mapState(['friends'])
   },
   methods: {
-    submit () {},
+    submit () {
+      // if (this.friends.some(user => user.username === this.newUser.username)) {
+      //   this.$Message.warning('该用户已在联系人列表')
+      // } else {
+      //   this.$store.dispatch('newFriend', this.newUser)
+      //   .then(() => {
+      //     this.$Message.success('添加成功')
+      //   }, msg => this.$message(msg))
+      // }
+      this.$store.dispatch('newFriend', this.newUser)
+      .then(() => {
+        this.$Message.success('添加成功')
+      }, msg => this.$Message.warning(msg))
+    },
     cancel () {
       this.$emit('closeModal')
     },
