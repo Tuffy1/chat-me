@@ -49,10 +49,12 @@ export default {
       }
     },
     init () {
+      this.$store.dispatch('geuUserInfo')
+      .then(() => {}, msg => this.$Message.warning(msg))
       this.$store.dispatch('getChatNow')
-      .then(() => {}, msg => this.$messge(msg))
+      .then(() => {}, msg => this.$Message.warning(msg))
       this.$store.dispatch('getFriends')
-      .then(() => {}, msg => this.$messge(msg))
+      .then(() => {}, msg => this.$Message.warning(msg))
     }
     // login () {
     //   this.$store.dispatch('login', {

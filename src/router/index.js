@@ -8,6 +8,7 @@ import chatNowDetail from '@/views/center/chat-now/detail'
 import groupChat from '@/views/center/group-chat/index'
 import groupChatDetail from '@/views/center/group-chat/detail'
 import Setting from '@/views/center/setting/index'
+import overview from '@/views/center/setting/overview'
 import infoSetting from '@/views/center/setting/infoSetting'
 import passwordSetting from '@/views/center/setting/passwordSetting'
 
@@ -63,7 +64,13 @@ export default new Router({
           path: '/center/setting',
           name: 'Setting',
           component: Setting,
+          redirect: '/center/setting/overview',
           children: [
+            {
+              path: '/center/setting/overview',
+              name: 'overview',
+              component: overview
+            },
             {
               path: '/center/setting/infoSetting',
               name: 'infoSetting',

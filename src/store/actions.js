@@ -1,6 +1,7 @@
 import register from '../api/register'
 import login from '../api/login'
 import userSearch from '../api/user-search'
+import geuUserInfo from '../api/get-user-info'
 import getChatNow from '../api/get-chat-now'
 import addChatNow from '../api/add-chat-now'
 import getFriends from '../api/get-friends'
@@ -24,6 +25,12 @@ export default {
   userSearch: (context, form) => {
     return userSearch(form)
     .then(result => Promise.resolve(result), msg => Promise.reject(msg))
+  },
+  geuUserInfo: ({commit}) => {
+    return geuUserInfo()
+    .then(result => {
+      commit('getUserInfo', result)
+    }, msg => Promise.reject(msg))
   },
   getChatNow: ({commit}, context) => {
     return getChatNow()

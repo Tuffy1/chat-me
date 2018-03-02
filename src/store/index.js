@@ -10,6 +10,12 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     loginState: false,
+    info: {
+      nickname: 'joyee',
+      username: 'joyee',
+      email: '123@qq.com',
+      introduce: 'i am joyee'
+    },
     friends: [
       {
         _id: '123',

@@ -2,14 +2,14 @@
   <div class="setting">
     <side-bar-inner :obj="'setting'">
       <template slot="item-list">
+        <side-bar-inner-item  goto="/center/setting/overview" :obj="'setting'">
+          账户概览
+        </side-bar-inner-item>
         <side-bar-inner-item  goto="/center/setting/infoSetting" :obj="'setting'">
           基本设置
         </side-bar-inner-item>
         <side-bar-inner-item  goto="/center/setting/passwordSetting" :obj="'setting'">
           密码设置
-        </side-bar-inner-item>
-        <side-bar-inner-item  goto="" :obj="'setting'">
-          注销
         </side-bar-inner-item>
       </template>
     </side-bar-inner>

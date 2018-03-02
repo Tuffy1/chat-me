@@ -1,20 +1,20 @@
 <template>
   <div class="setting">
-    <Form :model="infoForm" ref="infoForm" :rules="infoRuleValidate" class="form">
-      <FormItem prop="nickname" label="昵称" size="100">
-        <input v-model="infoForm.nickname" placeholder="输入昵称" size="large">
+    <Form :model="infoForm" ref="infoForm" :rules="infoRuleValidate" :label-width="80" label-position="left" class="form">
+      <FormItem prop="nickname" label="昵称">
+        <i-input v-model="infoForm.nickname" placeholder="输入昵称"></i-input>
       </FormItem>
-      <FormItem prop="username" label="用户名" size="100">
-        <input v-model="infoForm.username" placeholder="输入用户名" size="large">
+      <FormItem prop="username" label="用户名">
+        <i-input v-model="infoForm.username" disabled></i-input>
       </FormItem>
-      <FormItem prop="email" label="邮箱" size="100">
-        <input v-model="infoForm.email" placeholder="输入邮箱" size="large">
+      <FormItem prop="email" label="邮箱">
+        <i-input v-model="infoForm.email" placeholder="输入邮箱"></i-input>
       </FormItem>
-      <FormItem prop="introduce" label="简介" size="100">
-        <input v-model="infoForm.introduce" placeholder="输入简介" size="large">
+      <FormItem prop="introduce" label="简介">
+        <i-input v-model="infoForm.introduce" placeholder="输入简介"></i-input>
       </FormItem>
       <FormItem>
-      <Button type="success" @click="Submit()">Submit</Button>
+      <Button type="success" id="submit-btn" @click="Submit()">Submit</Button>
       </FormItem>
     </Form>
   </div>
@@ -32,6 +32,9 @@ export default {
       },
       infoRuleValidate: {
         nickname: [
+          { required: true, message: 'The name cannot be empty', trigger: 'blur' }
+        ],
+        username: [
           { required: true, message: 'The name cannot be empty', trigger: 'blur' }
         ],
         email: [
@@ -54,5 +57,10 @@ export default {
 }
 .setting .form {
   width: 100%;
+  text-align: left;
+  margin-top: 10px;
+}
+#submit-btn {
+  margin-left: -80px;
 }
 </style>
