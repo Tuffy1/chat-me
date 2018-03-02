@@ -10,7 +10,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     loginState: false,
-    info: {
+    user: {
+      _id: '123',
       nickname: 'joyee',
       username: 'joyee',
       email: '123@qq.com',
@@ -81,6 +82,34 @@ export default new Vuex.Store({
         username: 'tuffy',
         email: '124@qq.com',
         introduce: 'i am tuffy'
+      }
+    ],
+    userMessage: [
+      {
+        from: {
+          _id: '123',
+          avatar: ''
+        },
+        to: {
+          _id: '124',
+          avatar: ''
+        },
+        type: 'text',
+        content: 'happy~',
+        isRead: false
+      },
+      {
+        from: {
+          _id: '124',
+          avatar: ''
+        },
+        to: {
+          _id: '123',
+          avatar: ''
+        },
+        type: 'text',
+        content: 'No',
+        isRead: false
       }
     ]
   },
