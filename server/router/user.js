@@ -6,7 +6,6 @@ const User = require('../models/user')
 const Auth = require('../models/auth')
 
 const serializeCookie = require('../util/serializeCookie')
-const parseCookie = require('../util/parseCookie')
 const isLogin = require('../util/isLogin')
 
 router.post('/api/user/register', (req, res) => {
@@ -84,80 +83,56 @@ router.post('/api/user/userSearch', (req, res) => {
 })
 
 router.get('/api/user/getChatNow', (req, res) => {
-  if (parseCookie(req.headers.cookie).token) {
-    const token = parseCookie(req.headers.cookie).token
-    isLogin(token, res, () => {
-      const payload = jwt.decode(token, secret)
-      User.findById({'_id': payload.userId}, (err, doc) => {
-        if (err) {
-          console.log(err)
-          res.send({code: 700, msg: '查询出错：' + err})
-        } else {
-          res.send({code: 200, msg: 'success', result: doc.chatNow})
-        }
-      })
+  isLogin(req, res, (payload) => {
+    User.findById({'_id': payload.userId}, (err, doc) => {
+      if (err) {
+        console.log(err)
+        res.send({code: 700, msg: '查询出错：' + err})
+      } else {
+        res.send({code: 200, msg: 'success', result: doc.chatNow})
+      }
     })
-  } else {
-    res.send({code: 403, msg: '请先登录'})
-  }
+  })
 })
 
 router.post('/api/user/addChatNow', (req, res) => {
-  if (parseCookie(req.headers.cookie).token) {
-    const token = parseCookie(req.headers.cookie).token
-    isLogin(token, res, () => {
-      const payload = jwt.decode(token, secret)
-      User.update({'_id': payload.userId}, {'$addToSet': {'chatNow': req.body.user}}, (err, doc) => {
-        if (err) {
-          console.log(err)
-          res.send({code: 700, msg: '查询出错：' + err})
-        } else {
-          res.send({code: 200, msg: 'success'})
-        }
-      })
-      // res.send({code: 404, msg: '无此数据'})
+  isLogin(req, res, (payload) => {
+    User.update({'_id': payload.userId}, {'$addToSet': {'chatNow': req.body.user}}, (err, doc) => {
+      if (err) {
+        console.log(err)
+        res.send({code: 700, msg: '查询出错：' + err})
+      } else {
+        res.send({code: 200, msg: 'success'})
+      }
     })
-  } else {
-    res.send({code: 403, msg: '请先登录'})
-  }
+    // res.send({code: 404, msg: '无此数据'})
+  })
 })
 
 router.get('/api/user/getFriends', (req, res) => {
-  if (parseCookie(req.headers.cookie).token) {
-    const token = parseCookie(req.headers.cookie).token
-    isLogin(token, res, () => {
-      const payload = jwt.decode(token, secret)
-      User.findById({'_id': payload.userId}, (err, doc) => {
-        if (err) {
-          console.log(err)
-          res.send({code: 700, msg: '查询出错：' + err})
-        } else {
-          res.send({code: 200, msg: 'success', result: doc.friends})
-        }
-      })
+  isLogin(req, res, (payload) => {
+    User.findById({'_id': payload.userId}, (err, doc) => {
+      if (err) {
+        console.log(err)
+        res.send({code: 700, msg: '查询出错：' + err})
+      } else {
+        res.send({code: 200, msg: 'success', result: doc.friends})
+      }
     })
-  } else {
-    res.send({code: 403, msg: '请先登录'})
-  }
+  })
 })
 
 router.post('/api/user/newFriend', (req, res) => {
-  if (parseCookie(req.headers.cookie).token) {
-    const token = parseCookie(req.headers.cookie).token
-    isLogin(token, res, () => {
-      const payload = jwt.decode(token, secret)
-      User.update({'_id': payload.userId}, {'$addToSet': {'friends': req.body.user}}, (err, doc) => {
-        if (err) {
-          console.log(err)
-          res.send({code: 700, msg: '查询出错：' + err})
-        } else {
-          res.send({code: 200, msg: 'success', result: doc.friends})
-        }
-      })
+  isLogin(req, res, (payload) => {
+    User.update({'_id': payload.userId}, {'$addToSet': {'friends': req.body.user}}, (err, doc) => {
+      if (err) {
+        console.log(err)
+        res.send({code: 700, msg: '查询出错：' + err})
+      } else {
+        res.send({code: 200, msg: 'success', result: doc.friends})
+      }
     })
-  } else {
-    res.send({code: 403, msg: '请先登录'})
-  }
+  })
 })
 
 module.exports = router

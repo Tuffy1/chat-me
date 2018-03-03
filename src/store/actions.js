@@ -46,7 +46,13 @@ export default {
   },
   newFriend: ({commit}, user) => {
     return newFriend({
-      user: user
+      _id: user._id,
+      avatar: user.avatar,
+      nickname: user.nickname,
+      username: user.username,
+      email: user.email,
+      introduce: user.introduce,
+      creatAt: user.creatAt
     })
     .then(result => {
       commit('newFriend', user)

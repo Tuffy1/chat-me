@@ -11,7 +11,7 @@
           remote
           :remote-method="remoteMethod"
           :loading="loading">
-          <Option v-for="(user, index) in userList" :value="user.username" :key="index">{{user.username}}</Option>
+          <Option v-for="(user, index) in userList" :value="user" :key="index">{{user.username}}</Option>
         </Select>
     </Modal>
   </div>
@@ -50,6 +50,7 @@ export default {
       this.$store.dispatch('newFriend', this.newUser)
       .then(() => {
         this.$Message.success('添加成功')
+        this.$emit('closeModal')
       }, msg => this.$Message.warning(msg))
     },
     cancel () {

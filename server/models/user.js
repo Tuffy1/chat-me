@@ -27,12 +27,10 @@ const userSchema = new Schema({
     default: Date.now
   },
   friends: [{
-    type: Schema.Types.ObjectId,
-    ref: 'User'
+    type: Schema.Types.Mixed
   }],
   groups: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Group'
+    type: Schema.Types.Mixed
   }],
   chatNow: [{
     type: Schema.Types.Mixed
