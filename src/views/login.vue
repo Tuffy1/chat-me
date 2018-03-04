@@ -10,11 +10,19 @@
                 <Icon type="ios-loop-strong"></Icon>
                 Change
             </a>
-            <input v-model="username" placeholder="输入用户名" size="large"><br/>
-            <input v-model="password" placeholder="输入密码" size="large"><br/>
-            <p class="to-register">未有账号？<a @click="toRegister">注册</a></p>
-            <Button type="ghost" @click="login()">Submit</Button>
-            <Button type="ghost">Cancel</Button>
+            <Form :model="form" ref="form" :rules="ruleValidate" :label-width="80" label-position="left" class="form">
+              <FormItem prop="username" label="用户名">
+                <i-input v-model="username" placeholder="输入用户名"></i-input>
+              </FormItem>
+              <FormItem prop="password" label="密码">
+                <i-input v-model="password" placeholder="输入密码"></i-input>
+              </FormItem>
+              <p class="to-register">未有账号？<a @click="toRegister">注册</a></p>
+              <FormItem id="submit-btn">
+                <Button type="ghost" @click="login()">Submit</Button>
+                <Button type="ghost">Cancel</Button>
+              </FormItem>
+            </Form>
         </Card>
       </Col>
     </Row>
@@ -26,9 +34,26 @@ import { mapGetters } from 'vuex'
 
 export default {
   data () {
+    const validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('Please enter your password'))
+      } else {
+        callback()
+      }
+    }
     return {
-      username: '',
-      password: ''
+      form: {
+        username: '',
+        password: ''
+      },
+      ruleValidate: {
+        username: [
+          { required: true, message: 'The name cannot be empty', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, validator: validatePass, trigger: 'blur' }
+        ]
+      }
     }
   },
   computed: {
@@ -63,7 +88,7 @@ export default {
 .login .to-register {
   margin: 12px 0;
 }
-.login button {
-  margin: 12px 10px;
+#submit-btn {
+  margin-left: -80px;
 }
 </style>

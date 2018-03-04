@@ -2,8 +2,8 @@
   <div class="chat-now">
     <side-bar-inner :obj="'user'">
       <template slot="item-list">
-        <side-bar-inner-item  v-for="(user, index) in chatNow"
-                              :key="index"
+        <side-bar-inner-item  v-for="user in chatNow"
+                              :key="user._id"
                               :goto="`/center/chatting/detail?user=${user._id}`">
           <user-item :user="user"></user-item>
         </side-bar-inner-item>

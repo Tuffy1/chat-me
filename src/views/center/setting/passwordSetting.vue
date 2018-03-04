@@ -1,17 +1,17 @@
 <template>
   <div class="setting">
-    <Form :model="passwordForm" ref="passwordForm" :rules="passwordRuleValidate" class="form">
+    <Form :model="passwordForm" ref="passwordForm" :rules="passwordRuleValidate" :label-width="80" label-position="left" class="form">
       <FormItem prop="oldPassword" label="原密码">
-        <input v-model="passwordForm.oldPassword" placeholder="输入原密码" size="large">
+        <i-input v-model="passwordForm.oldPassword" placeholder="输入原密码"></i-input>
       </FormItem>
       <FormItem prop="newPassword" label="新密码">
-        <input v-model="passwordForm.newPassword" placeholder="输入新密码" size="large">
+        <i-input v-model="passwordForm.newPassword" placeholder="输入新密码"></i-input>
       </FormItem>
       <FormItem prop="checkPassword" label="密码确认">
-        <input v-model="passwordForm.checkPassword" placeholder="再次输入新密码" size="large">
+        <i-input v-model="passwordForm.checkPassword" placeholder="再次输入新密码"></i-input>
       </FormItem>
       <FormItem>
-      <Button type="success" @click="Submit()">Submit</Button>
+      <Button type="success" id="submit-btn" @click="Submit()">Submit</Button>
       </FormItem>
     </Form>
   </div>
@@ -50,5 +50,10 @@ export default {
 }
 .setting .form {
   width: 100%;
+  text-align: left;
+  margin-top: 10px;
+}
+#submit-btn {
+  margin-left: -80px;
 }
 </style>

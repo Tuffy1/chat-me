@@ -10,24 +10,24 @@
                 <Icon type="ios-loop-strong"></Icon>
                 Change
             </a>
-             <Form :model="form" ref="form" :rules="ruleValidate" class="form">
-               <FormItem prop="nickname">
-                 <input v-model="form.nickname" placeholder="输入昵称" size="large">
+             <Form :model="form" ref="form" :rules="ruleValidate" :label-width="80" label-position="left" class="form">
+               <FormItem prop="nickname" label="昵称">
+                 <i-input v-model="form.nickname" placeholder="输入昵称"></i-input>
                </FormItem>
-               <FormItem prop="username">
-                 <input v-model="form.username" placeholder="输入用户名" size="large">
+               <FormItem prop="username" label="用户名">
+                 <i-input v-model="form.username" placeholder="输入用户名"></i-input>
                </FormItem>
-               <FormItem prop="email">
-                 <input v-model="form.email" placeholder="输入邮箱" size="large">
+               <FormItem prop="email" label="邮箱">
+                 <i-input v-model="form.email" placeholder="输入邮箱"></i-input>
                </FormItem>
-               <FormItem prop="password">
-                <input v-model="form.password" placeholder="输入密码" size="large">
+               <FormItem prop="password" label="密码">
+                <i-input v-model="form.password" placeholder="输入密码"></i-input>
                </FormItem>
-               <FormItem prop="passwordConfirm">
-                <input v-model="form.passwordConfirm" placeholder="再次输入密码" size="large"><br>
+               <FormItem prop="passwordConfirm" label="密码确认">
+                <i-input v-model="form.passwordConfirm" placeholder="再次输入密码"></i-input><br>
                </FormItem>
                <p class="to-register">已有账号？<a @click="toLogin">登陆</a></p>
-               <FormItem>
+               <FormItem id="submit-btn">
                 <Button type="ghost" @click="register()">Submit</Button>
                 <Button type="ghost">Cancel</Button>
                </FormItem>
@@ -101,9 +101,9 @@ export default {
             email: this.form.email
           })
           .then(() => {
-            this.$message('注册成功')
+            this.$Message.success('注册成功')
             this.$router.push('/login')
-          }, (msg) => Promise.reject(msg))
+          }, (msg) => this.$Message.warning(msg))
         }
       })
       // this.$http.post('/api/login', {
@@ -127,5 +127,8 @@ export default {
 }
 .register button {
   margin: 24px 10px;
+}
+#submit-btn {
+  margin-left: -80px;
 }
 </style>

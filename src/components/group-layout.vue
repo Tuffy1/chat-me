@@ -13,7 +13,7 @@
     </div>  
     <div class="btn-wrap">
       <Button type="success" @click="joinChat">聊天</Button>
-      <Button type="error" @click="deleteUser">删除</Button>
+      <Button type="error" @click="deleteFriend">删除</Button>
     </div>
   </div>
 </template>
@@ -33,7 +33,7 @@ export default {
       }
       this.$router.push(`/center/chatting/detail?user=${this.userChatTo._id}`)
     },
-    deleteUser () {
+    deleteFriend () {
       this.friends.forEach(friend => {
         if (friend._id === this.userChatTo._id) {
           this.$store.commit('deleteFriend', this.userChatTo)

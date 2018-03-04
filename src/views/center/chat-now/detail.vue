@@ -2,8 +2,11 @@
   <div class="chat-now">
     <chat-layout :userChatTo="userChatTo">
       <template slot="chat-content">
-        <chat-bubble :isMe="false"></chat-bubble>
-        <chat-bubble :isMe="true"></chat-bubble>
+        <div v-for="(message, index) in userMessage" :key="index">
+          <chat-bubble :isMe="message.from._id === user._id"
+                       :content="message.content">
+          </chat-bubble>
+        </div>
       </template>
     </chat-layout>
   </div>
@@ -23,7 +26,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['friends', 'groups'])
+    ...mapState(['user', 'chatNow', 'userMessage'])
   },
   watch: {
     $route () {
@@ -36,9 +39,9 @@ export default {
   methods: {
     init () {
       this.userId = this.$route.query.user
-      this.friends.forEach(friend => {
-        if (friend._id === this.userId) {
-          this.userChatTo = friend
+      this.chatNow.forEach(user => {
+        if (user._id === this.userId) {
+          this.userChatTo = user
         }
       })
     }

@@ -11,7 +11,10 @@
           remote
           :remote-method="remoteMethod"
           :loading="loading">
-          <Option v-for="(user, index) in userList" :value="user" :key="index">{{user.username}}</Option>
+          <Option v-for="(USER, index) in userList" :value="USER" :key="index" :disabled="isMe(USER)">
+            <span v-if="isMe(USER)">{{USER.username}} (本人)</span>
+            <span v-else>{{USER.username}}</span>
+          </Option>
         </Select>
     </Modal>
   </div>
@@ -35,7 +38,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['friends'])
+    ...mapState(['user', 'friends'])
   },
   methods: {
     submit () {
@@ -72,6 +75,12 @@ export default {
         this.loading = false
         this.userList = []
       }
+    },
+    isMe (USER) {
+      if (USER.username === this.user.username) {
+        return true
+      }
+      return false
     }
   }
 }

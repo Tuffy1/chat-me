@@ -24,6 +24,6 @@ const UserMessageSchema = new Schema({
   }
 })
 
-const UserMessage = mongoose.model('Group', UserMessageSchema)
+const UserMessage = mongoose.model('Message', UserMessageSchema)
 
 module.exports = UserMessage

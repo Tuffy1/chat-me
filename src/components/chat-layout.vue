@@ -7,14 +7,28 @@
       <slot name="chat-content"></slot>
     </div>
     <div class="chat-text">
-      <textarea name="" id=""></textarea>
+      <textarea name="" id="" v-model="message"></textarea>
+      <Button type="success" size="small" class="send-btn" @click="onSubmit()">发送</Button>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ['userChatTo']
+  data () {
+    return {
+      message: ''
+    }
+  },
+  props: ['userChatTo'],
+  methods: {
+    onSubmit () {
+      this.$store.dispatch('sendMessage', {
+        chatTo: this.userChatTo._id,
+        content: this.message
+      })
+    }
+  }
 }
 </script>
 
@@ -40,19 +54,23 @@ export default {
 .chat-layout .chat-text {
   border-top: 1px solid rgb(185, 182, 182);
   width: 100%;
-  height: 100px;
+  height: 110px;
   padding-top: 5px;
   position: absolute;
   left: 0;
   bottom: 0;
   overflow: hidden;
+  text-align: left;
 }
 .chat-layout .chat-text textarea {
   width: 587px;
-  height: 100%;
+  height: 74px;
   resize: none;
   border: 0;
   outline: none;
   padding: 0 15px 5px 5px;
+}
+.chat-layout .chat-text .send-btn {
+  margin-right: 5px;
 }
 </style>

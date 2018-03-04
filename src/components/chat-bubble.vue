@@ -4,7 +4,7 @@
       <img src="../assets/imgs/avatar.jpg" alt="avatar">
     </div>
     <div class="talk-wrap">
-      <div class="talk-bubble">12323123132fdsafsafasfadsfasdfasfasfasfsafawertqwetqtertrtqertqert3</div>
+      <div class="talk-bubble">{{content}}</div>
     </div>
   </div>
 </template>
@@ -15,6 +15,9 @@ export default {
     isMe: {
       type: Boolean,
       required: true
+    },
+    content: {
+      type: String
     }
   }
 }

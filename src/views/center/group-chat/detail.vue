@@ -2,8 +2,8 @@
   <div class="chat-now">
     <group-layout :userChatTo="userChatTo">
       <template slot="chat-user">
-        <p>nickname: {{this.userChatTo.nickname}}</p>
-        <p>email: {{this.userChatTo.email}}</p>
+        <p>nickname: {{userChatTo.nickname}}</p>
+        <p>email: {{userChatTo.email}}</p>
       </template>
     </group-layout>
   </div>
@@ -37,7 +37,7 @@ export default {
     init () {
       this.userId = this.$route.query.user
       this.friends.forEach(friend => {
-        if (friend._id === this.userId) {
+        if (friend._id.toString() === this.userId) {
           this.userChatTo = friend
         }
       })

@@ -1,14 +1,17 @@
 const express = require('express')
 const router = express.Router()
 const jwt = require('jwt-simple')
-const secret = 'Joyee'
 const User = require('../models/user')
 const Auth = require('../models/auth')
+// const Message = require('../models/user-message')
 
 const serializeCookie = require('../util/serializeCookie')
 const isLogin = require('../util/isLogin')
 
-router.post('/api/user/register', (req, res) => {
+const parseCookie = require('../util/parseCookie')
+const secret = 'Joyee'
+
+router.post('/register', (req, res) => {
   const theUser = new User({
     nickname: req.body.nickname,
     username: req.body.username,
@@ -25,7 +28,7 @@ router.post('/api/user/register', (req, res) => {
   })
 })
 
-router.post('/api/user/login', (req, res) => {
+router.post('/login', (req, res) => {
   User.findOne({username: req.body.username}, (err, doc) => {
     switch (true) {
       case !!err:
@@ -40,19 +43,19 @@ router.post('/api/user/login', (req, res) => {
       case doc.password === req.body.password:
         const uuid = doc._id
         const token = jwt.encode({userId: uuid, expires: Date.now() + (1000 * 60 * 60 * 24 * 7)}, secret)
-        const auth = new Auth({
-          user: uuid
-        })
-        console.log(uuid)
-        Auth.find({user: uuid}, (err, doc) => {
+        const socketId = parseCookie(req.headers.cookie).io
+        Auth.findOne({user: uuid}, (err, doc) => {
           if (err) {
             console.log(err)
           }
           if (!doc) {
-            console.log('save')
+            const auth = new Auth({
+              user: uuid,
+              clients: [socketId]
+            })
             auth.save((err) => console.log(err))
           } else {
-            console.log(doc)
+            Auth.update({'user': uuid}, {'$push': {'clients': socketId}}, err => console.log(err))
           }
         })
         res.setHeader('Set-Cookie', serializeCookie('token', token))
@@ -68,7 +71,20 @@ router.post('/api/user/login', (req, res) => {
   // db.User.insert({username, password})
 })
 
-router.post('/api/user/userSearch', (req, res) => {
+router.get('/info', (req, res) => {
+  isLogin(req, res, (payload) => {
+    User.findById({'_id': payload.userId}, (err, doc) => {
+      if (err) {
+        console.log(err)
+        res.send({code: 700, msg: '查询出错：' + err})
+      } else {
+        res.send({code: 200, msg: 'success', result: doc})
+      }
+    })
+  })
+})
+
+router.post('/userSearch', (req, res) => {
   const query = {
     username: req.body.query
   }
@@ -82,7 +98,7 @@ router.post('/api/user/userSearch', (req, res) => {
   })
 })
 
-router.get('/api/user/getChatNow', (req, res) => {
+router.get('/getChatNow', (req, res) => {
   isLogin(req, res, (payload) => {
     User.findById({'_id': payload.userId}, (err, doc) => {
       if (err) {
@@ -95,7 +111,7 @@ router.get('/api/user/getChatNow', (req, res) => {
   })
 })
 
-router.post('/api/user/addChatNow', (req, res) => {
+router.post('/addChatNow', (req, res) => {
   isLogin(req, res, (payload) => {
     User.update({'_id': payload.userId}, {'$addToSet': {'chatNow': req.body.user}}, (err, doc) => {
       if (err) {
@@ -109,7 +125,7 @@ router.post('/api/user/addChatNow', (req, res) => {
   })
 })
 
-router.get('/api/user/getFriends', (req, res) => {
+router.get('/getFriends', (req, res) => {
   isLogin(req, res, (payload) => {
     User.findById({'_id': payload.userId}, (err, doc) => {
       if (err) {
@@ -122,7 +138,7 @@ router.get('/api/user/getFriends', (req, res) => {
   })
 })
 
-router.post('/api/user/newFriend', (req, res) => {
+router.post('/newFriend', (req, res) => {
   isLogin(req, res, (payload) => {
     User.update({'_id': payload.userId}, {'$addToSet': {'friends': req.body.user}}, (err, doc) => {
       if (err) {

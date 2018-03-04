@@ -1,10 +1,12 @@
 import register from '../api/register'
 import login from '../api/login'
 import userSearch from '../api/user-search'
+import getUserInfo from '../api/get-user-info'
 import getChatNow from '../api/get-chat-now'
 import addChatNow from '../api/add-chat-now'
 import getFriends from '../api/get-friends'
 import newFriend from '../api/new-friend'
+import sendMessage from '../api/send-message'
 
 export default {
   register: ({commit}, form) => {
@@ -24,6 +26,12 @@ export default {
   userSearch: (context, form) => {
     return userSearch(form)
     .then(result => Promise.resolve(result), msg => Promise.reject(msg))
+  },
+  getUserInfo: ({commit}) => {
+    return getUserInfo()
+    .then(result => {
+      commit('getUserInfo', result)
+    }, msg => Promise.reject(msg))
   },
   getChatNow: ({commit}, context) => {
     return getChatNow()
@@ -57,5 +65,9 @@ export default {
     .then(result => {
       commit('newFriend', user)
     }, msg => Promise.reject(msg))
+  },
+  sendMessage: (context, form) => {
+    return sendMessage(form)
+    .then(result => Promise.resolve(result), msg => Promise.reject(msg))
   }
 }

@@ -4,6 +4,9 @@ export default {
   loginInit (state) {
     Vue.set(state, 'loginState', true)
   },
+  getUserInfo (state, info) {
+    Vue.set(state, 'user', info)
+  },
   setChatNow (state, users) {
     Vue.set(state, 'chatNow', users)
   },

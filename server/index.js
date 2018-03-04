@@ -3,6 +3,7 @@ const path = require('path')
 const express = require('express')
 const bodyParser = require('body-parser')
 const userRouter = require('./router/user')
+const messageRouter = require('./router/message')
 const mongoose = require('mongoose')
 
 const app = express()
@@ -12,7 +13,8 @@ const io = require('socket.io')(http)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
 app.use(express.static(path.resolve(__dirname, '../dist')))
-app.use(userRouter)
+app.use('/api/user', userRouter)
+app.use('/api/user', messageRouter)
 
 app.get('*', (req, res) => {
   const html = fs.readFileSync(path.resolve(__dirname, '../index.html'), 'utf-8')
@@ -24,7 +26,6 @@ http.listen(8088, () => {
 })
 
 io.on('connection', socket => {
-  console.log('a user connected')
   socket.on('chat message', (msg) => {
     console.log(msg)
   })
