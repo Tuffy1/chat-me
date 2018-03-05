@@ -7,6 +7,8 @@ import addChatNow from '../api/add-chat-now'
 import getFriends from '../api/get-friends'
 import newFriend from '../api/new-friend'
 import sendMessage from '../api/send-message'
+import setUserInfo from '../api/set-user-info'
+import setUserPassword from '../api/set-user-password'
 
 export default {
   register: ({commit}, form) => {
@@ -62,12 +64,22 @@ export default {
       introduce: user.introduce,
       creatAt: user.creatAt
     })
-    .then(result => {
+    .then(() => {
       commit('newFriend', user)
     }, msg => Promise.reject(msg))
   },
   sendMessage: (context, form) => {
     return sendMessage(form)
     .then(result => Promise.resolve(result), msg => Promise.reject(msg))
+  },
+  setUserInfo: ({commit}, form) => {
+    return setUserInfo(form)
+    .then(() => {
+      commit('setUserInfo', form)
+    }, msg => Promise.reject(msg))
+  },
+  setUserPassword: (context, form) => {
+    return setUserPassword(form)
+    .then(() => Promise.resolve(), msg => Promise.reject(msg))
   }
 }

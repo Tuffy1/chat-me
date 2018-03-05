@@ -32,5 +32,12 @@ export default {
     let users = state.friends
     users.pop(user)
     Vue.set(state, 'friends', users)
+  },
+  setUserInfo (state, form) {
+    let user = state.user
+    user.nickname = form.username
+    user.email = form.email
+    user.introduce = form.introduce
+    Vue.set(state, 'user', user)
   }
 }

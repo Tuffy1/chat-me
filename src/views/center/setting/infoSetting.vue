@@ -14,13 +14,16 @@
         <i-input v-model="infoForm.introduce" placeholder="输入简介"></i-input>
       </FormItem>
       <FormItem>
-      <Button type="success" id="submit-btn" @click="Submit()">Submit</Button>
+      <Button type="success" id="submit-btn" @click="onSubmit">Submit</Button>
       </FormItem>
     </Form>
   </div>
 </template>
 
 <script>
+import {mapState} from 'vuex'
+import {cloneDeep} from 'lodash'
+
 export default {
   data () {
     return {
@@ -34,9 +37,6 @@ export default {
         nickname: [
           { required: true, message: 'The name cannot be empty', trigger: 'blur' }
         ],
-        username: [
-          { required: true, message: 'The name cannot be empty', trigger: 'blur' }
-        ],
         email: [
           { required: true, message: 'The name cannot be empty', trigger: 'blur' }
         ],
@@ -44,6 +44,28 @@ export default {
           { required: true, message: 'The name cannot be empty', trigger: 'blur' }
         ]
       }
+    }
+  },
+  watch: {
+    $route () {
+      this.init()
+    }
+  },
+  created () {
+    this.init()
+  },
+  computed: {
+    ...mapState(['user'])
+  },
+  methods: {
+    init () {
+      this.infoForm = cloneDeep(this.user)
+    },
+    onSubmit () {
+      this.$refs['infoForm'].validate((value) => {
+        this.$store.dispatch('setUserInfo', this.infoForm)
+        .then(() => this.$Message.success('修改成功'), (msg) => Promise.reject(msg))
+      })
     }
   }
 }

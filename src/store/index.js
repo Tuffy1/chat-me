@@ -10,10 +10,22 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     loginState: false,
-    user: {},
+    user: {
+      nickname: 'joyee',
+      username: 'joyee',
+      email: 'joyee@qq.com',
+      introduce: 'i am joyee'
+    },
     friends: [],
     groups: [],
-    chatNow: []
+    chatNow: [
+      {
+        nickname: 'tuffy',
+        username: 'tuffy',
+        email: '123@qq.com',
+        introduce: 'i am tuffy'
+      }
+    ]
   },
   getters,
   mutations,

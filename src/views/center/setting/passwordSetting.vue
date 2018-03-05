@@ -11,7 +11,7 @@
         <i-input v-model="passwordForm.checkPassword" placeholder="再次输入新密码"></i-input>
       </FormItem>
       <FormItem>
-      <Button type="success" id="submit-btn" @click="Submit()">Submit</Button>
+      <Button type="success" id="submit-btn" @click="onSubmit">Submit</Button>
       </FormItem>
     </Form>
   </div>
@@ -37,6 +37,14 @@ export default {
           { required: true, message: 'The name cannot be empty', trigger: 'blur' }
         ]
       }
+    }
+  },
+  methods: {
+    onSubmit () {
+      this.$refs['passwordForm'].validate((value) => {
+        this.$store.dispatch('setUserPassword', this.passwordForm)
+        .then(() => this.$Message.success('修改成功'), (msg) => Promise.reject(msg))
+      })
     }
   }
 }
