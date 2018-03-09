@@ -9,17 +9,19 @@ const UserMessage = require('../models/message')
 const isLogin = require('../util/isLogin')
 
 // const parseCookie = require('../util/parseCookie')
+// const socket = io.connect('http://localhost:8080')
 // const secret = 'Joyee'
 
 router.post('/sendMessage', (req, res) => {
-  isLogin(req, res, (payload) => {
-    const msg = new UserMessage({
-      from: payload.userId,
-      to: req.body.chatTo,
-      content: req.body.content
-    })
-    msg.save(err => console.log(err))
-  })
+  // isLogin(req, res, (payload) => {
+  //   const msg = new UserMessage({
+  //     from: payload.userId,
+  //     to: req.body.chatTo,
+  //     content: req.body.content
+  //   })
+  //   msg.save(err => console.log(err))
+  //   socket.to().emit('chatMessage', msg)
+  // })
 })
 
 module.exports = router

@@ -165,4 +165,31 @@ router.post('/setUserInfo', (req, res) => {
   res.send({code: 200, msg: 'success'})
 })
 
+router.post('/setUserPassword', (req, res) => {
+  isLogin(req, res, (payload) => {
+    User.findById({_id: payload.userId}, (err, doc) => {
+      switch (true) {
+        case !!err:
+          console.log(err)
+          break
+        case !doc:
+          res.send({code: 0, msg: '查询失败'})
+          break
+        case doc.password !== req.body.oldPassword:
+          res.send({code: 422, msg: '原密码输入错误'})
+          break
+        case doc.password === req.body.newPassword:
+          User.update({'_id': payload.userId}, {'$set': {'password': req.body.newPassword}}, (err, doc) => {
+            if (err) {
+              console.log(err)
+              res.send({code: 700, msg: '更改出错：' + err})
+            } else {
+              res.send({code: 200, msg: 'success'})
+            }
+          })
+      }
+    })
+  })
+})
+
 module.exports = router

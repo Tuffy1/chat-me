@@ -27,7 +27,9 @@ http.listen(8088, () => {
   console.log('listening on 8088...')
 })
 
+let socketId = ''
 io.on('connection', socket => {
+  socketId = socket.id
   socket.on('chat message', (msg) => {
     console.log(msg)
   })
@@ -35,6 +37,7 @@ io.on('connection', socket => {
     console.log('user disconnected')
   })
 })
+io.to(socketId).emit('chatMessage', 'hello?')
 
 mongoose.connect('mongodb://localhost/chat')
 const db = mongoose.connection

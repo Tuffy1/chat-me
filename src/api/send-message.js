@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export default form => {
-  return axios.post('/api/user/sendMessage', {
+  return axios.post('/api/message/sendMessage', {
     chatTo: form.chatTo,
     content: form.content
   })
