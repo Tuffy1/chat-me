@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({extended: false}))
 app.use(express.static(path.resolve(__dirname, '../dist')))
 app.use('/api', authRouter)
 app.use('/api/user', userRouter)
-app.use('/api/user', messageRouter)
+app.use('/api/message', messageRouter)
 
 app.get('*', (req, res) => {
   const html = fs.readFileSync(path.resolve(__dirname, '../index.html'), 'utf-8')
@@ -27,17 +27,16 @@ http.listen(8088, () => {
   console.log('listening on 8088...')
 })
 
-let socketId = ''
 io.on('connection', socket => {
-  socketId = socket.id
   socket.on('chat message', (msg) => {
     console.log(msg)
   })
   socket.on('disconnect', () => {
     console.log('user disconnected')
   })
+  global.io = io
+  console.log(socket.id)
 })
-io.to(socketId).emit('chatMessage', 'hello?')
 
 mongoose.connect('mongodb://localhost/chat')
 const db = mongoose.connection

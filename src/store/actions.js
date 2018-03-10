@@ -1,3 +1,5 @@
+import authRe from '../api/auth-re'
+import authDel from '../api/auth-del'
 import register from '../api/register'
 import login from '../api/login'
 import userSearch from '../api/user-search'
@@ -11,6 +13,17 @@ import setUserInfo from '../api/set-user-info'
 import setUserPassword from '../api/set-user-password'
 
 export default {
+  socketLogin (context) {
+    console.log('context')
+  },
+  authRe: (context, form) => {
+    return authRe()
+    .then(result => Promise.resolve(result), msg => Promise.reject(msg))
+  },
+  authDel: (context) => {
+    return authDel()
+    .then(result => Promise.resolve(result), msg => Promise.reject(msg))
+  },
   register: ({commit}, form) => {
     return register(form)
     .then(result => {

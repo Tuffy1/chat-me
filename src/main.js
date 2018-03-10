@@ -29,6 +29,13 @@ new Vue({
   sockets: {
     connect: () => {
       console.log('socket connected')
+      // this.$store.dispatch('authRe')
+      // .then(() => {}, msg => this.$Message.warning(msg))
+    },
+    disconnect: () => {
+      console.log('socket disconnected')
+      // this.$store.dispatch('authDel')
+      // .then(() => {}, msg => this.$Message.warning(msg))
     },
     customEmit: (val) => {
       console.log('this.method was fired by the socket server.')

@@ -8,5 +8,4 @@ module.exports = (name, val, opt) => {
   if (opt.httpOnly) pairs.push('HttpOnly')
   if (opt.secure) pairs.push('Secure')
   return pairs.join(';')
-  }
- 
+}
