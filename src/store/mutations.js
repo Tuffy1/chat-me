@@ -33,6 +33,21 @@ export default {
     users.pop(user)
     Vue.set(state, 'friends', users)
   },
+  getUserMessage (state, messages) {
+    Vue.set(state, 'userMessage', messages)
+  },
+  sendMessage (state, msg) {
+    let message = state.userMessage
+    message.push(msg)
+    Vue.set(state, 'userMessage', message)
+  },
+  SOCKET_USER_MESSAGE: (state, msg) => {
+    console.log(`in commit`)
+    console.log(msg)
+    let message = state.userMessage
+    message = message.concat(msg)
+    Vue.set(state, 'userMessage', message)
+  },
   setUserInfo (state, form) {
     let user = state.user
     user.nickname = form.username

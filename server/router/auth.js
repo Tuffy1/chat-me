@@ -36,6 +36,7 @@ router.post('/auth', (req, res) => {
               user: uuid,
               clients: [socketId]
             })
+            console.log(`login:${socketId}`)
             auth.save((err) => console.log(err))
           } else {
             Auth.update({'user': uuid}, {'$push': {'clients': socketId}}, err => console.log(err))
@@ -54,7 +55,8 @@ router.post('/auth/re', (req, res) => {
   console.log('auth/re')
   isLogin(req, res, (payload) => {
     const socketId = parseCookie(req.headers.cookie).io
-    Auth.find({ clients: socketId }, (err, doc) => {
+    console.log(payload.userId)
+    Auth.findOne({user: payload.userId}, (err, doc) => {
       if (err) {
         res.send({code: 700, msg: '查询出错：' + err})
       } else if (!doc) {
@@ -65,7 +67,7 @@ router.post('/auth/re', (req, res) => {
         })
         auth.save((err) => console.log(err))
       } else if (doc) {
-        res.send({success: false, msg: '尚处于连接状态'})
+        Auth.update({'user': payload.userId}, {'$addToSet': {'clients': socketId}}, err => console.log(err))
       } else {
         res.send({code: 3, msg: '未知错误'})
       }
@@ -73,22 +75,22 @@ router.post('/auth/re', (req, res) => {
   })
 })
 
-router.post('/auth/del', (req, res) => {
-  console.log('auth/del')
-  const socketId = parseCookie(req.headers.cookie).io
-  Auth.find({clients: socketId}, (err, doc) => {
-    if (err) {
-      res.send({code: 700, msg: '查询出错：' + err})
-    } else if (!doc) {
-      res.send({success: false, msg: '查无此socket'})
-    } else if (doc) {
-      const index = doc.clients.indexOf(socketId)
-      doc.clients.splice(index, 1)
-      doc.save((err) => console.log(err))
-    } else {
-      res.send({code: 3, msg: '未知错误'})
-    }
-  })
-})
+// router.post('/auth/del', (req, res) => {
+  // console.log('auth/del')
+  // const socketId = parseCookie(req.headers.cookie).io
+  // Auth.find({clients: socketId}, (err, doc) => {
+  //   if (err) {
+  //     res.send({code: 700, msg: '查询出错：' + err})
+  //   } else if (!doc) {
+  //     res.send({success: false, msg: '查无此socket'})
+  //   } else if (doc) {
+  //     const index = doc.clients.indexOf(socketId)
+  //     doc.clients.splice(index, 1)
+  //     doc.save((err) => console.log(err))
+  //   } else {
+  //     res.send({code: 3, msg: '未知错误'})
+  //   }
+  // })
+// })
 
 module.exports = router

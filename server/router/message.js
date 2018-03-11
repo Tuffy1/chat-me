@@ -23,17 +23,36 @@ router.post('/sendMessage', (req, res) => {
       if (err) {
         res.send({code: 700, msg: '存入数据库出错：' + err})
       } else {
-        Auth.findOne({user: payload.userId}, (err, doc) => {
+        Auth.findOne({user: req.body.chatTo}, (err, doc) => {
           if (err) {
             res.send({code: 700, msg: '查询出错：' + err})
-          } else {
+          } else if (doc) {
             const clients = doc.clients
+            console.log(`clients: ${clients}`)
             for (const client of clients) {
-              global.io.to(client).emit('chatMessage', 'joyee is here')
+              global.io.to(client).emit('USER_MESSAGE', msg)
             }
-            res.send({code: 200, msg: 'success'})
+            res.send({code: 200, result: msg, msg: 'success'})
+          } else if (!doc) {
+            res.send({code: 3, msg: '找不到用户'})
           }
         })
+      }
+    })
+  })
+})
+
+router.get('/getUserMessage', (req, res) => {
+  isLogin(req, res, (payload) => {
+    UserMessage.find({$or: [{from: payload.userId}, {to: payload.userId}]}, (err, doc) => {
+      if (err) {
+        res.send({code: 700, msg: '查询数据库出错：' + err})
+      } else if (!doc) {
+        res.send({code: 200, msg: '暂无聊天记录'})
+      } else if (doc) {
+        res.send({code: 200, result: doc, success: true})
+      } else {
+        res.send({code: 3, msg: '未知错误'})
       }
     })
   })

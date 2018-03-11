@@ -5,5 +5,5 @@ export default form => {
     chatTo: form.chatTo,
     content: form.content
   })
-  .then((result) => Promise.resolve(result), msg => Promise.reject(msg))
+  .then(res => Promise.resolve(res.data.result), msg => Promise.reject(msg))
 }

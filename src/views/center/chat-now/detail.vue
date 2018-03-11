@@ -2,8 +2,8 @@
   <div class="chat-now">
     <chat-layout :userChatTo="userChatTo">
       <template slot="chat-content">
-        <div v-for="(message, index) in userMessage" :key="index">
-          <chat-bubble :isMe="message.from._id === user._id"
+        <div v-for="(message, index) in messagesFilter" :key="index">
+          <chat-bubble :isMe="message.from=== user._id"
                        :content="message.content">
           </chat-bubble>
         </div>
@@ -26,7 +26,12 @@ export default {
     }
   },
   computed: {
-    ...mapState(['user', 'chatNow', 'userMessage'])
+    ...mapState(['user', 'chatNow', 'userMessage']),
+    messagesFilter () {
+      return this.userMessage.filter((message) => {
+        return ((message.from === this.userId) || (message.to === this.userId))
+      })
+    }
   },
   watch: {
     $route () {

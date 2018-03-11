@@ -26,22 +26,26 @@ new Vue({
   store,
   template: '<App/>',
   components: { App },
+  msg: '',
   sockets: {
     connect: () => {
       console.log('socket connected')
-      // this.$store.dispatch('authRe')
-      // .then(() => {}, msg => this.$Message.warning(msg))
+      axios.post('/api/auth/re')
+      .then(res => Promise.resolve(res.data.result), msg => Promise.reject(msg))
     },
     disconnect: () => {
       console.log('socket disconnected')
-      // this.$store.dispatch('authDel')
-      // .then(() => {}, msg => this.$Message.warning(msg))
-    },
-    customEmit: (val) => {
-      console.log('this.method was fired by the socket server.')
     },
     chatMessage: (msg) => {
       console.log(msg)
+      // this.$store.commit('newMessage', msg)
+      this.msg = msg
+    }
+  },
+  watch: {
+    msg: () => {
+      console.log(`watch msg : ${this.msg}`)
+      this.$store.commit('newMessage', this.msg)
     }
   }
 })

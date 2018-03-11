@@ -3,7 +3,7 @@
     <div class="chat-name">
       {{userChatTo.nickname}}
     </div>
-    <div class="chat-content">
+    <div class="chat-content" id="chatContent">
       <slot name="chat-content"></slot>
     </div>
     <div class="chat-text">
@@ -20,13 +20,30 @@ export default {
       message: ''
     }
   },
-  props: ['userChatTo'],
+  props: ['userChatTo', 'userMessage'],
+  // watch: {
+  //   userMessage () {
+  //     this.$nextTick(() => {
+  //       const container = document.getElementById("chatContent")
+  //       container.scrollTop = container.scrollHeight
+  //     })
+  //   }
+  // },
+  // created() {
+  //   this.$nextTick(() => {
+  //     const container = document.getElementById("chatContent")
+  //     container.scrollTop = container.scrollHeight
+  //   })
+  // },
   methods: {
     onSubmit () {
       this.$store.dispatch('sendMessage', {
         chatTo: this.userChatTo._id,
         content: this.message
       })
+      .then(() => {
+        this.message = ''
+      }, msg => this.$Message.warning(msg))
     }
   }
 }
@@ -50,6 +67,8 @@ export default {
 }
 .chat-layout .chat-content {
   padding: 10px 10px;
+  height: 327px;
+  overflow-y: scroll;
 }
 .chat-layout .chat-text {
   border-top: 1px solid rgb(185, 182, 182);

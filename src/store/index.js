@@ -25,7 +25,8 @@ export default new Vuex.Store({
         email: '123@qq.com',
         introduce: 'i am tuffy'
       }
-    ]
+    ],
+    userMessage: []
   },
   getters,
   mutations,

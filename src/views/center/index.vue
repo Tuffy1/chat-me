@@ -36,14 +36,14 @@ export default {
       password: ''
     }
   },
-  sockets: {
-    connect: () => {
-      this.authRe()
-    },
-    disconnect: () => {
-      this.authDel()
-    }
-  },
+  // sockets: {
+  //   connect: () => {
+  //     this.authRe()
+  //   },
+  //   disconnect: () => {
+  //     this.authDel()
+  //   }
+  // },
   computed: {
     ...mapGetters(['loginState'])
   },
@@ -62,6 +62,8 @@ export default {
       this.$store.dispatch('getChatNow')
       .then(() => {}, msg => this.$Message.warning(msg))
       this.$store.dispatch('getFriends')
+      .then(() => {}, msg => this.$Message.warning(msg))
+      this.$store.dispatch('getUserMessage')
       .then(() => {}, msg => this.$Message.warning(msg))
     },
     authRe () {

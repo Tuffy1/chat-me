@@ -6,6 +6,7 @@ const authRouter = require('./router/auth')
 const userRouter = require('./router/user')
 const messageRouter = require('./router/message')
 const mongoose = require('mongoose')
+const Auth = require('./models/auth')
 
 const app = express()
 const http = require('http').Server(app)
@@ -32,10 +33,25 @@ io.on('connection', socket => {
     console.log(msg)
   })
   socket.on('disconnect', () => {
-    console.log('user disconnected')
+    console.log('auth/del')
+    const socketId = socket.id
+    console.log(socketId)
+    Auth.findOne({clients: socketId}, (err, doc) => {
+      if (err) {
+        console.log('auth/del: 查询出错')
+      } else if (!doc) {
+        console.log('auth/del: 查无此socket')
+      } else if (doc !== []) {
+        const index = doc.clients.indexOf(socketId)
+        console.log(`index: ${index}`)
+        doc.clients.splice(index, 1)
+        doc.save((err) => console.log(err))
+      } else {
+        console.log('auth/del: 未知错误')
+      }
+    })
   })
   global.io = io
-  console.log(socket.id)
 })
 
 mongoose.connect('mongodb://localhost/chat')

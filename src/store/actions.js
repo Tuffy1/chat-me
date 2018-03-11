@@ -8,6 +8,7 @@ import getChatNow from '../api/get-chat-now'
 import addChatNow from '../api/add-chat-now'
 import getFriends from '../api/get-friends'
 import newFriend from '../api/new-friend'
+import getUserMessage from '../api/get-user-message'
 import sendMessage from '../api/send-message'
 import setUserInfo from '../api/set-user-info'
 import setUserPassword from '../api/set-user-password'
@@ -81,9 +82,19 @@ export default {
       commit('newFriend', user)
     }, msg => Promise.reject(msg))
   },
-  sendMessage: (context, form) => {
+  getUserMessage: ({commit}) => {
+    return getUserMessage()
+    .then((result) => {
+      commit('getUserMessage', result)
+      Promise.resolve(result)
+    }, msg => Promise.reject(msg))
+  },
+  sendMessage: ({commit}, form) => {
     return sendMessage(form)
-    .then(result => Promise.resolve(result), msg => Promise.reject(msg))
+    .then((result) => {
+      commit('sendMessage', result)
+      Promise.resolve(result)
+    }, msg => Promise.reject(msg))
   },
   setUserInfo: ({commit}, form) => {
     return setUserInfo(form)
