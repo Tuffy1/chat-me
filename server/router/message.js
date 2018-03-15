@@ -23,20 +23,22 @@ router.post('/sendMessage', (req, res) => {
       if (err) {
         res.send({code: 700, msg: '存入数据库出错：' + err})
       } else {
-        Auth.findOne({user: req.body.chatTo}, (err, doc) => {
-          if (err) {
-            res.send({code: 700, msg: '查询出错：' + err})
-          } else if (doc) {
-            const clients = doc.clients
-            console.log(`clients: ${clients}`)
-            for (const client of clients) {
-              global.io.to(client).emit('USER_MESSAGE', msg)
-            }
-            res.send({code: 200, result: msg, msg: 'success'})
-          } else if (!doc) {
-            res.send({code: 3, msg: '找不到用户'})
-          }
-        })
+        global.io.to(req.body.chatTo._id).emit('USER_MESSAGE', msg)
+        res.send({code: 200, result: msg, msg: 'success'})
+        // Auth.findOne({user: req.body.chatTo}, (err, doc) => {
+        //   if (err) {
+        //     res.send({code: 700, msg: '查询出错：' + err})
+        //   } else if (doc) {
+        //     const clients = doc.clients
+        //     console.log(`clients: ${clients}`)
+        //     for (const client of clients) {
+        //       global.io.to(client).emit('USER_MESSAGE', msg)
+        //     }
+        //     res.send({code: 200, result: msg, msg: 'success'})
+        //   } else if (!doc) {
+        //     res.send({code: 3, msg: '找不到用户'})
+        //   }
+        // })
       }
     })
   })

@@ -6,6 +6,9 @@
         @on-ok="submit"
         @on-cancel="cancel">
         <Form :model="form" ref="form" :rules="ruleValidate" class="form">
+          <FormItem prop="nickname" label="群昵称" width="100">
+            <input v-model="form.nickname" placeholder="输入群名称" size="large">
+          </FormItem>
           <FormItem prop="username" label="群名称" width="100">
             <input v-model="form.username" placeholder="输入群名称" size="large">
           </FormItem>
@@ -14,12 +17,13 @@
           </FormItem>
           <FormItem prop="members" label="群成员">
             <Select
-              v-model="newUser"
+              v-model="form.members"
+              multiple
               filterable
               remote
               :remote-method="remoteMethod"
               :loading="loading">
-              <Option v-for="(user, index) in userList" :value="user.username" :key="index">{{user.username}}</Option>
+              <Option v-for="(user, index) in userList" :value="user" :key="index">{{user.username}}</Option>
             </Select>
           </FormItem>
         </Form>
@@ -42,11 +46,15 @@ export default {
       newUser: '',
       userList: [],
       form: {
+        nickname: '',
         username: '',
         introduce: '',
         members: []
       },
       ruleValidate: {
+        nickname: [
+          { required: true, message: 'The name cannot be empty', trigger: 'blur' }
+        ],
         username: [
           { required: true, message: 'The name cannot be empty', trigger: 'blur' }
         ],
@@ -65,7 +73,13 @@ export default {
   computed: {
   },
   methods: {
-    submit () {},
+    submit () {
+      this.$store.dispatch('newGroup', this.form)
+      .then(() => {
+        this.$Message.success('添加成功')
+        this.$emit('closeModal')
+      }, msg => this.$Message.warning(msg))
+    },
     cancel () {
       this.$emit('closeModal')
     },

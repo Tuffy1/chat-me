@@ -10,7 +10,7 @@
             <p slot="content" v-else>
               <side-bar-inner-item  v-for="user in friends"
                                     :key="user._id"
-                                    :goto="`/center/groupchat/detail?user=${user._id}`">
+                                    :goto="`/center/groupchat/userdetail?user=${user._id}`">
                 <user-item :user="user"></user-item>
               </side-bar-inner-item>
             </p>
@@ -22,7 +22,7 @@
             <p slot="content" v-else>
               <side-bar-inner-item  v-for="group in groups"
                                     :key="group._id"
-                                    :goto="`/center/groupchat/detail?group=${group._id}`">
+                                    :goto="`/center/groupchat/groupdetail?group=${group._id}`">
                 <user-item :user="group"></user-item>
               </side-bar-inner-item>
             </p>

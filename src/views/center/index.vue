@@ -63,6 +63,8 @@ export default {
       .then(() => {}, msg => this.$Message.warning(msg))
       this.$store.dispatch('getFriends')
       .then(() => {}, msg => this.$Message.warning(msg))
+      this.$store.dispatch('getGroups')
+      .then(() => {}, msg => this.$Message.warning(msg))
       this.$store.dispatch('getUserMessage')
       .then(() => {}, msg => this.$Message.warning(msg))
     },

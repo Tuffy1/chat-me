@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 // const jwt = require('jwt-simple')
 const User = require('../models/user')
+const Group = require('../models/group')
 // const Auth = require('../models/auth')
 // const Message = require('../models/user-message')
 
@@ -103,6 +104,46 @@ router.post('/newFriend', (req, res) => {
         res.send({code: 700, msg: '查询出错：' + err})
       } else {
         res.send({code: 200, msg: 'success', result: doc.friends})
+      }
+    })
+  })
+})
+
+router.get('/getGroups', (req, res) => {
+  isLogin(req, res, (payload) => {
+    User.findById({'_id': payload.userId}, (err, doc) => {
+      if (err) {
+        console.log(err)
+        res.send({code: 700, msg: '查询出错：' + err})
+      } else {
+        res.send({code: 200, msg: 'success', result: doc.groups})
+      }
+    })
+  })
+})
+
+router.post('/newGroup', (req, res) => {
+  isLogin(req, res, (payload) => {
+    const theGroup = new Group({
+      nickname: req.body.group.nickname,
+      username: req.body.group.username,
+      introduce: req.body.group.introduce,
+      members: req.body.group.members
+    })
+    theGroup.save((err, doc) => {
+      const newGroup = doc
+      if (err) {
+        console.log(err)
+        res.send({code: 700, msg: '保存出错：' + err})
+      } else {
+        User.update({'_id': payload.userId}, {'$addToSet': {'groups': theGroup}}, (err, doc) => {
+          if (err) {
+            console.log(err)
+            res.send({code: 700, msg: '查询出错：' + err})
+          } else {
+            res.send({code: 200, msg: 'success', result: newGroup})
+          }
+        })
       }
     })
   })

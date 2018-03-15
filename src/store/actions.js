@@ -8,6 +8,8 @@ import getChatNow from '../api/get-chat-now'
 import addChatNow from '../api/add-chat-now'
 import getFriends from '../api/get-friends'
 import newFriend from '../api/new-friend'
+import getGroups from '../api/get-groups'
+import newGroup from '../api/new-group'
 import getUserMessage from '../api/get-user-message'
 import sendMessage from '../api/send-message'
 import setUserInfo from '../api/set-user-info'
@@ -80,6 +82,23 @@ export default {
     })
     .then(() => {
       commit('newFriend', user)
+    }, msg => Promise.reject(msg))
+  },
+  getGroups: ({commit}, context) => {
+    return getGroups()
+    .then(result => {
+      commit('setGroups', result)
+    }, msg => Promise.reject(msg))
+  },
+  newGroup: ({commit}, form) => {
+    return newGroup({
+      nickname: form.nickname,
+      username: form.username,
+      introduce: form.introduce,
+      members: form.members
+    })
+    .then((result) => {
+      commit('newGroup', result)
     }, msg => Promise.reject(msg))
   },
   getUserMessage: ({commit}) => {

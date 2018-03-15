@@ -33,6 +33,14 @@ export default {
     users.pop(user)
     Vue.set(state, 'friends', users)
   },
+  setGroups (state, groups) {
+    Vue.set(state, 'groups', groups)
+  },
+  newGroup (state, group) {
+    let list = state.groups
+    list.push(group)
+    Vue.set(state, 'groups', list)
+  },
   getUserMessage (state, messages) {
     Vue.set(state, 'userMessage', messages)
   },

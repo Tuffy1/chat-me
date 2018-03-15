@@ -6,7 +6,8 @@ import Center from '@/views/center/index'
 import chatNow from '@/views/center/chat-now/index'
 import chatNowDetail from '@/views/center/chat-now/detail'
 import groupChat from '@/views/center/group-chat/index'
-import groupChatDetail from '@/views/center/group-chat/detail'
+import userChatDetail from '@/views/center/group-chat/children/user'
+import groupChatDetail from '@/views/center/group-chat/children/group'
 import Setting from '@/views/center/setting/index'
 import overview from '@/views/center/setting/overview'
 import infoSetting from '@/views/center/setting/infoSetting'
@@ -54,8 +55,13 @@ export default new Router({
           component: groupChat,
           children: [
             {
-              path: '/center/groupchat/detail',
-              name: 'GroupChatDetail',
+              path: '/center/groupchat/userdetail',
+              name: 'userChatDetail',
+              component: userChatDetail
+            },
+            {
+              path: '/center/groupchat/groupdetail',
+              name: 'groupChatDetail',
               component: groupChatDetail
             }
           ]
