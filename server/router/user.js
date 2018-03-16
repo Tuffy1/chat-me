@@ -22,9 +22,9 @@ router.post('/register', (req, res) => {
   })
   theUser.save((err) => {
     if (err) {
-      console.log(err)
+      res.send({code: 200, msg: err, success: false})
     } else {
-      res.send({code: 200, msg: '注册成功'})
+      res.send({code: 200, result: '注册成功', success: true})
     }
   })
 })
@@ -33,10 +33,9 @@ router.get('/info', (req, res) => {
   isLogin(req, res, (payload) => {
     User.findById({'_id': payload.userId}, (err, doc) => {
       if (err) {
-        console.log(err)
-        res.send({code: 700, msg: '查询出错：' + err})
+        res.send({code: 700, msg: '查询出错：' + err, success: false})
       } else {
-        res.send({code: 200, msg: 'success', result: doc})
+        res.send({code: 200, result: doc, success: true})
       }
     })
   })
@@ -48,10 +47,9 @@ router.post('/userSearch', (req, res) => {
   }
   User.find(query, (err, doc) => {
     if (err) {
-      console.log(err)
-      res.send({code: 700, msg: '查询出错：' + err})
+      res.send({code: 700, msg: '查询出错：' + err, success: false})
     } else {
-      res.send({code: 200, msg: 'success', result: doc})
+      res.send({code: 200, result: doc, success: true})
     }
   })
 })
@@ -61,9 +59,9 @@ router.get('/getChatNow', (req, res) => {
     User.findById({'_id': payload.userId}, (err, doc) => {
       if (err) {
         console.log(err)
-        res.send({code: 700, msg: '查询出错：' + err})
+        res.send({code: 700, msg: '查询出错：' + err, success: false})
       } else {
-        res.send({code: 200, msg: 'success', result: doc.chatNow})
+        res.send({code: 200, result: doc.chatNow, success: true})
       }
     })
   })
@@ -74,9 +72,9 @@ router.post('/addChatNow', (req, res) => {
     User.update({'_id': payload.userId}, {'$addToSet': {'chatNow': req.body.user}}, (err, doc) => {
       if (err) {
         console.log(err)
-        res.send({code: 700, msg: '查询出错：' + err})
+        res.send({code: 700, msg: '查询出错：' + err, success: false})
       } else {
-        res.send({code: 200, msg: 'success'})
+        res.send({code: 200, result: doc, success: true})
       }
     })
     // res.send({code: 404, msg: '无此数据'})
@@ -88,9 +86,9 @@ router.get('/getFriends', (req, res) => {
     User.findById({'_id': payload.userId}, (err, doc) => {
       if (err) {
         console.log(err)
-        res.send({code: 700, msg: '查询出错：' + err})
+        res.send({code: 700, msg: '查询出错：' + err, success: false})
       } else {
-        res.send({code: 200, msg: 'success', result: doc.friends})
+        res.send({code: 200, result: doc.friends, success: true})
       }
     })
   })
@@ -101,9 +99,9 @@ router.post('/newFriend', (req, res) => {
     User.update({'_id': payload.userId}, {'$addToSet': {'friends': req.body.user}}, (err, doc) => {
       if (err) {
         console.log(err)
-        res.send({code: 700, msg: '查询出错：' + err})
+        res.send({code: 700, msg: '查询出错：' + err, success: false})
       } else {
-        res.send({code: 200, msg: 'success', result: doc.friends})
+        res.send({code: 200, result: doc.friends, success: true})
       }
     })
   })
@@ -114,9 +112,9 @@ router.get('/getGroups', (req, res) => {
     User.findById({'_id': payload.userId}, (err, doc) => {
       if (err) {
         console.log(err)
-        res.send({code: 700, msg: '查询出错：' + err})
+        res.send({code: 700, msg: '查询出错：' + err, success: false})
       } else {
-        res.send({code: 200, msg: 'success', result: doc.groups})
+        res.send({code: 200, result: doc.groups, success: true})
       }
     })
   })
@@ -134,14 +132,14 @@ router.post('/newGroup', (req, res) => {
       const newGroup = doc
       if (err) {
         console.log(err)
-        res.send({code: 700, msg: '保存出错：' + err})
+        res.send({code: 700, msg: '保存出错：' + err, success: false})
       } else {
         User.update({'_id': payload.userId}, {'$addToSet': {'groups': theGroup}}, (err, doc) => {
           if (err) {
             console.log(err)
-            res.send({code: 700, msg: '查询出错：' + err})
+            res.send({code: 700, msg: '查询出错：' + err, success: false})
           } else {
-            res.send({code: 200, msg: 'success', result: newGroup})
+            res.send({code: 200, result: newGroup, success: true})
           }
         })
       }
@@ -154,9 +152,9 @@ router.post('/setUserInfo', (req, res) => {
     User.update({'_id': payload.userId}, {'$set': {'nickname': req.body.nickname, 'email': req.body.email, 'introduce': req.body.introduce}}, (err, doc) => {
       if (err) {
         console.log(err)
-        res.send({code: 700, msg: '查询出错：' + err})
+        res.send({code: 700, msg: '查询出错：' + err, success: false})
       } else {
-        res.send({code: 200, msg: 'success'})
+        res.send({code: 200, result: doc, success: true})
       }
     })
   })
@@ -170,7 +168,7 @@ router.post('/setUserPassword', (req, res) => {
           console.log(err)
           break
         case !doc:
-          res.send({code: 0, msg: '查询失败'})
+          res.send({code: 0, msg: '查询失败', success: false})
           break
         case doc.password !== req.body.oldPassword:
           res.send({code: 422, msg: '原密码输入错误', success: false})
@@ -178,14 +176,14 @@ router.post('/setUserPassword', (req, res) => {
         case doc.password === req.body.oldPassword:
           User.update({_id: payload.userId}, {'$set': {'password': req.body.newPassword}}, (err, doc) => {
             if (err) {
-              res.send({code: 700, msg: '更改出错：' + err})
+              res.send({code: 700, msg: '更改出错：' + err, success: false})
             } else {
-              res.send({code: 200, msg: 'success'})
+              res.send({code: 200, result: doc, success: true})
             }
           })
           break
         default:
-          res.send({code: 3, msg: '未知错误'})
+          res.send({code: 3, msg: '未知错误', success: false})
       }
     })
   })

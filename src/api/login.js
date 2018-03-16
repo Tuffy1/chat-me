@@ -5,5 +5,10 @@ export default form => {
     username: form.username,
     password: form.password
   })
-  .then(result => Promise.resolve(), msg => Promise.reject(msg))
+  .then(res =>{
+    if (res.data.success) {
+      Promise.resolve(res.data.result)
+    }
+    Promise.reject(msg)
+  }, () => Promise.reject('无法连接服务器'))
 }

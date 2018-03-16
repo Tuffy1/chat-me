@@ -18,10 +18,10 @@ router.post('/auth', (req, res) => {
         console.log(err)
         break
       case !doc:
-        res.send({code: 0, msg: '账号不存在'})
+        res.send({code: 0, msg: '账号不存在', success: false})
         break
       case doc.password !== req.body.password:
-        res.send({code: 422, msg: '密码错误'})
+        res.send({code: 422, msg: '密码错误', success: false})
         break
       case doc.password === req.body.password:
         const uuid = doc._id
@@ -43,10 +43,10 @@ router.post('/auth', (req, res) => {
           }
         })
         res.setHeader('Set-Cookie', serializeCookie('token', token))
-        res.send({code: 200, msg: '登陆成功', token: token})
+        res.send({code: 200, result: '登陆成功', token: token, success: true})
         break
       default:
-        res.send({code: 3, msg: '未知错误'})
+        res.send({code: 3, msg: '未知错误', success: false})
     }
   })
 })
@@ -58,7 +58,7 @@ router.post('/auth/re', (req, res) => {
     console.log(payload.userId)
     Auth.findOne({user: payload.userId}, (err, doc) => {
       if (err) {
-        res.send({code: 700, msg: '查询出错：' + err})
+        res.send({code: 700, msg: '查询出错：' + err, success: false})
       } else if (!doc) {
         const uuid = payload.userId
         const auth = new Auth({
@@ -69,7 +69,7 @@ router.post('/auth/re', (req, res) => {
       } else if (doc) {
         Auth.update({'user': payload.userId}, {'$addToSet': {'clients': socketId}}, err => console.log(err))
       } else {
-        res.send({code: 3, msg: '未知错误'})
+        res.send({code: 3, msg: '未知错误', success: false})
       }
     })
   })
