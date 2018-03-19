@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-export default () => {
-  return axios.get('/api/user/getChatNow')
+export default (groupId) => {
+  return axios.get(`/api/message/getGroupMessage?groupId=${groupId}`)
   .then(res => {
     if (res.data.success) {
       return Promise.resolve(res.data.result)

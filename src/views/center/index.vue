@@ -47,6 +47,11 @@ export default {
   computed: {
     ...mapGetters(['loginState'])
   },
+  // watch: {
+  //   $route () {
+  //     this.init()
+  //   }
+  // },
   created () {
     this.init()
   },
@@ -64,7 +69,11 @@ export default {
       this.$store.dispatch('getFriends')
       .then(() => {}, msg => this.$Message.warning(msg))
       this.$store.dispatch('getGroups')
-      .then(() => {}, msg => this.$Message.warning(msg))
+      .then((result) => {
+        // for (const group of result) {
+        //   this.$socket.emit('joinroom', group._id.toString())
+        // }
+      }, msg => this.$Message.warning(msg))
       this.$store.dispatch('getUserMessage')
       .then(() => {}, msg => this.$Message.warning(msg))
     },

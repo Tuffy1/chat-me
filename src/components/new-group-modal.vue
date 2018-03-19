@@ -23,7 +23,7 @@
               remote
               :remote-method="remoteMethod"
               :loading="loading">
-              <Option v-for="(user, index) in userList" :value="user" :key="index">{{user.username}}</Option>
+              <Option v-for="(user, index) in userList" :value="user._id" :key="index">{{user.username}}</Option>
             </Select>
           </FormItem>
         </Form>
@@ -32,10 +32,12 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   data () {
     const validateMembersCheck = (rule, value, callback) => {
-      if (value.lenght === 0) {
+      if (value.length === 0) {
         callback(new Error('Please add some members'))
       } else {
         callback()
@@ -71,9 +73,19 @@ export default {
     }
   },
   computed: {
+    ...mapState(['user'])
+  },
+  watch: {
+    $route () {
+      this.form.members = []
+    }
+  },
+  created () {
+    this.form.members = []
   },
   methods: {
     submit () {
+      this.form.members.push(this.user)
       this.$store.dispatch('newGroup', this.form)
       .then(() => {
         this.$Message.success('添加成功')

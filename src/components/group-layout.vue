@@ -31,7 +31,11 @@ export default {
       if (!this.chatNow.some(user => user._id === this.userChatTo._id)) {
         this.$store.dispatch('addChatNow', this.userChatTo)
       }
-      this.$router.push(`/center/chatting/detail?user=${this.userChatTo._id}`)
+      if (this.userChatTo.type === 'group') {
+        this.$router.push(`/center/chatting/groupdetail?user=${this.userChatTo._id}`)
+      } else {
+        this.$router.push(`/center/chatting/userdetail?user=${this.userChatTo._id}`)
+      }
     },
     deleteFriend () {
       this.friends.forEach(friend => {

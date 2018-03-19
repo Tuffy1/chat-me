@@ -44,17 +44,33 @@ export default {
   getUserMessage (state, messages) {
     Vue.set(state, 'userMessage', messages)
   },
+  getGroupMessage (state, messages) {
+    Vue.set(state, 'groupMessage', messages)
+  },
   sendMessage (state, msg) {
     let message = state.userMessage
     message.push(msg)
     Vue.set(state, 'userMessage', message)
   },
-  SOCKET_USER_MESSAGE: (state, msg) => {
-    console.log(`in commit`)
-    console.log(msg)
+  SOCKET_USER_MESSAGE: (state, form) => {
     let message = state.userMessage
-    message = message.concat(msg)
+    message = message.concat(form[0].msg)
     Vue.set(state, 'userMessage', message)
+    let chatNows = state.chatNow
+    if (!chatNows.some(user => user._id === form[0].user._id)) {
+      chatNows = chatNows.concat(form[0].user)
+    }
+    Vue.set(state, 'chatNow', chatNows)
+  },
+  SOCKET_GROUP_MESSAGE: (state, form) => {
+    let message = state.groupMessage
+    message = message.concat(form[0].msg)
+    Vue.set(state, 'groupMessage', message)
+    let chatNows = state.chatNow
+    if (!chatNows.some(group => group._id === form[0].group._id)) {
+      chatNows = chatNows.concat(form[0].group)
+    }
+    Vue.set(state, 'chatNow', chatNows)
   },
   setUserInfo (state, form) {
     let user = state.user

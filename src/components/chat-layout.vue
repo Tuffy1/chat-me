@@ -2,6 +2,12 @@
   <div class="chat-layout">
     <div class="chat-name">
       {{userChatTo.nickname}}
+      <span class="icon-person link-like" @click="showInfo">
+        <Icon type="person"></Icon>
+      </span>
+      <span class="icon-close link-like">
+        <Icon type="close-round"></Icon>
+      </span>
     </div>
     <div class="chat-content" id="chatContent">
       <slot name="chat-content"></slot>
@@ -17,7 +23,8 @@
 export default {
   data () {
     return {
-      message: ''
+      message: '',
+      userInfo: ''
     }
   },
   props: ['userChatTo', 'userMessage'],
@@ -36,10 +43,17 @@ export default {
   //   })
   // },
   methods: {
+    showInfo () {
+      this.$store.dispatch('showInfo', this.userChatTo)
+      .then((result) => {
+        this.userInfo = result
+      }, msg => this.$Message.warning(msg))
+    },
     onSubmit () {
       this.$store.dispatch('sendMessage', {
         chatTo: this.userChatTo._id,
-        content: this.message
+        content: this.message,
+        type: this.userChatTo.type
       })
       .then(() => {
         this.message = ''
@@ -64,6 +78,15 @@ export default {
   text-align: left;
   padding: 14px 15px;
   font-size: 16px;
+  position: relative;
+}
+.chat-layout .icon-person {
+  position: absolute;
+  right: 55px;
+}
+.chat-layout .icon-close {
+  position: absolute;
+  right: 25px;
 }
 .chat-layout .chat-content {
   padding: 10px 10px;

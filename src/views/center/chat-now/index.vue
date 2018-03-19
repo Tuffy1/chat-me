@@ -4,7 +4,7 @@
       <template slot="item-list">
         <side-bar-inner-item  v-for="user in chatNow"
                               :key="user._id"
-                              :goto="`/center/chatting/detail?user=${user._id}`">
+                              :goto=route(user)>
           <user-item :user="user"></user-item>
         </side-bar-inner-item>
       </template>
@@ -23,6 +23,15 @@ import userItem from '../../../components/user-item'
 export default {
   computed: {
     ...mapState(['chatNow'])
+  },
+  methods: {
+    route (user) {
+      if (user.type === 'group') {
+        return `/center/chatting/groupdetail?user=${user._id}`
+      } else {
+        return `/center/chatting/userdetail?user=${user._id}`
+      }
+    }
   },
   components: {
     sideBarInner,

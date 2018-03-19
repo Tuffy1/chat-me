@@ -41,6 +41,7 @@ export default {
 .side-bar-inner {
   width: 171px;
   height: 500px;
+  overflow-y: scroll;
   border-right: 1px solid rgb(185, 182, 182);
 }
 .side-bar-inner .search {

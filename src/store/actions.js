@@ -11,6 +11,8 @@ import newFriend from '../api/new-friend'
 import getGroups from '../api/get-groups'
 import newGroup from '../api/new-group'
 import getUserMessage from '../api/get-user-message'
+import getGroupMessage from '../api/get-group-message'
+import showInfo from '../api/show-info'
 import sendMessage from '../api/send-message'
 import setUserInfo from '../api/set-user-info'
 import setUserPassword from '../api/set-user-password'
@@ -31,14 +33,13 @@ export default {
     return register(form)
     .then(result => {
       commit('loginInit')
-      Promise.resolve(result)
+      return Promise.resolve(result)
     }, msg => Promise.reject(msg))
   },
   login: ({commit}, form) => {
-    return login(form)
-    .then(result => {
+    return login(form).then(result => {
       commit('loginInit')
-      Promise.resolve()
+      return Promise.resolve(result)
     }, msg => Promise.reject(msg))
   },
   userSearch: (context, form) => {
@@ -61,7 +62,7 @@ export default {
     return addChatNow(userChatTo)
     .then(() => {
       commit('addChatNow', userChatTo)
-      Promise.resolve()
+      return Promise.resolve()
     }, msg => Promise.reject(msg))
   },
   getFriends: ({commit}, context) => {
@@ -88,6 +89,7 @@ export default {
     return getGroups()
     .then(result => {
       commit('setGroups', result)
+      return Promise.resolve(result)
     }, msg => Promise.reject(msg))
   },
   newGroup: ({commit}, form) => {
@@ -105,15 +107,26 @@ export default {
     return getUserMessage()
     .then((result) => {
       commit('getUserMessage', result)
-      Promise.resolve(result)
+      return Promise.resolve(result)
+    }, msg => Promise.reject(msg))
+  },
+  getGroupMessage: ({commit}, groupId) => {
+    return getGroupMessage(groupId)
+    .then((result) => {
+      commit('getGroupMessage', result)
+      return Promise.resolve(result)
     }, msg => Promise.reject(msg))
   },
   sendMessage: ({commit}, form) => {
     return sendMessage(form)
     .then((result) => {
       commit('sendMessage', result)
-      Promise.resolve(result)
+      return Promise.resolve(result)
     }, msg => Promise.reject(msg))
+  },
+  showInfo: (context, form) => {
+    return showInfo(form)
+    .then((result) => Promise.resolve(result), msg => Promise.reject(msg))
   },
   setUserInfo: ({commit}, form) => {
     return setUserInfo(form)

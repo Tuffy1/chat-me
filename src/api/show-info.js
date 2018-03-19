@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-export default () => {
-  return axios.get('/api/user/getChatNow')
+export default form => {
+  return axios.get(`/api/user/showInfo?username=${form.username}`)
   .then(res => {
     if (res.data.success) {
       return Promise.resolve(res.data.result)

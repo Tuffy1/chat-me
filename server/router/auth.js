@@ -25,18 +25,22 @@ router.post('/auth', (req, res) => {
         break
       case doc.password === req.body.password:
         const uuid = doc._id
+        const groups = doc.groups
         const token = jwt.encode({userId: uuid, expires: Date.now() + (1000 * 60 * 60 * 24 * 7)}, secret)
         const socketId = parseCookie(req.headers.cookie).io
         Auth.findOne({user: uuid}, (err, doc) => {
           if (err) {
             console.log(err)
+          } else {
+            for (const group of groups) {
+              global.socket.join(group._id)
+            }
           }
           if (!doc) {
             const auth = new Auth({
               user: uuid,
               clients: [socketId]
             })
-            console.log(`login:${socketId}`)
             auth.save((err) => console.log(err))
           } else {
             Auth.update({'user': uuid}, {'$push': {'clients': socketId}}, err => console.log(err))
@@ -52,14 +56,22 @@ router.post('/auth', (req, res) => {
 })
 
 router.post('/auth/re', (req, res) => {
-  console.log('auth/re')
   isLogin(req, res, (payload) => {
     const socketId = parseCookie(req.headers.cookie).io
     console.log(payload.userId)
+    console.log('auth/re')
     Auth.findOne({user: payload.userId}, (err, doc) => {
       if (err) {
         res.send({code: 700, msg: '查询出错：' + err, success: false})
-      } else if (!doc) {
+      } else {
+        User.findOne({'_id': payload.userId}, (err, doc) => {
+          if (err) { console.log(err) }
+          for (const group of doc.groups) {
+            global.socket.join(group._id)
+          }
+        })
+      }
+      if (!doc) {
         const uuid = payload.userId
         const auth = new Auth({
           user: uuid,

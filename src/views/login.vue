@@ -72,7 +72,7 @@ export default {
       .then(() => {
         this.$store.commit('loginInit')
         this.$router.push('/center')
-      }, (msg) => Promise.reject(msg))
+      }, (msg) => this.$Message.warning(msg))
     }
   }
 }

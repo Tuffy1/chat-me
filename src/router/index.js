@@ -4,7 +4,8 @@ import Login from '@/views/login'
 import Register from '@/views/register'
 import Center from '@/views/center/index'
 import chatNow from '@/views/center/chat-now/index'
-import chatNowDetail from '@/views/center/chat-now/detail'
+import userChatNowDetail from '@/views/center/chat-now/children/user'
+import groupChatNowDetail from '@/views/center/chat-now/children/group'
 import groupChat from '@/views/center/group-chat/index'
 import userChatDetail from '@/views/center/group-chat/children/user'
 import groupChatDetail from '@/views/center/group-chat/children/group'
@@ -43,9 +44,14 @@ export default new Router({
           component: chatNow,
           children: [
             {
-              path: '/center/chatting/detail',
-              name: 'ChattingDetail',
-              component: chatNowDetail
+              path: '/center/chatting/userdetail',
+              name: 'userChattingDetail',
+              component: userChatNowDetail
+            },
+            {
+              path: '/center/chatting/groupdetail',
+              name: 'groupChattingDetail',
+              component: groupChatNowDetail
             }
           ]
         },

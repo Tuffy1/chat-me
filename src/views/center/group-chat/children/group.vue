@@ -19,7 +19,9 @@ export default {
   data () {
     return {
       userId: '',
-      groupChatTo: {}
+      groupChatTo: {
+        type: 'group'
+      }
     }
   },
   computed: {
@@ -39,6 +41,7 @@ export default {
       this.groups.forEach(group => {
         if (group._id.toString() === this.groupId) {
           this.groupChatTo = group
+          this.groupChatTo.type = 'group'
         }
       })
     }

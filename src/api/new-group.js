@@ -4,10 +4,10 @@ export default form => {
   return axios.post('/api/user/newGroup', {
     group: form
   })
-  .then(res =>{
+  .then(res => {
     if (res.data.success) {
-      Promise.resolve(res.data.result)
+      return Promise.resolve(res.data.result)
     }
-    Promise.reject(msg)
-  }, () => Promise.reject('无法连接服务器'))
+    return Promise.reject(res.data.msg)
+  }, () => Promise.reject(new Error('无法连接服务器')))
 }

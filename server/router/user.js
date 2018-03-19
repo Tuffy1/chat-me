@@ -134,14 +134,33 @@ router.post('/newGroup', (req, res) => {
         console.log(err)
         res.send({code: 700, msg: '保存出错：' + err, success: false})
       } else {
-        User.update({'_id': payload.userId}, {'$addToSet': {'groups': theGroup}}, (err, doc) => {
-          if (err) {
-            console.log(err)
-            res.send({code: 700, msg: '查询出错：' + err, success: false})
-          } else {
-            res.send({code: 200, result: newGroup, success: true})
-          }
+        req.body.group.members.forEach(member => {
+          User.update({'_id': member}, {'$addToSet': {'groups': theGroup}}, (err, doc) => {
+            if (err) {
+              console.log(err)
+              // res.send({code: 700, msg: '查询出错：' + err, success: false})
+            }
+          })
         })
+        res.send({code: 200, result: newGroup, success: true})
+      }
+    })
+  })
+})
+
+router.get('/showInfo', (req, res) => {
+  isLogin(req, res, (payload) => {
+    User.findOne({'username': req.query.username}, (err, doc) => {
+      if (err) {
+        res.send({code: 700, msg: '查询出错：' + err, success: false})
+      } else {
+        const result = {
+          nickname: doc.nickname,
+          username: doc.username,
+          creatAt: doc.creatAt,
+          introduce: doc.introduce
+        }
+        res.send({code: 200, result: result, success: true})
       }
     })
   })

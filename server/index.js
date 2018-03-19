@@ -29,8 +29,12 @@ http.listen(8088, () => {
 })
 
 io.on('connection', socket => {
+  global.socket = socket
   socket.on('chat message', (msg) => {
     console.log(msg)
+  })
+  socket.on('joinroom', (groupId) => {
+    socket.join(groupId)
   })
   socket.on('disconnect', () => {
     console.log('auth/del')
@@ -54,6 +58,7 @@ io.on('connection', socket => {
   global.io = io
 })
 
+mongoose.Promise = global.Promise
 mongoose.connect('mongodb://localhost/chat')
 const db = mongoose.connection
 db.once('error', () => console.log('mongo connect error'))

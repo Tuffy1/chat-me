@@ -19,7 +19,9 @@ export default {
   data () {
     return {
       userId: '',
-      userChatTo: {}
+      userChatTo: {
+        type: 'user'
+      }
     }
   },
   computed: {
@@ -39,6 +41,7 @@ export default {
       this.friends.forEach(friend => {
         if (friend._id.toString() === this.userId) {
           this.userChatTo = friend
+          this.userChatTo.type = 'user'
         }
       })
     }
