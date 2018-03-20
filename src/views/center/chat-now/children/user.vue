@@ -22,7 +22,9 @@ export default {
   data () {
     return {
       userId: '',
-      userChatTo: {}
+      userChatTo: {
+        type: 'user'
+      }
     }
   },
   computed: {

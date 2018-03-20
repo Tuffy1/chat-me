@@ -20,6 +20,13 @@ export default {
     users.shift(user)
     Vue.set(state, 'chatNow', users)
   },
+  removeChat (state, userRemove) {
+    state.chatNow.forEach((user, index) => {
+      if (user._id === userRemove._id) {
+        state.chatNow.splice(index, 1)
+      }
+    })
+  },
   setFriends (state, users) {
     Vue.set(state, 'friends', users)
   },

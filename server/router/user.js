@@ -81,6 +81,20 @@ router.post('/addChatNow', (req, res) => {
   })
 })
 
+router.post('/removeChat', (req, res) => {
+  // isLogin(req, res, (payload) => {
+  //   User.update({'_id': payload.userId}, {'$pull': {'chatNow': {'_id': req.body.user._id}}}, (err, doc) => {
+  //     if (err) {
+  //       console.log(err)
+  //       res.send({code: 700, msg: '查询出错：' + err, success: false})
+  //     } else {
+  //       res.send({code: 200, result: doc, success: true})
+  //     }
+  //   })
+  // })
+  res.send({code: 200, result: 'success', success: true})
+})
+
 router.get('/getFriends', (req, res) => {
   isLogin(req, res, (payload) => {
     User.findById({'_id': payload.userId}, (err, doc) => {

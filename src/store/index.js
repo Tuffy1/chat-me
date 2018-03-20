@@ -13,7 +13,13 @@ export default new Vuex.Store({
     user: {},
     friends: [],
     groups: [],
-    chatNow: [],
+    chatNow: [
+      {
+        nickname: 'tuffy',
+        username: 'tuffy',
+        introduce: 'i am tuffy'
+      }
+    ],
     userMessage: [],
     groupMessage: []
   },

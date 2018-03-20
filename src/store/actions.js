@@ -6,6 +6,7 @@ import userSearch from '../api/user-search'
 import getUserInfo from '../api/get-user-info'
 import getChatNow from '../api/get-chat-now'
 import addChatNow from '../api/add-chat-now'
+import removeChat from '../api/remove-chat'
 import getFriends from '../api/get-friends'
 import newFriend from '../api/new-friend'
 import getGroups from '../api/get-groups'
@@ -62,6 +63,13 @@ export default {
     return addChatNow(userChatTo)
     .then(() => {
       commit('addChatNow', userChatTo)
+      return Promise.resolve()
+    }, msg => Promise.reject(msg))
+  },
+  removeChat: ({commit}, userRemove) => {
+    return removeChat(userRemove)
+    .then(() => {
+      commit('removeChat', userRemove)
       return Promise.resolve()
     }, msg => Promise.reject(msg))
   },
