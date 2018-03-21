@@ -101,7 +101,8 @@ router.post('/sendMessage', (req, res) => {
                 }
               })
             } else if (!doc) {
-              res.send({code: 3, msg: '找不到用户'})
+              // 用户当前不在线
+              res.send({code: 200, result: msg, success: true})
             }
           })
         }

@@ -82,17 +82,16 @@ router.post('/addChatNow', (req, res) => {
 })
 
 router.post('/removeChat', (req, res) => {
-  // isLogin(req, res, (payload) => {
-  //   User.update({'_id': payload.userId}, {'$pull': {'chatNow': {'_id': req.body.user._id}}}, (err, doc) => {
-  //     if (err) {
-  //       console.log(err)
-  //       res.send({code: 700, msg: '查询出错：' + err, success: false})
-  //     } else {
-  //       res.send({code: 200, result: doc, success: true})
-  //     }
-  //   })
-  // })
-  res.send({code: 200, result: 'success', success: true})
+  isLogin(req, res, (payload) => {
+    User.update({'_id': payload.userId}, {'$pull': {'chatNow': {'username': req.body.user.username}}}, (err, doc) => {
+      if (err) {
+        console.log(err)
+        res.send({code: 700, msg: '查询出错：' + err, success: false})
+      } else {
+        res.send({code: 200, result: doc, success: true})
+      }
+    })
+  })
 })
 
 router.get('/getFriends', (req, res) => {
@@ -123,7 +122,7 @@ router.post('/newFriend', (req, res) => {
 
 router.post('/deleteFriend', (req, res) => {
   // isLogin(req, res, (payload) => {
-  //   User.update({'_id': payload.userId}, {'$pull': {'friends': {'_id': req.body.user._id}, {'chatNow': {'_id': req.body.user._id}}}}, (err, doc) => {
+  //   User.update({'_id': payload.userId}, {'$pull': {'$or': [{'friends': {'_id': req.body.user._id}, {'chatNow': {'username': req.body.user._id}}}]}}, (err, doc) => {
   //     if (err) {
   //       console.log(err)
   //       res.send({code: 700, msg: '查询出错：' + err, success: false})
@@ -132,7 +131,6 @@ router.post('/deleteFriend', (req, res) => {
   //     }
   //   })
   // })
-  res.send({code: 200, result: 'success', success: true})
 })
 
 router.get('/getGroups', (req, res) => {

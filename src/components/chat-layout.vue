@@ -40,11 +40,11 @@
       <div class="group-member">
         <p>members:</p>
         <div class="member-list">
-          <div class="member-item">
+          <div class="member-item" v-for="member in userChatTo.members" :key="member._id">
             <div class="img-div" @click="showMemberInfo()">
               <img src="../assets/imgs/avatar.jpg" alt="">      
             </div>
-            <span>tuffy</span>
+            <span>{{member.nickname}}</span>
           </div>
         </div>
       </div>
@@ -64,16 +64,10 @@ export default {
       message: '',
       userInfo: {},
       modalShow: false,
-      userChatTo: {
-        nickname: 'tuffy',
-        username: 'tuffy',
-        introduce: 'i am tuffy',
-        type: 'group'
-      },
       groupInfoShow: false
     }
   },
-  // props: ['userChatTo'],
+  props: ['userChatTo'],
   // watch: {
   //   userMessage () {
   //     this.$nextTick(() => {
@@ -96,6 +90,7 @@ export default {
       //   this.modalShow = true
       // }, msg => this.$Message.warning(msg))
       if (this.userChatTo.type === 'group') {
+        console.log(this.userChatTo.members)
         this.groupInfoShow = true
       } else {
         this.userInfo = this.userChatTo
