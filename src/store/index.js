@@ -11,10 +11,25 @@ export default new Vuex.Store({
   state: {
     loginState: false,
     user: {},
-    friends: [],
-    groups: [],
+    friends: [
+      {
+        _id: '123',
+        nickname: 'tuffy',
+        username: 'tuffy',
+        introduce: 'i am tuffy'
+      }
+    ],
+    groups: [
+      {
+        _id: '123',
+        nickname: 'tuffy',
+        username: 'tuffy',
+        introduce: 'i am tuffy'
+      }
+    ],
     chatNow: [
       {
+        _id: '123',
         nickname: 'tuffy',
         username: 'tuffy',
         introduce: 'i am tuffy'

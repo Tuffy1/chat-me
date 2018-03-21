@@ -16,8 +16,8 @@
       <textarea name="" id="" v-model="message"></textarea>
       <Button type="success" size="small" class="send-btn" @click="onSubmit()">发送</Button>
     </div>
-    <div class="show-group-info">
-      <span class="icon-cancel link-like">
+    <div class="show-group-info" :class="{ 'group-info-show': groupInfoShow }">
+      <span class="icon-cancel link-like" @click="closeGroupModal">
         <Icon type="close"></Icon>
       </span>
       <div class="group-info">
@@ -41,37 +41,7 @@
         <p>members:</p>
         <div class="member-list">
           <div class="member-item">
-            <div class="img-div">
-              <img src="../assets/imgs/avatar.jpg" alt="">      
-            </div>
-            <span>tuffy</span>
-          </div>
-          <div class="member-item">
-            <div class="img-div">
-              <img src="../assets/imgs/avatar.jpg" alt="">      
-            </div>
-            <span>tuffy</span>
-          </div>
-          <div class="member-item">
-            <div class="img-div">
-              <img src="../assets/imgs/avatar.jpg" alt="">      
-            </div>
-            <span>tuffy</span>
-          </div>
-          <div class="member-item">
-            <div class="img-div">
-              <img src="../assets/imgs/avatar.jpg" alt="">      
-            </div>
-            <span>tuffy</span>
-          </div>
-          <div class="member-item">
-            <div class="img-div">
-              <img src="../assets/imgs/avatar.jpg" alt="">      
-            </div>
-            <span>tuffy</span>
-          </div>
-          <div class="member-item">
-            <div class="img-div">
+            <div class="img-div" @click="showMemberInfo()">
               <img src="../assets/imgs/avatar.jpg" alt="">      
             </div>
             <span>tuffy</span>
@@ -92,19 +62,15 @@ export default {
   data () {
     return {
       message: '',
-      userInfo: {
-        nickname: 'tuffy',
-        username: 'tuffy',
-        introduce: 'i am tuffy',
-        type: 'group'
-      },
+      userInfo: {},
       modalShow: false,
       userChatTo: {
         nickname: 'tuffy',
         username: 'tuffy',
         introduce: 'i am tuffy',
         type: 'group'
-      }
+      },
+      groupInfoShow: false
     }
   },
   // props: ['userChatTo'],
@@ -129,7 +95,24 @@ export default {
       //   this.userInfo = result
       //   this.modalShow = true
       // }, msg => this.$Message.warning(msg))
+      if (this.userChatTo.type === 'group') {
+        this.groupInfoShow = true
+      } else {
+        this.userInfo = this.userChatTo
+        this.modalShow = true
+      }
+    },
+    showMemberInfo () {
+      this.userInfo = {
+        nickname: 'tuffy',
+        username: 'tuffy',
+        introduce: 'i am tuffy',
+        type: 'group'
+      }
       this.modalShow = true
+    },
+    closeGroupModal () {
+      this.groupInfoShow = false
     },
     removeChat () {
       this.$store.dispatch('removeChat', this.userChatTo)
@@ -161,6 +144,7 @@ export default {
   width: 577px;
   height: 499px;
   position: relative;
+  overflow: hidden;
 }
 .chat-layout .chat-name {
   width: 100%;
@@ -208,14 +192,19 @@ export default {
   margin-right: 5px;
 }
 .show-group-info {
-  width: 240px;
+  width:240px;
   height: 450px;
+  padding: 20px;
   border: 1px solid #eee;
   position: absolute;
-  right: 0;
+  right: -240px;
   top: 50px;
-  padding: 20px;
   background-color: #eee;
+  overflow: hidden;
+  transition: right 1s;
+  -moz-transition: right 1s; /* Firefox 4 */
+  -webkit-transition: right 1s; /* Safari 和 Chrome */
+  -o-transition: right 1s; /* Opera */
 }
 .show-group-info .icon-cancel {
   position: absolute;
@@ -223,7 +212,6 @@ export default {
 }
 .show-group-info .group-info {
   display: flex;
-  margin-bottom: 20px;
 }
 .show-group-info .group-info .user-info {
   text-align: left;
@@ -260,9 +248,13 @@ export default {
   border-radius: 10px;
   margin-right: 8px;
   margin-bottom: 5px;
+  cursor: pointer;
 }
 .show-group-info .group-member .img-div img {
   width: 35px;
   height: 35px;
+}
+.chat-layout .group-info-show {
+  right: 0;
 }
 </style>

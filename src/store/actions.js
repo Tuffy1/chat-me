@@ -9,8 +9,10 @@ import addChatNow from '../api/add-chat-now'
 import removeChat from '../api/remove-chat'
 import getFriends from '../api/get-friends'
 import newFriend from '../api/new-friend'
+import deleteFriend from '../api/delete-friend'
 import getGroups from '../api/get-groups'
 import newGroup from '../api/new-group'
+import deleteGroup from '../api/delete-group'
 import getUserMessage from '../api/get-user-message'
 import getGroupMessage from '../api/get-group-message'
 import showInfo from '../api/show-info'
@@ -91,6 +93,16 @@ export default {
     })
     .then(() => {
       commit('newFriend', user)
+      return Promise.resolve()
+    }, msg => Promise.reject(msg))
+  },
+  deleteFriend: ({commit}, user) => {
+    return deleteFriend({
+      _id: user._id
+    })
+    .then(() => {
+      commit('deleteFriend', user)
+      return Promise.resolve()
     }, msg => Promise.reject(msg))
   },
   getGroups: ({commit}, context) => {
@@ -109,6 +121,15 @@ export default {
     })
     .then((result) => {
       commit('newGroup', result)
+    }, msg => Promise.reject(msg))
+  },
+  deleteGroup: ({commit}, group) => {
+    deleteGroup({
+      _id: group._id
+    })
+    .then(() => {
+      commit('deleteGroup', group)
+      return Promise.resolve()
     }, msg => Promise.reject(msg))
   },
   getUserMessage: ({commit}) => {

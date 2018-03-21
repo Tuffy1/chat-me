@@ -36,9 +36,20 @@ export default {
     Vue.set(state, 'friends', users)
   },
   deleteFriend (state, user) {
-    let users = state.friends
-    users.pop(user)
-    Vue.set(state, 'friends', users)
+    let usersFriend = state.friends
+    usersFriend.forEach((friend, index) => {
+      if (friend._id === user._id) {
+        usersFriend.splice(index, 1)
+      }
+    })
+    Vue.set(state, 'friends', usersFriend)
+    let usersChatNow = state.chatNow
+    usersChatNow.forEach((chatNow, index) => {
+      if (chatNow._id === user._id) {
+        usersChatNow.splice(index, 1)
+      }
+    })
+    Vue.set(state, 'chatNow', usersChatNow)
   },
   setGroups (state, groups) {
     Vue.set(state, 'groups', groups)
@@ -47,6 +58,22 @@ export default {
     let list = state.groups
     list.push(group)
     Vue.set(state, 'groups', list)
+  },
+  deleteGroup (state, user) {
+    let usersGroup = state.groups
+    usersGroup.forEach((group, index) => {
+      if (group._id === user._id) {
+        usersGroup.splice(index, 1)
+      }
+    })
+    Vue.set(state, 'groups', usersGroup)
+    let usersChatNow = state.chatNow
+    usersChatNow.forEach((chatNow, index) => {
+      if (chatNow._id === user._id) {
+        usersChatNow.splice(index, 1)
+      }
+    })
+    Vue.set(state, 'chatNow', usersChatNow)
   },
   getUserMessage (state, messages) {
     Vue.set(state, 'userMessage', messages)

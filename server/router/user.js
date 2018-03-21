@@ -121,6 +121,20 @@ router.post('/newFriend', (req, res) => {
   })
 })
 
+router.post('/deleteFriend', (req, res) => {
+  // isLogin(req, res, (payload) => {
+  //   User.update({'_id': payload.userId}, {'$pull': {'friends': {'_id': req.body.user._id}, {'chatNow': {'_id': req.body.user._id}}}}, (err, doc) => {
+  //     if (err) {
+  //       console.log(err)
+  //       res.send({code: 700, msg: '查询出错：' + err, success: false})
+  //     } else {
+  //       res.send({code: 200, result: doc, success: true})
+  //     }
+  //   })
+  // })
+  res.send({code: 200, result: 'success', success: true})
+})
+
 router.get('/getGroups', (req, res) => {
   isLogin(req, res, (payload) => {
     User.findById({'_id': payload.userId}, (err, doc) => {
@@ -160,6 +174,20 @@ router.post('/newGroup', (req, res) => {
       }
     })
   })
+})
+
+router.post('/deleteGroup', (req, res) => {
+  // isLogin(req, res, (payload) => {
+  //   User.update({'_id': payload.userId}, {'$pull': {'groups': {'_id': req.body.group._id}, {'chatNow': {'_id': req.body.group._id}}}}, (err, doc) => {
+  //     if (err) {
+  //       console.log(err)
+  //       res.send({code: 700, msg: '查询出错：' + err, success: false})
+  //     } else {
+  //       res.send({code: 200, result: doc, success: true})
+  //     }
+  //   })
+  // })
+  res.send({code: 200, result: 'success', success: true})
 })
 
 router.get('/showInfo', (req, res) => {

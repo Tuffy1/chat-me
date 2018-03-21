@@ -13,7 +13,8 @@
     </div>  
     <div class="btn-wrap">
       <Button type="success" @click="joinChat">聊天</Button>
-      <Button type="error" @click="deleteFriend">删除</Button>
+      <Button type="error" @click="deleteGroup" v-if="this.userChatTo.type === 'group'">退出群聊</Button>
+      <Button type="error" @click="deleteFriend" v-else>删除</Button>
     </div>
   </div>
 </template>
@@ -30,24 +31,22 @@ export default {
     joinChat () {
       if (!this.chatNow.some(user => user._id === this.userChatTo._id)) {
         this.$store.dispatch('addChatNow', this.userChatTo)
-      }
-      if (this.userChatTo.type === 'group') {
-        this.$router.push(`/center/chatting/groupdetail?user=${this.userChatTo._id}`)
-      } else {
-        this.$router.push(`/center/chatting/userdetail?user=${this.userChatTo._id}`)
+        .then(() => {
+          if (this.userChatTo.type === 'group') {
+            this.$router.push(`/center/chatting/groupdetail?user=${this.userChatTo._id}`)
+          } else {
+            this.$router.push(`/center/chatting/userdetail?user=${this.userChatTo._id}`)
+          }
+        }, msg => this.$Message.warning(msg))
       }
     },
     deleteFriend () {
-      this.friends.forEach(friend => {
-        if (friend._id === this.userChatTo._id) {
-          this.$store.commit('deleteFriend', this.userChatTo)
-        }
-      })
-      this.chatNow.forEach(user => {
-        if (user._id === this.userChatTo._id) {
-          this.$store.commit('deleteChatNow', this.userChatTo)
-        }
-      })
+      this.$store.dispatch('deleteFriend', this.userChatTo)
+      .then(() => this.$Message.success('删除成功'), msg => this.$Message.warning(msg))
+    },
+    deleteGroup () {
+      this.$store.dispatch('deleteGroup', this.userChatTo)
+      .then(() => this.$Message.success('退出成功'), msg => this.$Message.warning(msg))
     }
   }
 }
