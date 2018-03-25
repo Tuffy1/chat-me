@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 // const jwt = require('jwt-simple')
+const mongoose = require('mongoose')
 const User = require('../models/user')
 const Group = require('../models/group')
 // const Auth = require('../models/auth')
@@ -11,20 +12,28 @@ const isLogin = require('../util/isLogin')
 
 // const parseCookie = require('../util/parseCookie')
 // const secret = 'Joyee'
+const bcrypt = require('bcrypt')
+const saltRounds = 10
 
 router.post('/register', (req, res) => {
-  const theUser = new User({
-    nickname: req.body.nickname,
-    username: req.body.username,
-    password: req.body.password,
-    email: req.body.email,
-    introduce: ''
-  })
-  theUser.save((err) => {
+  bcrypt.hash(req.body.password, saltRounds, (err, hash) => {
     if (err) {
-      res.send({code: 200, msg: err, success: false})
+      console.log(err)
     } else {
-      res.send({code: 200, result: '注册成功', success: true})
+      const theUser = new User({
+        nickname: req.body.nickname,
+        username: req.body.username,
+        password: hash,
+        email: req.body.email,
+        introduce: ''
+      })
+      theUser.save((err) => {
+        if (err) {
+          res.send({code: 200, msg: err, success: false})
+        } else {
+          res.send({code: 200, result: '注册成功', success: true})
+        }
+      })
     }
   })
 })
@@ -121,16 +130,23 @@ router.post('/newFriend', (req, res) => {
 })
 
 router.post('/deleteFriend', (req, res) => {
-  // isLogin(req, res, (payload) => {
-  //   User.update({'_id': payload.userId}, {'$pull': {'$or': [{'friends': {'_id': req.body.user._id}, {'chatNow': {'username': req.body.user._id}}}]}}, (err, doc) => {
-  //     if (err) {
-  //       console.log(err)
-  //       res.send({code: 700, msg: '查询出错：' + err, success: false})
-  //     } else {
-  //       res.send({code: 200, result: doc, success: true})
-  //     }
-  //   })
-  // })
+  isLogin(req, res, (payload) => {
+    User.update({'_id': payload.userId}, {'$pull': {'friends': {'_id': req.body.user._id}}}, (err, doc) => {
+      if (err) {
+        console.log(err)
+        res.send({code: 700, msg: '查询出错：' + err, success: false})
+      } else {
+        User.update({'_id': payload.userId}, {'$pull': {'chatNow': {'_id': req.body.user._id}}}, (err, doc) => {
+          if (err) {
+            console.log(err)
+            res.send({code: 700, msg: '查询出错：' + err, success: false})
+          } else {
+            res.send({code: 200, result: doc, success: true})
+          }
+        })
+      }
+    })
+  })
 })
 
 router.get('/getGroups', (req, res) => {
@@ -175,17 +191,23 @@ router.post('/newGroup', (req, res) => {
 })
 
 router.post('/deleteGroup', (req, res) => {
-  // isLogin(req, res, (payload) => {
-  //   User.update({'_id': payload.userId}, {'$pull': {'groups': {'_id': req.body.group._id}, {'chatNow': {'_id': req.body.group._id}}}}, (err, doc) => {
-  //     if (err) {
-  //       console.log(err)
-  //       res.send({code: 700, msg: '查询出错：' + err, success: false})
-  //     } else {
-  //       res.send({code: 200, result: doc, success: true})
-  //     }
-  //   })
-  // })
-  res.send({code: 200, result: 'success', success: true})
+  isLogin(req, res, (payload) => {
+    User.update({'_id': payload.userId}, {'$pull': {'groups': {'_id': mongoose.mongo.ObjectId(req.body.group._id)}}}, (err, doc) => {
+      if (err) {
+        console.log(err)
+        res.send({code: 700, msg: '查询出错：' + err, success: false})
+      } else {
+        User.update({'_id': payload.userId}, {'$pull': {'chatNow': {'_id': req.body.group._id}}}, (err, doc) => {
+          if (err) {
+            console.log(err)
+            res.send({code: 700, msg: '查询出错：' + err, success: false})
+          } else {
+            res.send({code: 200, result: doc, success: true})
+          }
+        })
+      }
+    })
+  })
 })
 
 router.get('/showInfo', (req, res) => {

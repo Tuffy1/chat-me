@@ -12,9 +12,25 @@
     <div class="chat-content" id="chatContent">
       <slot name="chat-content"></slot>
     </div>
+    <div class="emojis" id="emojis" v-show="isShoweMojis">
+      <ul>
+        <li v-for="(item, index) of emojis"
+            :key="index"
+            @click="insertText(item)">{{item}}</li>
+      </ul>
+    </div>
     <div class="chat-text">
-      <textarea name="" id="" v-model="message"></textarea>
-      <Button type="success" size="small" class="send-btn" @click="onSubmit()">发送</Button>
+      <div class="other-fun">
+        <!-- <Button size="small" @click="showEmojis" id="emojis-btn">表情</Button> -->
+        <i class="fun-emojis" @click="showEmojis" id="emojis-btn">
+          <Icon type="happy-outline"></Icon>
+        </i>
+      </div>
+      <Upload action="/api/message/uploadImg" :data="uploadData">
+        <Button type="ghost">Upload files</Button>
+      </Upload>
+      <textarea name="" id="" v-model="message" @keyup.ctrl.enter="onSubmit"></textarea>    
+      <!-- <Button type="success" size="small" class="send-btn" @click="onSubmit()">发送</Button> -->
     </div>
     <div class="show-group-info" :class="{ 'group-info-show': groupInfoShow }">
       <span class="icon-cancel link-like" @click="closeGroupModal">
@@ -27,14 +43,14 @@
         <div class="user-info">
           <p>nickname:</p>
           <p>nickname:</p>
-          <p>introduce:</p>
           <p>creatAt:</p>
+          <p>introduce:</p>
         </div>
         <div class="user-info">
           <p>{{userChatTo.nickname}}</p>
           <p>{{userChatTo.username}}</p>
+          <p>{{userChatTo.creatAt}}</p>
           <p>{{userChatTo.introduce}}</p>
-          <p>02.05</p>
         </div>
       </div>
       <div class="group-member">
@@ -64,10 +80,16 @@ export default {
       message: '',
       userInfo: {},
       modalShow: false,
-      groupInfoShow: false
+      groupInfoShow: false,
+      isShoweMojis: false,
+      emojis: ['😂', '🙏', '😄', '😏', '😇', '😅', '😌', '😘', '😍', '🤓', '😜', '😎', '😊', '😳', '🙄', '😱', '😒', '😔', '😷', '👿', '🤗', '😩', '😤', '😣', '😰', '😴', '😬', '😭', '👻', '👍', '✌️', '👉', '👀', '🐶', '🐷', '😹', '⚡️', '🔥', '🌈', '🍏', '⚽️', '❤️', '🇨🇳'],
+      uploadData: {
+        from: this.user._id,
+        to: this.userChatTo._id
+      }
     }
   },
-  props: ['userChatTo'],
+  props: ['user', 'userChatTo'],
   // watch: {
   //   userMessage () {
   //     this.$nextTick(() => {
@@ -76,12 +98,23 @@ export default {
   //     })
   //   }
   // },
-  // created() {
-  //   this.$nextTick(() => {
-  //     const container = document.getElementById("chatContent")
-  //     container.scrollTop = container.scrollHeight
-  //   })
-  // },
+  created () {
+    this.$nextTick(() => {
+      const container = document.getElementById('chatContent')
+      container.scrollTop = container.scrollHeight
+    })
+  },
+  mounted () {
+    this.$nextTick(() => {
+      const emojis = document.getElementById('emojis')
+      const emojisbtn = document.getElementById('emojis-btn')
+      document.addEventListener('click', (e) => {
+        if (!emojis.contains(e.target) && !emojisbtn.contains(e.target)) {
+          this.isShoweMojis = false
+        }
+      })
+    })
+  },
   methods: {
     showInfo () {
       // this.$store.dispatch('showInfo', this.userChatTo)
@@ -125,6 +158,14 @@ export default {
       .then(() => {
         this.message = ''
       }, msg => this.$Message.warning(msg))
+    },
+    showEmojis () {
+      this.isShoweMojis = true
+    },
+    insertText (item) {
+      this.isShoweMojis = false
+      this.message = this.message + item
+      console.log(this.message)
     }
   },
   components: {
@@ -161,27 +202,55 @@ export default {
 }
 .chat-layout .chat-content {
   padding: 10px 10px;
-  height: 327px;
+  height: 307px;
   overflow-y: scroll;
 }
+
+.chat-layout .emojis {
+  position: absolute;
+  bottom: 130px;
+  border: 1px solid black;
+}
+.chat-layout .emojis ul {
+  display: flex;
+  flex-wrap: wrap;
+  width: 350px;
+}
+.chat-layout .emojis ul li {
+  padding: 2px 3px;
+  font-size: 2em;
+  cursor: pointer;
+}
+
 .chat-layout .chat-text {
   border-top: 1px solid rgb(185, 182, 182);
   width: 100%;
-  height: 110px;
-  padding-top: 5px;
+  height: 130px;
   position: absolute;
   left: 0;
   bottom: 0;
   overflow: hidden;
   text-align: left;
 }
+.chat-layout .chat-text .other-fun {
+  border-bottom: 1px solid rgb(185, 182, 182);
+}
+.chat-layout .chat-text .other-fun .fun-emojis {
+  cursor: pointer;
+  padding: 0 10px;
+  font-size: 1.2em;
+}
+.chat-layout .chat-text .other-fun botton {
+  height: 10px;
+}
+
 .chat-layout .chat-text textarea {
   width: 587px;
   height: 74px;
   resize: none;
   border: 0;
   outline: none;
-  padding: 0 15px 5px 5px;
+  padding: 5px 15px 5px 5px;
 }
 .chat-layout .chat-text .send-btn {
   margin-right: 5px;

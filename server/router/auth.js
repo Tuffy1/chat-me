@@ -11,6 +11,8 @@ const isLogin = require('../util/isLogin')
 const parseCookie = require('../util/parseCookie')
 const secret = 'Joyee'
 
+const bcrypt = require('bcrypt')
+
 router.post('/auth', (req, res) => {
   User.findOne({username: req.body.username}, (err, doc) => {
     switch (true) {
@@ -20,10 +22,10 @@ router.post('/auth', (req, res) => {
       case !doc:
         res.send({code: 0, msg: '账号不存在', success: false})
         break
-      case doc.password !== req.body.password:
+      case !bcrypt.compareSync(req.body.password, doc.password):
         res.send({code: 422, msg: '密码错误', success: false})
         break
-      case doc.password === req.body.password:
+      case bcrypt.compareSync(req.body.password, doc.password):
         const uuid = doc._id
         const groups = doc.groups
         const token = jwt.encode({userId: uuid, expires: Date.now() + (1000 * 60 * 60 * 24 * 7)}, secret)

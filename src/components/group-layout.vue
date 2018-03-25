@@ -38,6 +38,12 @@ export default {
             this.$router.push(`/center/chatting/userdetail?user=${this.userChatTo._id}`)
           }
         }, msg => this.$Message.warning(msg))
+      } else {
+        if (this.userChatTo.type === 'group') {
+          this.$router.push(`/center/chatting/groupdetail?user=${this.userChatTo._id}`)
+        } else {
+          this.$router.push(`/center/chatting/userdetail?user=${this.userChatTo._id}`)
+        }
       }
     },
     deleteFriend () {
