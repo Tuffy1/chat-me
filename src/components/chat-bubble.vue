@@ -4,13 +4,20 @@
       <img src="../assets/imgs/avatar.jpg" alt="avatar">
     </div>
     <div class="talk-wrap">
-      <div class="talk-bubble">{{content}}</div>
+      <div class="talk-bubble">{{contentTransfer}}</div>
     </div>
   </div>
 </template>
 
 <script>
+import textTransfer from '../assets/js/text-transfer'
+
 export default {
+  computed: {
+    contentTransfer () {
+      return textTransfer(this.content)
+    }
+  },
   props: {
     isMe: {
       type: Boolean,

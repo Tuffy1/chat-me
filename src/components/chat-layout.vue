@@ -26,11 +26,16 @@
           <Icon type="happy-outline"></Icon>
         </i>
       </div>
-      <Upload action="/api/message/uploadImg" :data="uploadData">
+      <Upload action="/api/message/uploadImg"
+              :data="uploadData"
+              :on-success="uploadSuccess">
         <Button type="ghost">Upload files</Button>
       </Upload>
       <textarea name="" id="" v-model="message" @keyup.ctrl.enter="onSubmit"></textarea>    
       <!-- <Button type="success" size="small" class="send-btn" @click="onSubmit()">发送</Button> -->
+    </div>
+    <div>
+      <img :src="imgPath" alt="">
     </div>
     <div class="show-group-info" :class="{ 'group-info-show': groupInfoShow }">
       <span class="icon-cancel link-like" @click="closeGroupModal">
@@ -65,7 +70,7 @@
         </div>
       </div>
     </div>
-    <show-info-modal :modalShow="modalShow"
+    <show-info-modal :modalShow="true"
                      @closeModal="closeModal"
                      :userInfo="userInfo"></show-info-modal>
   </div>
@@ -86,7 +91,8 @@ export default {
       uploadData: {
         from: this.user._id,
         to: this.userChatTo._id
-      }
+      },
+      imgPath: ''
     }
   },
   props: ['user', 'userChatTo'],
@@ -165,7 +171,9 @@ export default {
     insertText (item) {
       this.isShoweMojis = false
       this.message = this.message + item
-      console.log(this.message)
+    },
+    uploadSuccess (res, file) {
+      this.imgPath = res.result
     }
   },
   components: {
