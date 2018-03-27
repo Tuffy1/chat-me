@@ -55,18 +55,26 @@ router.post('/userSearch', (req, res) => {
     username: req.body.query
   }
   User.find(query, (err, doc) => {
-    const user = {
-      _id: doc._id,
-      nickname: doc.nickname,
-      username: doc.username,
-      avatar: doc.avatar,
-      introduce: doc.introduce,
-      creatAt: doc.creatAt
-    }   
+    console.log(doc)
+    let user = {}
+    let userList = []
+    if (doc) {
+      doc.forEach((USER) => {
+        user = {
+          _id: USER._id,
+          nickname: USER.nickname,
+          username: USER.username,
+          avatar: USER.avatar,
+          introduce: USER.introduce,
+          creatAt: USER.creatAt
+        }
+        userList.push(user)
+      })
+    }
     if (err) {
       res.send({code: 700, msg: '查询出错：' + err, success: false})
     } else {
-      res.send({code: 200, result: user, success: true})
+      res.send({code: 200, result: userList, success: true})
     }
   })
 })

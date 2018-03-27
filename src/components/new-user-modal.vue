@@ -50,7 +50,19 @@ export default {
       //     this.$Message.success('添加成功')
       //   }, msg => this.$message(msg))
       // }
-      this.$store.dispatch('newFriend', this.newUser)
+      let me = {
+        _id: this.user._id,
+        avatar: this.user.avatar,
+        nickname: this.user.nickname,
+        username: this.user.username,
+        email: this.user.email,
+        introduce: this.user.introduce,
+        creatAt: this.user.creatAt
+      }
+      this.$store.dispatch('newFriend', {
+        from: me,
+        to: this.newUser
+      })
       .then(() => {
         this.$Message.success('添加成功')
         this.$emit('closeModal')

@@ -81,18 +81,10 @@ export default {
       commit('setFriends', result)
     }, msg => Promise.reject(msg))
   },
-  newFriend: ({commit}, user) => {
-    return newFriend({
-      _id: user._id,
-      avatar: user.avatar,
-      nickname: user.nickname,
-      username: user.username,
-      email: user.email,
-      introduce: user.introduce,
-      creatAt: user.creatAt
-    })
+  newFriend: ({commit}, form) => {
+    return newFriend(form)
     .then(() => {
-      commit('newFriend', user)
+      // commit('newFriend', user)
       return Promise.resolve()
     }, msg => Promise.reject(msg))
   },

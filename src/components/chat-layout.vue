@@ -1,5 +1,8 @@
 <template>
   <div class="chat-layout">
+    <div>
+      <img src="/1522166468283_timg.jpeg" alt="">
+    </div>
     <div class="chat-name">
       {{userChatTo.nickname}}
       <span class="icon-person link-like" @click="showInfo">
@@ -33,9 +36,6 @@
       </Upload>
       <textarea name="" id="" v-model="message" @keyup.ctrl.enter="onSubmit"></textarea>    
       <!-- <Button type="success" size="small" class="send-btn" @click="onSubmit()">发送</Button> -->
-    </div>
-    <div>
-      <img :src="imgPath" alt="">
     </div>
     <div class="show-group-info" :class="{ 'group-info-show': groupInfoShow }">
       <span class="icon-cancel link-like" @click="closeGroupModal">
@@ -174,6 +174,7 @@ export default {
     },
     uploadSuccess (res, file) {
       this.imgPath = res.result
+      console.log(this.imgPath)
     }
   },
   components: {

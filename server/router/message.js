@@ -118,7 +118,7 @@ router.post('/uploadImg', (req, res) => {
   isLogin(req, res, (payload) => {
     const form = new formidable.IncomingForm()
     form.encoding = 'utf-8'
-    form.uploadDir = path.resolve(__dirname, '../util/uploadFiles/')
+    // form.uploadDir = path.resolve('localhost:8080/', 'public/uploadFiles/')
     form.keepExtensions = true
     form.maxFieldsSize = 2 * 1024 * 1024 /* 限制图片大小最大为2M */
     let fileType
@@ -138,7 +138,11 @@ router.post('/uploadImg', (req, res) => {
       if (fileType === undefined) {
         res.send('uploadIcon img type err')
       }
-      let imgPath = files.file.path
+      let filename = files.file.name
+      let uploadDir = 'public/'
+      let avatarName = Date.now() + '_' + filename
+      fs.renameSync(files.file.path, uploadDir + avatarName)
+      let imgPath = 'localhost:8080/' + uploadDir + avatarName
       // let imgName = './util/uploadImgs/test.' + files.file.type.split('/')[1]
       // let data = fs.readFileSync(imgPath)
 
