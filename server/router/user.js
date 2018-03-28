@@ -4,7 +4,7 @@ const router = express.Router()
 const mongoose = require('mongoose')
 const User = require('../models/user')
 const Group = require('../models/group')
-// const Auth = require('../models/auth')
+const Auth = require('../models/auth')
 // const Message = require('../models/user-message')
 
 // const serializeCookie = require('../util/serializeCookie')
@@ -134,12 +134,30 @@ router.get('/getFriends', (req, res) => {
 
 router.post('/newFriend', (req, res) => {
   isLogin(req, res, (payload) => {
-    User.update({'_id': payload.userId}, {'$addToSet': {'friends': req.body.user}}, (err, doc) => {
+    // User.update({'_id': payload.userId}, {'$addToSet': {'friends': req.body.user}}, (err, doc) => {
+    //   if (err) {
+    //     console.log(err)
+    //     res.send({code: 700, msg: '查询出错：' + err, success: false})
+    //   } else {
+    //     res.send({code: 200, result: doc.friends, success: true})
+    //   }
+    // })
+    Auth.findOne({user: req.body.to._id}, (err, doc) => {
       if (err) {
-        console.log(err)
-        res.send({code: 700, msg: '查询出错：' + err, success: false})
-      } else {
-        res.send({code: 200, result: doc.friends, success: true})
+        res.send({code: 700, msg: '查询出错：' + err})
+      } else if (doc) {
+        const clients = doc.clients
+        let user = {}
+        User.findOne({_id: payload.userId}, (err, doc) => {
+          if (err) {
+            console.log(err)
+          } else {
+            for (const client of clients) {
+              global.io.to(client).emit('USER_MESSAGE', req.body)
+            }
+            res.send({code: 200, result: '等待对方验证', success: true})
+          }
+        })
       }
     })
   })

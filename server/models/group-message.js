@@ -21,6 +21,10 @@ const GroupMessageSchema = new Schema({
   sendTime: {
     type: Date,
     default: Date.now
+  },
+  type: {
+    type: String,
+    default: 'text'
   }
 })
 

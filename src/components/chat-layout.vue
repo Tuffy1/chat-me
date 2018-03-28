@@ -1,7 +1,7 @@
 <template>
   <div class="chat-layout">
     <div>
-      <img :src="imgPath" alt="">
+      <!-- <img :src="imgPath" alt=""> -->
     </div>
     <div class="chat-name">
       {{userChatTo.nickname}}
@@ -30,7 +30,8 @@
         </i>
       </div>
       <Upload action="/api/message/uploadImg"
-              :data="uploadData"
+              :data='`{1: ${uploadData}`'
+              :before-upload="handleBeforeUpload"
               :on-success="uploadSuccess">
         <Button type="ghost">Upload files</Button>
       </Upload>
@@ -171,6 +172,16 @@ export default {
     insertText (item) {
       this.isShoweMojis = false
       this.message = this.message + item
+    },
+    handleBeforeUpload (file) {
+      console.log(file)
+      let reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onloadend = (e) => {
+        file.url = reader.result
+        this.uploadData.from = this.user._id
+        this.uploadData.to = this.userChatTo._id
+      }
     },
     uploadSuccess (res, file) {
       this.imgPath = res.result
