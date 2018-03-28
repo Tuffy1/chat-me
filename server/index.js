@@ -21,7 +21,7 @@ app.use('/api/user', userRouter)
 app.use('/api/message', messageRouter)
 // express.static('/public')
 
-app.get('/index', (req, res) => {
+app.get('*', (req, res) => {
   const html = fs.readFileSync(path.resolve(__dirname, '../index.html'), 'utf-8')
   res.send(html)
   // express.static(path.resolve(__dirname, '/public'))

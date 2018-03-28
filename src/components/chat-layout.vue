@@ -1,7 +1,7 @@
 <template>
   <div class="chat-layout">
     <div>
-      <img src="/1522166468283_timg.jpeg" alt="">
+      <img :src="imgPath" alt="">
     </div>
     <div class="chat-name">
       {{userChatTo.nickname}}
