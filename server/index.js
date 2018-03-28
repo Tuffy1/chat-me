@@ -12,18 +12,19 @@ const app = express()
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
 
-// app.use(express.static(path.resolve(__dirname, '/public')))
+// app.use('/public')
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
-// app.use(express.static(path.resolve(__dirname, '../dist')))
+app.use(express.static('./public'))
 app.use('/api', authRouter)
 app.use('/api/user', userRouter)
 app.use('/api/message', messageRouter)
+// express.static('/public')
 
-app.get('*', (req, res) => {
+app.get('/index', (req, res) => {
   const html = fs.readFileSync(path.resolve(__dirname, '../index.html'), 'utf-8')
   res.send(html)
-  express.static(path.resolve(__dirname, '/public'))
+  // express.static(path.resolve(__dirname, '/public'))
 })
 
 http.listen(8088, () => {
