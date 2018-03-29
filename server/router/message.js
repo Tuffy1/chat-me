@@ -139,6 +139,7 @@ router.post('/uploadImg', (req, res) => {
         res.send('uploadIcon img type err')
       }
       let chatTo = fields.to
+      let userType = fields.type
       let filename = files.file.name
       let uploadDir = 'public/'
       let avatarName = Date.now() + '_' + filename
@@ -162,12 +163,11 @@ router.post('/uploadImg', (req, res) => {
           type: 'image'
         })
       }
-      console.log(chatTo)
       msg.save((err) => {
         if (err) {
           res.send({code: 700, msg: '存入数据库出错：' + err, success: false})
         } else {
-          if (req.body.type === 'group') {
+          if (userType === 'group') {
             let group = {}
             Group.findOne({_id: chatTo}, (err, doc) => {
               if (err) {
@@ -194,7 +194,7 @@ router.post('/uploadImg', (req, res) => {
                   msg: msg,
                   group: group
                 }
-                global.io.to(groupId.toString()).emit('GROUP_MESSAGE', form)
+                global.io.to(chatTo.toString()).emit('GROUP_MESSAGE', form)
                 res.send({code: 200, result: msg, success: true})
               }
             })
@@ -216,7 +216,7 @@ router.post('/uploadImg', (req, res) => {
                     user.introduce = doc.introduce
                     user.creatAt = doc.creatAt
                     user.type = 'user'
-                    User.update({_id: req.body.chatTo}, {'$addToSet': {'chatNow': user}}, (err, doc) => {
+                    User.update({_id: chatTo}, {'$addToSet': {'chatNow': user}}, (err, doc) => {
                       if (err) {
                         console.log(err)
                       } else {

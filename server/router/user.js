@@ -142,22 +142,15 @@ router.post('/newFriend', (req, res) => {
     //     res.send({code: 200, result: doc.friends, success: true})
     //   }
     // })
-    Auth.findOne({user: req.body.to._id}, (err, doc) => {
+    Auth.findOne({user: req.body.user.to._id}, (err, doc) => {
       if (err) {
         res.send({code: 700, msg: '查询出错：' + err})
       } else if (doc) {
         const clients = doc.clients
-        let user = {}
-        User.findOne({_id: payload.userId}, (err, doc) => {
-          if (err) {
-            console.log(err)
-          } else {
-            for (const client of clients) {
-              global.io.to(client).emit('USER_MESSAGE', req.body)
-            }
-            res.send({code: 200, result: '等待对方验证', success: true})
-          }
-        })
+        for (const client of clients) {
+          global.io.to(client).emit('NEW_FRIEND', req.body.user)
+        }
+        res.send({code: 200, result: '等待对方验证', success: true})
       }
     })
   })

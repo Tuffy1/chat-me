@@ -13,6 +13,10 @@
                                     :goto="`/center/groupchat/userdetail?user=${user._id}`">
                 <user-item :user="user"></user-item>
               </side-bar-inner-item>
+              <side-bar-inner-item  v-if="newFriendNotification"
+                                    :goto="`/center/groupchat/newfriend?form=${form}`">
+                new friend
+              </side-bar-inner-item>
             </p>
           </Panel>
           <Panel name="group" class="panel">
@@ -52,11 +56,19 @@ export default {
     return {
       group: '',
       userModalShow: false,
-      groupModalShow: false
+      groupModalShow: false,
+      newFriendNotification: false,
+      newFriendInfo: {}
     }
   },
   computed: {
     ...mapState(['friends', 'groups'])
+  },
+  sockets: {
+    NEW_FRIEND: (form) => {
+      this.newFriendNotification = true
+      this.newFriendInfo = form
+    }
   },
   methods: {
     newUser () {

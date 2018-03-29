@@ -4,7 +4,10 @@
       <img src="../assets/imgs/avatar.jpg" alt="avatar">
     </div>
     <div class="talk-wrap">
-      <div class="talk-bubble">{{contentTransfer}}</div>
+      <div class="talk-bubble" v-if="message.type === 'text'">{{contentTransfer}}</div>
+      <div class="img-wrap" v-else>
+        <img :src="message.content" alt="">
+      </div>
     </div>
   </div>
 </template>
@@ -15,7 +18,7 @@ import textTransfer from '../assets/js/text-transfer'
 export default {
   computed: {
     contentTransfer () {
-      return textTransfer(this.content)
+      return textTransfer(this.message.content)
     }
   },
   props: {
@@ -23,8 +26,8 @@ export default {
       type: Boolean,
       required: true
     },
-    content: {
-      type: String
+    message: {
+      type: Object
     }
   }
 }
@@ -92,5 +95,9 @@ export default {
 .chat-bubble.left .talk-wrap .talk-bubble::before {
   border-right-color: antiquewhite;
   left: -12px;
+}
+.img-wrap img {
+  width: 120px;
+  height: auto;
 }
 </style>

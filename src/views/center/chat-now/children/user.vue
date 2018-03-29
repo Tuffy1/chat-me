@@ -4,7 +4,7 @@
       <template slot="chat-content">
         <div v-for="(message, index) in messagesFilter" :key="index">
           <chat-bubble :isMe="message.from=== user._id"
-                       :content="message.content">
+                       :message="message">
           </chat-bubble>
         </div>
       </template>
@@ -23,6 +23,7 @@ export default {
     return {
       userId: '',
       userChatTo: {
+        _id: '',
         type: 'user'
       }
     }
@@ -48,7 +49,7 @@ export default {
       this.userId = this.$route.query.user
       this.chatNow.forEach(user => {
         if (user._id === this.userId) {
-          this.userChatTo = user
+          this.userChatTo._id = user._id
         }
       })
     }

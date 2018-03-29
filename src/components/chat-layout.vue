@@ -1,8 +1,5 @@
 <template>
   <div class="chat-layout">
-    <div>
-      <!-- <img :src="imgPath" alt=""> -->
-    </div>
     <div class="chat-name">
       {{userChatTo.nickname}}
       <span class="icon-person link-like" @click="showInfo">
@@ -28,13 +25,16 @@
         <i class="fun-emojis" @click="showEmojis" id="emojis-btn">
           <Icon type="happy-outline"></Icon>
         </i>
-      </div>
-      <Upload action="/api/message/uploadImg"
-              :data='`{1: ${uploadData}`'
+        <Upload action="/api/message/uploadImg"
+              :data="{'from':user._id, 'to':userChatTo._id, 'type':userChatTo.type}"
+              :show-upload-list="false"
               :before-upload="handleBeforeUpload"
               :on-success="uploadSuccess">
-        <Button type="ghost">Upload files</Button>
-      </Upload>
+          <i class="fun-emojis">
+            <Icon type="ios-upload-outline"></Icon>
+          </i>
+        </Upload>
+      </div>
       <textarea name="" id="" v-model="message" @keyup.ctrl.enter="onSubmit"></textarea>    
       <!-- <Button type="success" size="small" class="send-btn" @click="onSubmit()">发送</Button> -->
     </div>
@@ -78,6 +78,7 @@
 </template>
 
 <script>
+import {mapState} from 'vuex'
 import showInfoModal from './show-info-modal'
 
 export default {
@@ -96,7 +97,10 @@ export default {
       imgPath: ''
     }
   },
-  props: ['user', 'userChatTo'],
+  props: ['userChatTo'],
+  computed: {
+    ...mapState(['user'])
+  },
   // watch: {
   //   userMessage () {
   //     this.$nextTick(() => {
@@ -110,6 +114,8 @@ export default {
       const container = document.getElementById('chatContent')
       container.scrollTop = container.scrollHeight
     })
+    console.log(`userChat:`)
+    console.log(this.userChatTo)
   },
   mounted () {
     this.$nextTick(() => {
@@ -173,19 +179,9 @@ export default {
       this.isShoweMojis = false
       this.message = this.message + item
     },
-    handleBeforeUpload (file) {
-      console.log(file)
-      let reader = new FileReader()
-      reader.readAsDataURL(file)
-      reader.onloadend = (e) => {
-        file.url = reader.result
-        this.uploadData.from = this.user._id
-        this.uploadData.to = this.userChatTo._id
-      }
-    },
     uploadSuccess (res, file) {
-      this.imgPath = res.result
-      console.log(this.imgPath)
+      this.$store.commit('sendMessage', res.result)
+      this.message = ''
     }
   },
   components: {
@@ -253,11 +249,12 @@ export default {
   text-align: left;
 }
 .chat-layout .chat-text .other-fun {
+  display: flex;
   border-bottom: 1px solid rgb(185, 182, 182);
 }
 .chat-layout .chat-text .other-fun .fun-emojis {
   cursor: pointer;
-  padding: 0 10px;
+  padding: 0 5px 0 10px;
   font-size: 1.2em;
 }
 .chat-layout .chat-text .other-fun botton {
