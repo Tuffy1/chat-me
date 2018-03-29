@@ -147,7 +147,6 @@ router.post('/uploadImg', (req, res) => {
       imgPath = 'http://localhost:8088/' + avatarName
       // res.send({code: 200, success: true, result: imgPath})
       let msg
-      const groupId = req.body.chatTo
       if (req.body.type === 'group') {
         msg = new GroupMessage({
           from: payload.userId,
