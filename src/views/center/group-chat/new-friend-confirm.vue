@@ -1,6 +1,6 @@
 <template>
   <div class="chat-now">
-    <group-layout :userChatTo="userChatTo" :newFriend="false">
+    <group-layout :userChatTo="userChatTo" :newFriend="true">
       <template slot="chat-user">
         <p>nickname: {{userChatTo.nickname}}</p>
         <p>email: {{userChatTo.email}}</p>
@@ -12,20 +12,17 @@
 <script>
 import { mapState } from 'vuex'
 
-import groupLayout from '../../../../components/group-layout'
-import chatBubble from '../../../../components/chat-bubble'
+import groupLayout from '../../../components/group-layout'
 
 export default {
   data () {
     return {
       userId: '',
-      userChatTo: {
-        type: 'user'
-      }
+      userChatTo: {}
     }
   },
   computed: {
-    ...mapState(['friends'])
+    ...mapState(['friends', 'groups'])
   },
   watch: {
     $route () {
@@ -37,18 +34,16 @@ export default {
   },
   methods: {
     init () {
-      this.userId = this.$route.query.user
+      this.userId = this.$route.query.from
       this.friends.forEach(friend => {
         if (friend._id.toString() === this.userId) {
           this.userChatTo = friend
-          this.userChatTo.type = 'user'
         }
       })
     }
   },
   components: {
-    groupLayout,
-    chatBubble
+    groupLayout
   }
 }
 </script>

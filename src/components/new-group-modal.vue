@@ -23,7 +23,10 @@
               remote
               :remote-method="remoteMethod"
               :loading="loading">
-              <Option v-for="(user, index) in userList" :value="user._id" :key="index">{{user.username}}</Option>
+              <Option v-for="(USER, index) in userList" :value="USER" :key="index" :disabled="isMe(USER)">
+                <span v-if="isMe(USER)">{{USER.username}} (本人)</span>
+                <span v-else>{{USER.username}}</span>
+              </Option>
             </Select>
           </FormItem>
         </Form>
@@ -85,10 +88,19 @@ export default {
   },
   methods: {
     submit () {
-      this.form.members.push(this.user)
+      let me = {
+        _id: this.user._id,
+        username: this.user.username,
+        nickname: this.user.nickname,
+        introduce: this.user.introduce,
+        creatAt: this.user.creatAt,
+        avatar: this.user.avatar
+      }
+      this.form.members.push(me)
       this.$store.dispatch('newGroup', this.form)
       .then(() => {
         this.$Message.success('添加成功')
+        this.userList = []
         this.$emit('closeModal')
       }, msg => this.$Message.warning(msg))
     },
@@ -111,6 +123,12 @@ export default {
         this.loading = false
         this.userList = []
       }
+    },
+    isMe (USER) {
+      if (USER.username === this.user.username) {
+        return true
+      }
+      return false
     }
   }
 }

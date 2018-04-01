@@ -28,14 +28,13 @@
         <Upload action="/api/message/uploadImg"
               :data="{'from':user._id, 'to':userChatTo._id, 'type':userChatTo.type}"
               :show-upload-list="false"
-              :before-upload="handleBeforeUpload"
               :on-success="uploadSuccess">
           <i class="fun-emojis">
             <Icon type="ios-upload-outline"></Icon>
           </i>
         </Upload>
       </div>
-      <textarea name="" id="" v-model="message" @keyup.ctrl.enter="onSubmit"></textarea>    
+      <textarea name="" id="text" v-model="message" @keyup.ctrl.enter="onSubmit"></textarea>    
       <!-- <Button type="success" size="small" class="send-btn" @click="onSubmit()">发送</Button> -->
     </div>
     <div class="show-group-info" :class="{ 'group-info-show': groupInfoShow }">
@@ -63,23 +62,26 @@
         <p>members:</p>
         <div class="member-list">
           <div class="member-item" v-for="member in userChatTo.members" :key="member._id">
-            <div class="img-div" @click="showMemberInfo()">
+            <div class="img-div" @click="showMemberInfo(member)">
               <img src="../assets/imgs/avatar.jpg" alt="">      
             </div>
             <span>{{member.nickname}}</span>
           </div>
+          <new-member @click="newMember"></new-member>
         </div>
       </div>
     </div>
-    <show-info-modal :modalShow="true"
+    <show-info-modal :modalShow="modalShow"
                      @closeModal="closeModal"
                      :userInfo="userInfo"></show-info-modal>
   </div>
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import { cloneDeep } from 'lodash'
+import { mapState } from 'vuex'
 import showInfoModal from './show-info-modal'
+import newMember from './new-member'
 
 export default {
   data () {
@@ -90,32 +92,28 @@ export default {
       groupInfoShow: false,
       isShoweMojis: false,
       emojis: ['😂', '🙏', '😄', '😏', '😇', '😅', '😌', '😘', '😍', '🤓', '😜', '😎', '😊', '😳', '🙄', '😱', '😒', '😔', '😷', '👿', '🤗', '😩', '😤', '😣', '😰', '😴', '😬', '😭', '👻', '👍', '✌️', '👉', '👀', '🐶', '🐷', '😹', '⚡️', '🔥', '🌈', '🍏', '⚽️', '❤️', '🇨🇳'],
-      uploadData: {
-        from: this.user._id,
-        to: this.userChatTo._id
-      },
       imgPath: ''
     }
   },
   props: ['userChatTo'],
   computed: {
-    ...mapState(['user'])
+    ...mapState(['user', 'userMessage', 'groupMessage'])
   },
-  // watch: {
-  //   userMessage () {
-  //     this.$nextTick(() => {
-  //       const container = document.getElementById("chatContent")
-  //       container.scrollTop = container.scrollHeight
-  //     })
-  //   }
-  // },
+  watch: {
+    // userMessage () {
+    //   const container = document.getElementById("chatContent")
+    //   container.scrollTop = container.scrollHeight
+    // },
+    // groupMessage () {
+    //   const container = document.getElementById("chatContent")
+    //   container.scrollTop = container.scrollHeight
+    // }
+  },
   created () {
     this.$nextTick(() => {
       const container = document.getElementById('chatContent')
       container.scrollTop = container.scrollHeight
     })
-    console.log(`userChat:`)
-    console.log(this.userChatTo)
   },
   mounted () {
     this.$nextTick(() => {
@@ -139,17 +137,13 @@ export default {
         console.log(this.userChatTo.members)
         this.groupInfoShow = true
       } else {
-        this.userInfo = this.userChatTo
+        // this.userInfo = this.userChatTo
+        this.userInfo = cloneDeep(this.userChatTo)
         this.modalShow = true
       }
     },
-    showMemberInfo () {
-      this.userInfo = {
-        nickname: 'tuffy',
-        username: 'tuffy',
-        introduce: 'i am tuffy',
-        type: 'group'
-      }
+    showMemberInfo (member) {
+      this.userInfo = cloneDeep(member)
       this.modalShow = true
     },
     closeGroupModal () {
@@ -163,14 +157,20 @@ export default {
       this.modalShow = false
     },
     onSubmit () {
-      this.$store.dispatch('sendMessage', {
-        chatTo: this.userChatTo._id,
-        content: this.message,
-        type: this.userChatTo.type
-      })
-      .then(() => {
-        this.message = ''
-      }, msg => this.$Message.warning(msg))
+      if (this.message !== '') {
+        this.$store.dispatch('sendMessage', {
+          chatTo: this.userChatTo._id,
+          content: this.message,
+          type: this.userChatTo.type
+        })
+        .then(() => {
+          this.message = ''
+          const text = document.getElementById('text')
+          text.value = ''
+        }, msg => this.$Message.warning(msg))
+      } else {
+        this.$Message.warning('发送内容不能为空')
+      }
     },
     showEmojis () {
       this.isShoweMojis = true
@@ -182,10 +182,13 @@ export default {
     uploadSuccess (res, file) {
       this.$store.commit('sendMessage', res.result)
       this.message = ''
-    }
+    },
+    // newMember () {
+    // }
   },
   components: {
-    showInfoModal
+    showInfoModal,
+    newMember
   }
 }
 </script>
@@ -301,7 +304,7 @@ export default {
 .show-group-info .img-wrap {
   width: 50px;
   height: 50px;
-  overflow: hidden;
+  /* overflow: hidden; */
   border-radius: 10px;
 }
 .show-group-info .img-wrap img {

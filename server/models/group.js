@@ -26,8 +26,7 @@ const GroupSchema = new Schema({
     default: Date.now
   },
   members: [{
-    type: Schema.Types.ObjectId,
-    ref: 'User'
+    type: Schema.Types.Mixed
   }],
   messages: [{
     type: Schema.Types.ObjectId,

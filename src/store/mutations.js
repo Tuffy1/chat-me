@@ -1,6 +1,33 @@
 import Vue from 'vue'
 
 export default {
+  SOCKET_NEW_FRIEND: (state, form) => {
+    let users = state.friends
+    if (!users.some(user => user._id === form[0]._id)) {
+      users.push(form[0])
+    }
+    Vue.set(state, 'friends', users)
+  },
+  SOCKET_USER_MESSAGE: (state, form) => {
+    let message = state.userMessage
+    message = message.concat(form[0].msg)
+    Vue.set(state, 'userMessage', message)
+    let chatNows = state.chatNow
+    if (!chatNows.some(user => user._id === form[0].user._id)) {
+      chatNows = chatNows.concat(form[0].user)
+    }
+    Vue.set(state, 'chatNow', chatNows)
+  },
+  SOCKET_GROUP_MESSAGE: (state, form) => {
+    let message = state.groupMessage
+    message = message.concat(form[0].msg)
+    Vue.set(state, 'groupMessage', message)
+    let chatNows = state.chatNow
+    if (!chatNows.some(group => group._id === form[0].group._id)) {
+      chatNows = chatNows.concat(form[0].group)
+    }
+    Vue.set(state, 'chatNow', chatNows)
+  },
   loginInit (state) {
     Vue.set(state, 'loginState', true)
   },
@@ -34,6 +61,15 @@ export default {
     let users = state.friends
     users.push(user)
     Vue.set(state, 'friends', users)
+  },
+  friendConfirm (state, user) {
+    let friends = state.friends
+    friends.forEach(friend => {
+      if (friend._id === user._id) {
+        friend.relat = true
+      }
+    })
+    Vue.set(state, 'friends', friends)
   },
   deleteFriend (state, user) {
     let usersFriend = state.friends
@@ -85,26 +121,6 @@ export default {
     let message = state.userMessage
     message.push(msg)
     Vue.set(state, 'userMessage', message)
-  },
-  SOCKET_USER_MESSAGE: (state, form) => {
-    let message = state.userMessage
-    message = message.concat(form[0].msg)
-    Vue.set(state, 'userMessage', message)
-    let chatNows = state.chatNow
-    if (!chatNows.some(user => user._id === form[0].user._id)) {
-      chatNows = chatNows.concat(form[0].user)
-    }
-    Vue.set(state, 'chatNow', chatNows)
-  },
-  SOCKET_GROUP_MESSAGE: (state, form) => {
-    let message = state.groupMessage
-    message = message.concat(form[0].msg)
-    Vue.set(state, 'groupMessage', message)
-    let chatNows = state.chatNow
-    if (!chatNows.some(group => group._id === form[0].group._id)) {
-      chatNows = chatNows.concat(form[0].group)
-    }
-    Vue.set(state, 'chatNow', chatNows)
   },
   setUserInfo (state, form) {
     let user = state.user

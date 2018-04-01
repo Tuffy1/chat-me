@@ -29,14 +29,9 @@ export default {
     return {
     }
   },
-  props: {
-    modalShow: {
-      type: Boolean,
-      default: false
-    },
-    userInfo: {
-      type: Object
-    }
+  props: ['modalShow', 'userInfo'],
+  created () {
+    console.log(this.userInfo)
   },
   methods: {
     cancel () {

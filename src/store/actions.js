@@ -9,6 +9,7 @@ import addChatNow from '../api/add-chat-now'
 import removeChat from '../api/remove-chat'
 import getFriends from '../api/get-friends'
 import newFriend from '../api/new-friend'
+import friendConfirm from '../api/friend-confirm'
 import deleteFriend from '../api/delete-friend'
 import getGroups from '../api/get-groups'
 import newGroup from '../api/new-group'
@@ -83,9 +84,16 @@ export default {
   },
   newFriend: ({commit}, form) => {
     return newFriend(form)
-    .then(() => {
+    .then((result) => {
       // commit('newFriend', user)
-      return Promise.resolve()
+      return Promise.resolve(result)
+    }, msg => Promise.reject(msg))
+  },
+  friendConfirm: ({commit}, user) => {
+    return friendConfirm(user)
+    .then((result) => {
+      // commit('newFriend', user)
+      return Promise.resolve(result)
     }, msg => Promise.reject(msg))
   },
   deleteFriend: ({commit}, user) => {

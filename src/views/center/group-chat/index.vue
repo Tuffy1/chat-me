@@ -8,15 +8,17 @@
             <div class="icon-plus link-like" @click="newUser()"><Icon type="plus"></Icon></div>
             <p slot="content" v-if="friends.length === 0">未添加联系人</p>
             <p slot="content" v-else>
-              <side-bar-inner-item  v-for="user in friends"
-                                    :key="user._id"
-                                    :goto="`/center/groupchat/userdetail?user=${user._id}`">
-                <user-item :user="user"></user-item>
-              </side-bar-inner-item>
-              <side-bar-inner-item  v-if="newFriendNotification"
-                                    :goto="`/center/groupchat/newfriend?form=${form}`">
-                new friend
-              </side-bar-inner-item>
+              <span v-for="user in friends"
+                    :key="user._id">
+                <side-bar-inner-item  v-if="user.relat"
+                                      :goto="`/center/groupchat/userdetail?user=${user._id}`">
+                  <user-item :user="user"></user-item>
+                </side-bar-inner-item>
+                <side-bar-inner-item  v-if="!user.relat"
+                                      :goto="`/center/groupchat/newFriendConfirm?from=${user._id}`">
+                  new friend
+                </side-bar-inner-item>
+              </span>
             </p>
           </Panel>
           <Panel name="group" class="panel">
@@ -64,11 +66,14 @@ export default {
   computed: {
     ...mapState(['friends', 'groups'])
   },
-  sockets: {
-    NEW_FRIEND: (form) => {
-      this.newFriendNotification = true
-      this.newFriendInfo = form
-    }
+  // sockets: {
+  //   NEW_FRIEND: (form) => {
+  //     this.newFriendNotification = true
+  //     this.newFriendInfo = form
+  //   }
+  // },
+  created () {
+    console.log(this.friends)
   },
   methods: {
     newUser () {

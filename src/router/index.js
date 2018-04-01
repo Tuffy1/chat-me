@@ -9,6 +9,7 @@ import groupChatNowDetail from '@/views/center/chat-now/children/group'
 import groupChat from '@/views/center/group-chat/index'
 import userChatDetail from '@/views/center/group-chat/children/user'
 import groupChatDetail from '@/views/center/group-chat/children/group'
+import newFriendConfirm from '@/views/center/group-chat/new-friend-confirm'
 import Setting from '@/views/center/setting/index'
 import overview from '@/views/center/setting/overview'
 import infoSetting from '@/views/center/setting/infoSetting'
@@ -69,6 +70,11 @@ export default new Router({
               path: '/center/groupchat/groupdetail',
               name: 'groupChatDetail',
               component: groupChatDetail
+            },
+            {
+              path: '/center/groupchat/newFriendConfirm',
+              name: 'newFriendConfirm',
+              component: newFriendConfirm
             }
           ]
         },

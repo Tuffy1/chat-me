@@ -134,23 +134,52 @@ router.get('/getFriends', (req, res) => {
 
 router.post('/newFriend', (req, res) => {
   isLogin(req, res, (payload) => {
-    // User.update({'_id': payload.userId}, {'$addToSet': {'friends': req.body.user}}, (err, doc) => {
-    //   if (err) {
-    //     console.log(err)
-    //     res.send({code: 700, msg: '查询出错：' + err, success: false})
-    //   } else {
-    //     res.send({code: 200, result: doc.friends, success: true})
-    //   }
-    // })
-    Auth.findOne({user: req.body.user.to._id}, (err, doc) => {
+    User.update({'_id': req.body.user.to._id}, {'$addToSet': {'friends': req.body.user.from}}, (err, doc) => {
       if (err) {
-        res.send({code: 700, msg: '查询出错：' + err})
-      } else if (doc) {
-        const clients = doc.clients
-        for (const client of clients) {
-          global.io.to(client).emit('NEW_FRIEND', req.body.user)
-        }
-        res.send({code: 200, result: '等待对方验证', success: true})
+        console.log(err)
+        res.send({code: 700, msg: '查询出错：' + err, success: false})
+      } else {
+        Auth.findOne({user: req.body.user.to._id}, (err, doc) => {
+          if (err) {
+            res.send({code: 700, msg: '查询出错：' + err})
+          } else if (doc) {
+            const clients = doc.clients
+            console.log('from')
+            console.log(req.body.user.from)
+            for (const client of clients) {
+              global.io.to(client).emit('NEW_FRIEND', req.body.user.from)
+            }
+            res.send({code: 200, result: '等待对方验证', success: true})
+          }
+        })
+      }
+    })
+  })
+})
+
+router.post('/friendConfirm', (req, res) => {
+  isLogin(req, res, (payload) => {
+    User.update({'_id': req.body.user.from._id, 'friends._id': req.body.user.to._id}, {'$set': {'friends.$.relat': true}}, (err, doc) => {
+      if (err) {
+        console.log(err)
+      }
+    })
+    User.update({'_id': req.body.user.to._id}, {'$addToSet': {'friends': req.body.user.from}}, (err, doc) => {
+      if (err) {
+        console.log(err)
+        res.send({code: 700, msg: '查询出错：' + err, success: false})
+      } else {
+        Auth.findOne({user: req.body.user.to._id}, (err, doc) => {
+          if (err) {
+            res.send({code: 700, msg: '查询出错：' + err})
+          } else if (doc) {
+            const clients = doc.clients
+            for (const client of clients) {
+              global.io.to(client).emit('NEW_FRIEND', req.body.user.from)
+            }
+            res.send({code: 200, result: '成功添加', success: true})
+          }
+        })
       }
     })
   })
@@ -191,12 +220,7 @@ router.get('/getGroups', (req, res) => {
 
 router.post('/newGroup', (req, res) => {
   isLogin(req, res, (payload) => {
-    const theGroup = new Group({
-      nickname: req.body.group.nickname,
-      username: req.body.group.username,
-      introduce: req.body.group.introduce,
-      members: req.body.group.members
-    })
+    const theGroup = new Group(req.body.group)
     theGroup.save((err, doc) => {
       const newGroup = doc
       if (err) {
@@ -204,7 +228,7 @@ router.post('/newGroup', (req, res) => {
         res.send({code: 700, msg: '保存出错：' + err, success: false})
       } else {
         req.body.group.members.forEach(member => {
-          User.update({'_id': member}, {'$addToSet': {'groups': theGroup}}, (err, doc) => {
+          User.update({'_id': member._id}, {'$addToSet': {'groups': theGroup}}, (err, doc) => {
             if (err) {
               console.log(err)
               // res.send({code: 700, msg: '查询出错：' + err, success: false})

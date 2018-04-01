@@ -1,6 +1,6 @@
 <template>
   <div class="chat-now">
-    <group-layout :userChatTo="groupChatTo">
+    <group-layout :userChatTo="groupChatTo" :newFriend="false">
       <template slot="chat-group">
         <p>nickname: {{groupChatTo.nickname}}</p>
         <p>introduce: {{groupChatTo.introduce}}</p>

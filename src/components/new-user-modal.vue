@@ -57,14 +57,15 @@ export default {
         username: this.user.username,
         email: this.user.email,
         introduce: this.user.introduce,
-        creatAt: this.user.creatAt
+        creatAt: this.user.creatAt,
+        relat: false
       }
       this.$store.dispatch('newFriend', {
         from: me,
         to: this.newUser
       })
-      .then(() => {
-        this.$Message.success('添加成功')
+      .then((result) => {
+        this.$Message.success(result)
         this.$emit('closeModal')
       }, msg => this.$Message.warning(msg))
     },

@@ -14,6 +14,7 @@
 </template>
 
 <script>
+import { cloneDeep } from 'lodash'
 import { mapState } from 'vuex'
 
 import chatLayout from '../../../../components/chat-layout'
@@ -50,7 +51,9 @@ export default {
       this.userId = this.$route.query.user
       this.chatNow.forEach(user => {
         if (user._id === this.userId) {
-          this.userChatTo._id = user._id
+          // this.userChatTo._id = user._id
+          this.userChatTo = cloneDeep(user)
+          console.log(this.userChatTo)
         }
       })
       this.$store.dispatch('getGroupMessage', this.userId)

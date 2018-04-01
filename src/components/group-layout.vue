@@ -11,10 +11,14 @@
         <slot name="chat-group"></slot>
       </div>
     </div>  
-    <div class="btn-wrap">
+    <div class="btn-wrap" v-if="!newFriend">
       <Button type="success" @click="joinChat">聊天</Button>
       <Button type="error" @click="deleteGroup" v-if="this.userChatTo.type === 'group'">退出群聊</Button>
       <Button type="error" @click="deleteFriend" v-else>删除</Button>
+    </div>
+    <div class="btn-wrap" v-else>
+      <Button type="success" @click="friendConfirm">同意</Button>
+      <Button type="error" @click="deleteConfirm">删除</Button>
     </div>
   </div>
 </template>
@@ -24,9 +28,9 @@ import { mapState } from 'vuex'
 
 export default {
   computed: {
-    ...mapState(['chatNow', 'friends'])
+    ...mapState(['user', 'chatNow', 'friends'])
   },
-  props: ['userChatTo'],
+  props: ['userChatTo', 'newFriend'],
   methods: {
     joinChat () {
       if (!this.chatNow.some(user => user._id === this.userChatTo._id)) {
@@ -53,6 +57,26 @@ export default {
     deleteGroup () {
       this.$store.dispatch('deleteGroup', this.userChatTo)
       .then(() => this.$Message.success('退出成功'), msg => this.$Message.warning(msg))
+    },
+    friendConfirm () {
+      let me = {
+        _id: this.user._id,
+        avatar: this.user.avatar,
+        nickname: this.user.nickname,
+        username: this.user.username,
+        email: this.user.email,
+        introduce: this.user.introduce,
+        creatAt: this.user.creatAt,
+        relat: true
+      }
+      this.$store.dispatch('friendConfirm', {
+        from: me,
+        to: this.userChatTo
+      })
+      .then(() => {
+        this.$store.commit('friendConfirm', this.userChatTo)
+        this.$Message.success('添加成功')
+      }, msg => this.$Message.warning(msg))
     }
   }
 }

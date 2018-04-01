@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import { cloneDeep } from 'lodash'
 import { mapState } from 'vuex'
 
 import chatLayout from '../../../../components/chat-layout'
@@ -48,8 +49,9 @@ export default {
     init () {
       this.userId = this.$route.query.user
       this.chatNow.forEach(user => {
-        if (user._id === this.userId) {
-          this.userChatTo._id = user._id
+        if (user._id.toString() === this.userId) {
+          // this.userChatTo._id = user._id
+          this.userChatTo = cloneDeep(user)
         }
       })
     }
