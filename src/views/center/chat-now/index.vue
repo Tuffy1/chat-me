@@ -1,8 +1,17 @@
 <template>
   <div class="chat-now">
     <side-bar-inner :obj="'user'">
+      <template slot="search">
+        <Input v-model="searchContent"
+             icon="ios-search"
+             size="small"
+             placeholder="Enter something..."
+             class="search-input"
+           >
+        </Input>
+      </template>
       <template slot="item-list">
-        <side-bar-inner-item  v-for="user in chatNow"
+        <side-bar-inner-item  v-for="user in chatNowFilter"
                               :key="user._id"
                               :goto=route(user)>
           <user-item :user="user"></user-item>
@@ -21,8 +30,16 @@ import sideBarInnerItem from '../../../components/side-bar-inner-item'
 import userItem from '../../../components/user-item'
 
 export default {
+  data () {
+    return {
+      searchContent: ''
+    }
+  },
   computed: {
-    ...mapState(['chatNow'])
+    ...mapState(['chatNow']),
+    chatNowFilter () {
+      return this.chatNow.filter(user => user.nickname.match(this.searchContent))
+    }
   },
   methods: {
     route (user) {

@@ -2,13 +2,7 @@
 <div>
   <div class="side-bar-inner" v-if="obj === 'user'">
     <div class="search">
-      <Input v-model="searchContent"
-             icon="ios-search"
-             size="small"
-             placeholder="Enter something..."
-             class="search-input"
-           >
-      </Input>
+      <slot name="search"></slot>
     </div>
     <slot name="item-list"></slot>
   </div>

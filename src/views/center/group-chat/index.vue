@@ -1,6 +1,15 @@
 <template>
   <div class="group-chat" id="group-chat">
     <side-bar-inner :obj="'user'">
+      <template slot="search">
+        <Input v-model="searchContent"
+             icon="ios-search"
+             size="small"
+             placeholder="Enter something..."
+             class="search-input"
+           >
+        </Input>
+      </template>
       <template slot="item-list">
         <Collapse v-model="group">
           <Panel name="user" class="panel">
@@ -60,7 +69,8 @@ export default {
       userModalShow: false,
       groupModalShow: false,
       newFriendNotification: false,
-      newFriendInfo: {}
+      newFriendInfo: {},
+      searchContent: ''
     }
   },
   computed: {

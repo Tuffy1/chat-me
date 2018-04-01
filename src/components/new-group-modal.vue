@@ -89,8 +89,11 @@ export default {
   methods: {
     submit () {
       let tempArr = []
+      let tempMember = {}
       this.form.members.forEach(member => {
-        tempArr.push(JSON.parse(member))
+        tempMember = JSON.parse(member)
+        tempMember.role = 3
+        tempArr.push(tempMember)
       })
       this.form.members = tempArr
       let me = {
@@ -99,7 +102,8 @@ export default {
         nickname: this.user.nickname,
         introduce: this.user.introduce,
         creatAt: this.user.creatAt,
-        avatar: this.user.avatar
+        avatar: this.user.avatar,
+        role: 1
       }
       this.form.members.push(me)
       this.$store.dispatch('newGroup', this.form)

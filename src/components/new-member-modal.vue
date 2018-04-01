@@ -46,8 +46,11 @@ export default {
     submit () {
       this.groupId = this.$route.query.user
       let tempArr = []
+      let tempMember = {}
       this.newMembers.forEach(member => {
-        tempArr.push(JSON.parse(member))
+        tempMember = JSON.parse(member)
+        tempMember.role = 3
+        tempArr.push(tempMember)
       })
       this.newMembers = tempArr
       this.$store.dispatch('newGroupMember', {

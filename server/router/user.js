@@ -227,8 +227,16 @@ router.post('/newGroup', (req, res) => {
         console.log(err)
         res.send({code: 700, msg: '保存出错：' + err, success: false})
       } else {
+        const userGroup = {
+          _id: theGroup._id,
+          nickname: theGroup.nickname,
+          username: theGroup.username,
+          avatar: theGroup.avatar,
+          introduce: theGroup.introduce,
+          creatAt: theGroup.creatAt
+        }
         req.body.group.members.forEach(member => {
-          User.update({'_id': member._id}, {'$addToSet': {'groups': theGroup}}, (err, doc) => {
+          User.update({'_id': member._id}, {'$addToSet': {'groups': userGroup}}, (err, doc) => {
             if (err) {
               console.log(err)
               // res.send({code: 700, msg: '查询出错：' + err, success: false})

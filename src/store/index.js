@@ -16,7 +16,20 @@ export default new Vuex.Store({
     chatNow: [],
     userMessage: [],
     groupMessage: [],
-    theGroup: {}
+    theGroup: {
+      members: []
+    },
+    groupRole: {
+      1: {
+        text: 'owner'
+      },
+      2: {
+        text: 'manager'
+      },
+      3: {
+        text: 'member'
+      }
+    }
   },
   getters,
   mutations,

@@ -59,9 +59,16 @@
         </div>
       </div>
       <div class="group-member">
-        <p>members:</p>
         <div class="member-list">
-          <div class="member-item" v-for="member in groupChatTo.members" :key="member._id">
+          <p>群主：</p>
+          <div class="member-item">
+            <div class="img-div" @click="showMemberInfo(groupOwner[0])">
+              <img src="../assets/imgs/avatar.jpg" alt="">      
+            </div>
+            <span>{{groupOwner[0].nickname}}</span>
+          </div>
+          <p>成员：</p>
+          <div class="member-item" v-for="member in groupMember" :key="member._id">
             <div class="img-div" @click="showMemberInfo(member)">
               <img src="../assets/imgs/avatar.jpg" alt="">      
             </div>
@@ -101,6 +108,12 @@ export default {
     ...mapState(['user', 'userMessage', 'groupMessage', 'theGroup']),
     groupChatTo () {
       return this.theGroup
+    },
+    groupMember () {
+      return this.theGroup.members.filter(member => member.role === 3)
+    },
+    groupOwner () {
+      return this.theGroup.members.filter(member => member.role === 1)
     }
   },
   watch: {
@@ -118,6 +131,7 @@ export default {
       const container = document.getElementById('chatContent')
       container.scrollTop = container.scrollHeight
     })
+    this.init()
   },
   mounted () {
     this.$nextTick(() => {
@@ -131,6 +145,14 @@ export default {
     })
   },
   methods: {
+    init () {
+       if (this.userChatTo.type === 'group') {
+        this.$store.dispatch('getGroupInfo', this.userChatTo._id)
+        .then(() => {}, msg => this.$Message.warning(msg))
+      } else {
+        this.userInfo = cloneDeep(this.userChatTo)
+      }
+    },
     showInfo () {
       // this.$store.dispatch('showInfo', this.userChatTo)
       // .then((result) => {
