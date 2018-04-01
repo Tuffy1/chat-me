@@ -53,7 +53,6 @@ export default {
         if (user._id === this.userId) {
           // this.userChatTo._id = user._id
           this.userChatTo = cloneDeep(user)
-          console.log(this.userChatTo)
         }
       })
       this.$store.dispatch('getGroupMessage', this.userId)

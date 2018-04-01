@@ -261,6 +261,35 @@ router.post('/deleteGroup', (req, res) => {
   })
 })
 
+router.post('/newGroupMember', (req, res) => {
+  isLogin(req, res, (payload) => {
+    req.body.newMembers.forEach((member, index) => {
+      Group.update({'_id': req.body.groupId}, {'$addToSet': {'members': member}}, (err, doc) => {
+        if (err) {
+          console.log(err)
+          // res.send({code: 700, msg: '保存出错：' + err, success: false})
+        } else {
+          if (index === req.body.newMembers.length) {
+            res.send({code: 200, result: '添加成功', success: true})
+          }
+        }
+      })
+    })
+  })
+})
+
+router.get('/groupInfo', (req, res) => {
+  isLogin(req, res, (payload) => {
+    Group.findById({'_id': req.query.groupId}, (err, doc) => {
+      if (err) {
+        res.send({code: 700, msg: '查询出错：' + err, success: false})
+      } else {
+        res.send({code: 200, result: doc, success: true})
+      }
+    })
+  })
+})
+
 router.get('/showInfo', (req, res) => {
   isLogin(req, res, (payload) => {
     User.findOne({'username': req.query.username}, (err, doc) => {

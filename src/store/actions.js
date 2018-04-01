@@ -14,6 +14,8 @@ import deleteFriend from '../api/delete-friend'
 import getGroups from '../api/get-groups'
 import newGroup from '../api/new-group'
 import deleteGroup from '../api/delete-group'
+import newGroupMember from '../api/new-group-member'
+import getGroupInfo from '../api/get-group-info'
 import getUserMessage from '../api/get-user-message'
 import getGroupMessage from '../api/get-group-message'
 import showInfo from '../api/show-info'
@@ -130,6 +132,17 @@ export default {
     .then(() => {
       commit('deleteGroup', group)
       return Promise.resolve()
+    }, msg => Promise.reject(msg))
+  },
+  newGroupMember: ({context}, form) => {
+    newGroupMember(form)
+    .then(result => Promise.resolve(result), msg => Promise.reject(msg))
+  },
+  getGroupInfo: ({commit}, groupId) => {
+    return getGroupInfo(groupId)
+    .then((result) => {
+      commit('setTheGroup', result)
+      return Promise.resolve(result)
     }, msg => Promise.reject(msg))
   },
   getUserMessage: ({commit}) => {

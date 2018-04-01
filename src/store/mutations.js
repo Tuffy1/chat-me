@@ -111,6 +111,9 @@ export default {
     })
     Vue.set(state, 'chatNow', usersChatNow)
   },
+  setTheGroup (state, group) {
+    Vue.set(state, 'theGroup', group)
+  },
   getUserMessage (state, messages) {
     Vue.set(state, 'userMessage', messages)
   },

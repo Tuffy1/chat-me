@@ -1,16 +1,36 @@
 <template>
-  <div class="new-member">
+  <div class="new-member" @click="newMember">
     <div class="img-wrap">
       <i class="icon">
         <Icon type="plus" size="30px"></Icon>
       </i>
     </div>
+    <new-member-modal :modalShow="newMemberModalShow"
+                     @closeModal="closeModal"
+                     ></new-member-modal>
   </div>
 </template>
 
 <script>
+import newMemberModal from './new-member-modal'
 
 export default {
+  data () {
+    return {
+      newMemberModalShow: false
+    }
+  },
+  methods: {
+    newMember () {
+      this.newMemberModalShow = true
+    },
+    closeModal () {
+      this.newMemberModalShow = false
+    }
+  },
+  components: {
+    newMemberModal
+  }
 }
 </script>
 

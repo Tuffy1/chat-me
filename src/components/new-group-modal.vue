@@ -23,7 +23,7 @@
               remote
               :remote-method="remoteMethod"
               :loading="loading">
-              <Option v-for="(USER, index) in userList" :value="USER" :key="index" :disabled="isMe(USER)">
+              <Option v-for="(USER, index) in userList" :value="JSON.stringify(USER)" :key="index" :disabled="isMe(USER)">
                 <span v-if="isMe(USER)">{{USER.username}} (本人)</span>
                 <span v-else>{{USER.username}}</span>
               </Option>
@@ -88,6 +88,11 @@ export default {
   },
   methods: {
     submit () {
+      let tempArr = []
+      this.form.members.forEach(member => {
+        tempArr.push(JSON.parse(member))
+      })
+      this.form.members = tempArr
       let me = {
         _id: this.user._id,
         username: this.user.username,

@@ -52,26 +52,26 @@
           <p>introduce:</p>
         </div>
         <div class="user-info">
-          <p>{{userChatTo.nickname}}</p>
-          <p>{{userChatTo.username}}</p>
-          <p>{{userChatTo.creatAt}}</p>
-          <p>{{userChatTo.introduce}}</p>
+          <p>{{groupChatTo.nickname}}</p>
+          <p>{{groupChatTo.username}}</p>
+          <p>{{groupChatTo.creatAt}}</p>
+          <p>{{groupChatTo.introduce}}</p>
         </div>
       </div>
       <div class="group-member">
         <p>members:</p>
         <div class="member-list">
-          <div class="member-item" v-for="member in userChatTo.members" :key="member._id">
+          <div class="member-item" v-for="member in groupChatTo.members" :key="member._id">
             <div class="img-div" @click="showMemberInfo(member)">
               <img src="../assets/imgs/avatar.jpg" alt="">      
             </div>
             <span>{{member.nickname}}</span>
           </div>
-          <new-member @click="newMember"></new-member>
+          <new-member-card @click="newMember"></new-member-card>
         </div>
       </div>
     </div>
-    <show-info-modal :modalShow="modalShow"
+    <show-info-modal :modalShow="infoModalShow"
                      @closeModal="closeModal"
                      :userInfo="userInfo"></show-info-modal>
   </div>
@@ -80,15 +80,16 @@
 <script>
 import { cloneDeep } from 'lodash'
 import { mapState } from 'vuex'
+import newMemberCard from './new-member-card'
 import showInfoModal from './show-info-modal'
-import newMember from './new-member'
 
 export default {
   data () {
     return {
       message: '',
       userInfo: {},
-      modalShow: false,
+      // groupChatTo: {},
+      infoModalShow: false,
       groupInfoShow: false,
       isShoweMojis: false,
       emojis: ['😂', '🙏', '😄', '😏', '😇', '😅', '😌', '😘', '😍', '🤓', '😜', '😎', '😊', '😳', '🙄', '😱', '😒', '😔', '😷', '👿', '🤗', '😩', '😤', '😣', '😰', '😴', '😬', '😭', '👻', '👍', '✌️', '👉', '👀', '🐶', '🐷', '😹', '⚡️', '🔥', '🌈', '🍏', '⚽️', '❤️', '🇨🇳'],
@@ -97,7 +98,10 @@ export default {
   },
   props: ['userChatTo'],
   computed: {
-    ...mapState(['user', 'userMessage', 'groupMessage'])
+    ...mapState(['user', 'userMessage', 'groupMessage', 'theGroup']),
+    groupChatTo () {
+      return this.theGroup
+    }
   },
   watch: {
     // userMessage () {
@@ -134,17 +138,20 @@ export default {
       //   this.modalShow = true
       // }, msg => this.$Message.warning(msg))
       if (this.userChatTo.type === 'group') {
-        console.log(this.userChatTo.members)
-        this.groupInfoShow = true
+        this.$store.dispatch('getGroupInfo', this.userChatTo._id)
+        .then((result) => {
+          // this.groupChatTo = cloneDeep(result)
+          this.groupInfoShow = true
+        }, msg => this.$Message.warning(msg))
       } else {
         // this.userInfo = this.userChatTo
         this.userInfo = cloneDeep(this.userChatTo)
-        this.modalShow = true
+        this.infoModalShow = true
       }
     },
     showMemberInfo (member) {
       this.userInfo = cloneDeep(member)
-      this.modalShow = true
+      this.infoModalShow = true
     },
     closeGroupModal () {
       this.groupInfoShow = false
@@ -154,7 +161,7 @@ export default {
       .then(() => this.$Message.success('关闭会话成功'), msg => this.$Message.warning(msg))
     },
     closeModal () {
-      this.modalShow = false
+      this.infoModalShow = false
     },
     onSubmit () {
       if (this.message !== '') {
@@ -182,13 +189,11 @@ export default {
     uploadSuccess (res, file) {
       this.$store.commit('sendMessage', res.result)
       this.message = ''
-    },
-    // newMember () {
-    // }
+    }
   },
   components: {
-    showInfoModal,
-    newMember
+    newMemberCard,
+    showInfoModal
   }
 }
 </script>

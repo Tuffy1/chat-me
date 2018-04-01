@@ -1,0 +1,98 @@
+<template>
+  <div class="new-user">
+    <Modal
+        v-model="modalShow"
+        title="添加新成员"
+        @on-ok="submit"
+        @on-cancel="cancel">
+        <Select
+          v-model="newMembers"
+          filterable
+          multiple
+          remote
+          :remote-method="remoteMethod"
+          :loading="loading">
+          <Option v-for="USER in userList" :value="JSON.stringify(USER)" :key="USER._id" :disabled="isMe(USER)">
+            <span v-if="isMe(USER)">{{USER.username}} (本人)</span>
+            <span v-else>{{USER.username}}</span>
+          </Option>
+        </Select>
+    </Modal>
+  </div>
+</template>
+
+<script>
+import { mapState } from 'vuex'
+
+export default {
+  data () {
+    return {
+      loading: false,
+      groupId: '',
+      newMembers: [],
+      userList: []
+    }
+  },
+  props: {
+    modalShow: {
+      type: Boolean,
+      default: false
+    }
+  },
+  computed: {
+    ...mapState(['user', 'friends'])
+  },
+  methods: {
+    submit () {
+      this.groupId = this.$route.query.user
+      let tempArr = []
+      this.newMembers.forEach(member => {
+        tempArr.push(JSON.parse(member))
+      })
+      this.newMembers = tempArr
+      this.$store.dispatch('newGroupMember', {
+        groupId: this.groupId,
+        newMembers: this.newMembers
+      })
+      .then(() => {
+        this.$Message.success('添加成功')
+        return this.$store.dispatch('getGroupInfo', this.groupId)
+      }, msg => this.$Message.warning(msg))
+      .then(() => {
+        this.$emit('closeModal')
+      }, msg => this.$Message.warning(msg))
+    },
+    cancel () {
+      this.newMembers = []
+      this.$emit('closeModal')
+    },
+    remoteMethod (query) {
+      if (query !== '') {
+        this.loading = true
+        setTimeout(() => {
+          this.$store.dispatch('userSearch', {
+            query: query
+          })
+          .then((result) => {
+            this.loading = false
+            this.userList = result
+          }, (msg) => Promise.reject(msg))
+        }, 200)
+      } else {
+        this.loading = false
+        this.userList = []
+      }
+    },
+    isMe (USER) {
+      if (USER.username === this.user.username) {
+        return true
+      }
+      return false
+    }
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+</style>
