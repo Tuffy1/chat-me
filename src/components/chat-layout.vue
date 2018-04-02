@@ -37,7 +37,7 @@
       <textarea name="" id="text" v-model="message" @keyup.ctrl.enter="onSubmit"></textarea>    
       <!-- <Button type="success" size="small" class="send-btn" @click="onSubmit()">发送</Button> -->
     </div>
-    <div class="show-group-info" :class="{ 'group-info-show': groupInfoShow }">
+    <div class="show-group-info" id="show-group-info" :class="{ 'group-info-show': groupInfoShow }">
       <span class="icon-cancel link-like" @click="closeGroupModal">
         <Icon type="close"></Icon>
       </span>
@@ -58,7 +58,7 @@
           <p>{{groupChatTo.introduce}}</p>
         </div>
       </div>
-      <div class="group-member">
+      <div class="group-member" v-if="groupInfoShow">
         <div class="member-list">
           <p>群主：</p>
           <div class="member-item">
@@ -74,13 +74,15 @@
             </div>
             <span>{{member.nickname}}</span>
           </div>
-          <new-member-card @click="newMember"></new-member-card>
+          <new-member-card></new-member-card>
         </div>
       </div>
     </div>
     <show-info-modal :modalShow="infoModalShow"
                      @closeModal="closeModal"
-                     :userInfo="userInfo"></show-info-modal>
+                     :userInfo="userInfo"
+                     :isGroupMember="isGroupMember"
+                     ></show-info-modal>
   </div>
 </template>
 
@@ -100,7 +102,8 @@ export default {
       groupInfoShow: false,
       isShoweMojis: false,
       emojis: ['😂', '🙏', '😄', '😏', '😇', '😅', '😌', '😘', '😍', '🤓', '😜', '😎', '😊', '😳', '🙄', '😱', '😒', '😔', '😷', '👿', '🤗', '😩', '😤', '😣', '😰', '😴', '😬', '😭', '👻', '👍', '✌️', '👉', '👀', '🐶', '🐷', '😹', '⚡️', '🔥', '🌈', '🍏', '⚽️', '❤️', '🇨🇳'],
-      imgPath: ''
+      imgPath: '',
+      isGroupMember: false
     }
   },
   props: ['userChatTo'],
@@ -125,6 +128,9 @@ export default {
     //   const container = document.getElementById("chatContent")
     //   container.scrollTop = container.scrollHeight
     // }
+    $route () {
+      this.init()
+    }
   },
   created () {
     this.$nextTick(() => {
@@ -146,7 +152,7 @@ export default {
   },
   methods: {
     init () {
-       if (this.userChatTo.type === 'group') {
+      if (this.userChatTo.type === 'group') {
         this.$store.dispatch('getGroupInfo', this.userChatTo._id)
         .then(() => {}, msg => this.$Message.warning(msg))
       } else {
@@ -172,6 +178,7 @@ export default {
       }
     },
     showMemberInfo (member) {
+      this.isGroupMember = true
       this.userInfo = cloneDeep(member)
       this.infoModalShow = true
     },
