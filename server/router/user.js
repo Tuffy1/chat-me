@@ -292,46 +292,38 @@ router.post('/deleteGroupMember', (req, res) => {
     const memberId = req.body.memberId
     const userId = payload.userId
     let theGroup = {}
-    let memberIndex
     let roleInGroup
-    Group.findById({'_id': mongoose.mongo.ObjectId(groupId)}, (err, doc) => {
+    Group.findOne({'_id': mongoose.mongo.ObjectId(groupId)}, (err, doc) => {
       if (err) {
         console.log(err)
       } else {
         theGroup = doc
-        // theGroup.members.forEach((member, index) => {
-        //   if (member._id === userId) {
-        //     roleInGroup = member.role
-        //     memberIndex = index
-        //     theGroup.members.splice(memberIndex, 1)
-        //   }
-        //   console.log(`index: ${index}`)
-        // })
-        let memberIndex
-        let index = 0
-        for (let member of theGroup.members) {
-          if (member._id === userId) {
-            roleInGroup = member.role
-            memberIndex = index
-            console.log(memberIndex)
+        for (let i = 0; i < theGroup.members.length; i++) {
+          if (theGroup.members[i]._id === userId) {
+            roleInGroup = theGroup.members[i].role
+            break
           }
-          index += 1
         }
-        if (memberIndex && ((roleInGroup === 1 && memberId !== userId) || (roleInGroup !== 1 && memberId === userId))) {
-          // theGroup.members.splice(memberIndex, 1)
-          //   Group.update({'_id': groupId}, {$set: {'members': theGroup.members}}, (err, doc) => {
-        //     if (err) {
-        //       console.log(err)
-        //     } else {
-        //       User.update({'_id': memberId}, {'$pull': {$in: [{'groups': {'_id': mongoose.mongo.ObjectId(theGroup._id)}}, {'chatNow': {'_id': theGroup._id}}]}}, (err, doc) => {
-        //         if (err) {
-        //           console.log(err)
-        //         } else {
-        //           res.send({code: 200, result: '移出成功', success: true})
-        //         }
-        //       })
-        //     }
-        //   })
+        for (let i = 0; i < theGroup.members.length; i++) {
+          if (theGroup.members[i]._id === memberId) {
+            theGroup.members.splice(i, 1)
+            break
+          }
+        }
+        if ((roleInGroup === 1 && memberId !== userId) || (roleInGroup !== 1 && memberId === userId)) {
+          Group.update({'_id': groupId}, {$set: {'members': theGroup.members}}, (err, doc) => {
+            if (err) {
+              console.log(err)
+            } else {
+              User.update({'_id': memberId}, {'$pull': {$in: [{'groups': {'_id': mongoose.mongo.ObjectId(theGroup._id)}}, {'chatNow': {'_id': theGroup._id}}]}}, (err, doc) => {
+                if (err) {
+                  console.log(err)
+                } else {
+                  res.send({code: 200, result: '移出成功', success: true})
+                }
+              })
+            }
+          })
         } else {
           res.send({code: 200, result: '无权限', success: false})
         }

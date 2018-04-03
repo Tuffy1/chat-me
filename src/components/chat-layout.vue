@@ -58,6 +58,12 @@
           <p>{{groupChatTo.introduce}}</p>
         </div>
       </div>
+      <div class="edit link-like">
+        <i>
+          <Icon type="edit"></Icon>
+        </i>
+        <span>编辑群信息</span>
+      </div>
       <div class="group-member" v-if="groupInfoShow">
         <div class="member-list">
           <p>群主：</p>
@@ -345,8 +351,14 @@ export default {
   width: 50px;
   height: 50px;
 }
+.show-group-info .edit {
+  text-align: left;
+  margin: 5px 0 5px 5px;
+  font-size: 12px;
+}
 .show-group-info .group-member {
   text-align: left;
+  margin-top: 20px;
 }
 .show-group-info .group-member .member-list {
   margin-top: 10px;
