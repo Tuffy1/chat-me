@@ -2,7 +2,7 @@ import axios from 'axios'
 
 export default form => {
   return axios.post('/api/user/newGroupMember', {
-    groupId: form.groupId,
+    group: form.group,
     newMembers: form.newMembers
   })
   .then(res => {

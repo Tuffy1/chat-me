@@ -93,8 +93,17 @@ router.get('/getChatNow', (req, res) => {
 })
 
 router.post('/addChatNow', (req, res) => {
+  let chatNow = {
+    _id: req.body.user._id,
+    avatar: req.body.user.avatar,
+    nickname: req.body.user.nickname,
+    username: req.body.user.username,
+    introduce: req.body.user.introduce,
+    creatAt: req.body.user.creatAt,
+    type: req.body.user.type
+  }
   isLogin(req, res, (payload) => {
-    User.update({'_id': payload.userId}, {'$addToSet': {'chatNow': req.body.user}}, (err, doc) => {
+    User.update({'_id': payload.userId}, {'$addToSet': {'chatNow': chatNow}}, (err, doc) => {
       if (err) {
         console.log(err)
         res.send({code: 700, msg: '查询出错：' + err, success: false})
@@ -228,7 +237,7 @@ router.post('/newGroup', (req, res) => {
         res.send({code: 700, msg: '保存出错：' + err, success: false})
       } else {
         const userGroup = {
-          _id: theGroup._id,
+          _id: theGroup._id.toString(),
           nickname: theGroup.nickname,
           username: theGroup.username,
           avatar: theGroup.avatar,
@@ -270,19 +279,30 @@ router.post('/deleteGroup', (req, res) => {
 })
 
 router.post('/newGroupMember', (req, res) => {
-  isLogin(req, res, (payload) => {
-    req.body.newMembers.forEach((member, index) => {
-      Group.update({'_id': req.body.groupId}, {'$addToSet': {'members': member}}, (err, doc) => {
-        if (err) {
-          console.log(err)
-          // res.send({code: 700, msg: '保存出错：' + err, success: false})
-        } else {
-          if (index === req.body.newMembers.length) {
-            res.send({code: 200, result: '添加成功', success: true})
-          }
+  let groupAddMembers = false
+  let membersAddGroup = false
+  req.body.newMembers.forEach((member, index) => {
+    Group.update({'_id': req.body.group._id}, {'$addToSet': {'members': member}}, (err, doc) => {
+      if (err) {
+        console.log(err)
+      } else {
+        if (index === req.body.newMembers.length) {
+          groupAddMembers = true
         }
-      })
+      }
     })
+    User.update({'_id': member._id}, {'$addToSet': {'groups': req.body.group}}, (err, doc) => {
+      if (err) {
+        console.log(err)
+      } else {
+        if (index === req.body.newMembers.length) {
+          membersAddGroup = true
+        }
+      }
+    })
+    if (groupAddMembers && membersAddGroup) {
+      res.send({code: 200, result: '添加成功', success: true})
+    }
   })
 })
 
@@ -315,11 +335,17 @@ router.post('/deleteGroupMember', (req, res) => {
             if (err) {
               console.log(err)
             } else {
-              User.update({'_id': memberId}, {'$pull': {$in: [{'groups': {'_id': mongoose.mongo.ObjectId(theGroup._id)}}, {'chatNow': {'_id': theGroup._id}}]}}, (err, doc) => {
+              User.update({'_id': memberId}, {'$pull': {'groups': {'_id': theGroup._id}}}, (err, doc) => {
                 if (err) {
                   console.log(err)
                 } else {
-                  res.send({code: 200, result: '移出成功', success: true})
+                  User.update({'_id': memberId}, {'$pull': {'chatNow': {'_id': theGroup._id}}}, (err, doc) => {
+                    if (err) {
+                      console.log(err)
+                    } else {
+                      res.send({code: 200, result: '移出成功', success: true})
+                    }
+                  })
                 }
               })
             }

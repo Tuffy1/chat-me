@@ -43,8 +43,6 @@ router.post('/sendMessage', (req, res) => {
             if (err) {
               console.log(err)
             } else {
-              console.log('message:')
-              console.log(typeof doc._id)
               group = {
                 _id: doc._id.toString(),
                 avatar: doc.avatar,
@@ -52,10 +50,8 @@ router.post('/sendMessage', (req, res) => {
                 username: doc.username,
                 introduce: doc.introduce,
                 creatAt: doc.creatAt,
-                members: doc.members,
                 type: 'group'
               }
-              // console.log(`doc: ${doc}`)
               doc.members.forEach(member => {
                 if (member._id.toString() !== payload.userId.toString()) {
                   User.update({_id: member}, {'$addToSet': {'chatNow': group}}, (err, doc) => {

@@ -4,8 +4,8 @@
       <img src="../assets/imgs/avatar.jpg" alt="">
     </div>
     <div class="user-info">
-      <p>{{user.nickname}}</p>
-      <p>{{user.introduce}}</p>
+      <p class="info">{{user.nickname}}</p>
+      <p class="info">{{user.introduce}}</p>
     </div>
     <div class="time">
       <span>02.05</span>
@@ -44,6 +44,11 @@ export default {
   line-height: 1.2;
   padding-left: 6px;
   text-align: left;
+}
+.info {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .time {
   width: 30px;

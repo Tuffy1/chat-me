@@ -49,16 +49,18 @@
           <p>nickname:</p>
           <p>nickname:</p>
           <p>creatAt:</p>
-          <p>introduce:</p>
         </div>
         <div class="user-info">
           <p>{{groupChatTo.nickname}}</p>
           <p>{{groupChatTo.username}}</p>
-          <p>{{groupChatTo.creatAt}}</p>
-          <p>{{groupChatTo.introduce}}</p>
+          <p>{{creatAt}}</p>
         </div>
+        
       </div>
-      <div class="edit link-like">
+      <div class="introduce">
+        <p>introduce:   {{groupChatTo.introduce}}</p>
+      </div>
+      <div class="edit link-like" v-if="imOwner">
         <i>
           <Icon type="edit"></Icon>
         </i>
@@ -66,14 +68,14 @@
       </div>
       <div class="group-member" v-if="groupInfoShow">
         <div class="member-list">
-          <p>群主：</p>
+          <p class="member-title">群主：</p>
           <div class="member-item">
-            <div class="img-div" @click="showMemberInfo(groupOwner[0])">
+            <div class="img-div" @click="showMemberInfo(groupOwner)">
               <img src="../assets/imgs/avatar.jpg" alt="">      
             </div>
-            <span>{{groupOwner[0].nickname}}</span>
+            <span>{{groupOwner.nickname}}</span>
           </div>
-          <p>成员：</p>
+          <p class="member-title">成员：</p>
           <div class="member-item" v-for="member in groupMember" :key="member._id">
             <div class="img-div" @click="showMemberInfo(member)">
               <img src="../assets/imgs/avatar.jpg" alt="">      
@@ -89,14 +91,19 @@
                      :userInfo="userInfo"
                      :isGroupMember="isGroupMember"
                      ></show-info-modal>
+    <edit-group-info-modal :modalShow="editModalShow"></edit-group-info-modal>
+    
   </div>
 </template>
 
 <script>
+import moment from 'moment'
+
 import { cloneDeep } from 'lodash'
 import { mapState } from 'vuex'
 import newMemberCard from './new-member-card'
 import showInfoModal from './show-info-modal'
+import editGroupInfoModal from './edit-group-info-modal'
 
 export default {
   data () {
@@ -106,6 +113,7 @@ export default {
       // groupChatTo: {},
       infoModalShow: false,
       groupInfoShow: false,
+      editModalShow: false,
       isShoweMojis: false,
       emojis: ['😂', '🙏', '😄', '😏', '😇', '😅', '😌', '😘', '😍', '🤓', '😜', '😎', '😊', '😳', '🙄', '😱', '😒', '😔', '😷', '👿', '🤗', '😩', '😤', '😣', '😰', '😴', '😬', '😭', '👻', '👍', '✌️', '👉', '👀', '🐶', '🐷', '😹', '⚡️', '🔥', '🌈', '🍏', '⚽️', '❤️', '🇨🇳'],
       imgPath: '',
@@ -115,6 +123,9 @@ export default {
   props: ['userChatTo'],
   computed: {
     ...mapState(['user', 'userMessage', 'groupMessage', 'theGroup']),
+    creatAt () {
+      return moment(this.groupChatTo.creatAt).format('YYYY-MM-DD')
+    },
     groupChatTo () {
       return this.theGroup
     },
@@ -122,7 +133,10 @@ export default {
       return this.theGroup.members.filter(member => member.role === 3)
     },
     groupOwner () {
-      return this.theGroup.members.filter(member => member.role === 1)
+      return this.theGroup.members.filter(member => member.role === 1)[0]
+    },
+    imOwner () {
+      return this.groupOwner._id === this.user._id
     }
   },
   watch: {
@@ -228,7 +242,8 @@ export default {
   },
   components: {
     newMemberCard,
-    showInfoModal
+    showInfoModal,
+    editGroupInfoModal
   }
 }
 </script>
@@ -329,6 +344,7 @@ export default {
   -moz-transition: right 1s; /* Firefox 4 */
   -webkit-transition: right 1s; /* Safari 和 Chrome */
   -o-transition: right 1s; /* Opera */
+  overflow-y: scroll;
 }
 .show-group-info .icon-cancel {
   position: absolute;
@@ -339,7 +355,7 @@ export default {
 }
 .show-group-info .group-info .user-info {
   text-align: left;
-  margin: 0 10px;
+  margin: 0 0 0 10px;
 }
 .show-group-info .img-wrap {
   width: 50px;
@@ -350,6 +366,10 @@ export default {
 .show-group-info .img-wrap img {
   width: 50px;
   height: 50px;
+}
+.show-group-info .introduce {
+  text-align: left;
+  margin-top: 5px;
 }
 .show-group-info .edit {
   text-align: left;
@@ -363,6 +383,10 @@ export default {
 .show-group-info .group-member .member-list {
   margin-top: 10px;
   margin-left: 10px;
+}
+.show-group-info .group-member .member-title {
+  margin-left: -10px;
+  margin-bottom: 10px;
 }
 .show-group-info .group-member .member-list .member-item {
   display: inline-block;

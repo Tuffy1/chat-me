@@ -40,11 +40,18 @@ export default {
     }
   },
   computed: {
-    ...mapState(['user', 'friends'])
+    ...mapState(['user', 'friends', 'theGroup'])
   },
   methods: {
     submit () {
-      this.groupId = this.$route.query.user
+      const group = {
+        _id: this.theGroup._id,
+        nickname: this.theGroup.nickname,
+        username: this.theGroup.username,
+        avatar: this.theGroup.avatar,
+        introduce: this.theGroup.introduce,
+        creatAt: this.theGroup.creatAt
+      }
       let tempArr = []
       let tempMember = {}
       this.newMembers.forEach(member => {
@@ -54,12 +61,12 @@ export default {
       })
       this.newMembers = tempArr
       this.$store.dispatch('newGroupMember', {
-        groupId: this.groupId,
+        group: group,
         newMembers: this.newMembers
       })
       .then(() => {
         this.$Message.success('添加成功')
-        return this.$store.dispatch('getGroupInfo', this.groupId)
+        return this.$store.dispatch('getGroupInfo', group._id)
       }, msg => this.$Message.warning(msg))
       .then(() => {
         this.$emit('closeModal')
