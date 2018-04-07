@@ -4,7 +4,8 @@
       <template slot="chat-content">
         <div v-for="(message, index) in messagesFilter" :key="index">
           <chat-bubble :isMe="message.from=== user._id"
-                       :message="message">
+                       :message="message"
+                       :userOrGroup="'user'">
           </chat-bubble>
         </div>
       </template>

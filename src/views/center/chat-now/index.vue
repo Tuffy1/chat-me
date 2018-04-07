@@ -41,7 +41,19 @@ export default {
       return this.chatNow.filter(user => user.nickname.match(this.searchContent))
     }
   },
+  watch: {
+    $route () {
+      this.init()
+    }
+  },
+  created () {
+    this.init()
+  },
   methods: {
+    init () {
+      this.$store.dispatch('getChatNow')
+      .then(() => {}, msg => this.$Message.warning(msg))
+    },
     route (user) {
       if (user.type === 'group') {
         return `/center/chatting/groupdetail?user=${user._id}`

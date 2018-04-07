@@ -57,6 +57,7 @@ export default {
       this.newMembers.forEach(member => {
         tempMember = JSON.parse(member)
         tempMember.role = 3
+        tempMember.relat = true
         tempArr.push(tempMember)
       })
       this.newMembers = tempArr

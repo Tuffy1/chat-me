@@ -33,6 +33,14 @@
             <Icon type="ios-upload-outline"></Icon>
           </i>
         </Upload>
+        <i class="fun-emojis" @click="lockMsg" v-if="!lock">
+          <Icon type="unlocked"></Icon>
+        </i>
+        <i class="fun-emojis" @click="unlockMsg" v-if="lock">
+          <Icon type="locked"></Icon>
+        </i>
+        <span class="role-notice" v-if="!lock">以下内容成员均可见</span>
+        <span class="role-notice" v-if="lock">以下内容成员不可见</span>
       </div>
       <textarea name="" id="text" v-model="message" @keyup.ctrl.enter="onSubmit"></textarea>    
       <!-- <Button type="success" size="small" class="send-btn" @click="onSubmit()">发送</Button> -->
@@ -60,12 +68,12 @@
       <div class="introduce">
         <p>introduce:   {{groupChatTo.introduce}}</p>
       </div>
-      <div class="edit link-like" v-if="imOwner">
+      <!-- <div class="edit link-like" v-if="imOwner">
         <i>
           <Icon type="edit"></Icon>
         </i>
         <span>编辑群信息</span>
-      </div>
+      </div> -->
       <div class="group-member" v-if="groupInfoShow">
         <div class="member-list">
           <p class="member-title">群主：</p>
@@ -74,6 +82,16 @@
               <img src="../assets/imgs/avatar.jpg" alt="">      
             </div>
             <span>{{groupOwner.nickname}}</span>
+          </div>
+          <p class="member-title">管理员：</p>
+          <div class="no-manager" v-if="groupManager.length === 0">
+            <span>暂无管理员</span>
+          </div>
+          <div class="member-item" v-for="member in groupManager" :key="member._id" v-else>
+            <div class="img-div" @click="showMemberInfo(member)">
+              <img src="../assets/imgs/avatar.jpg" alt="">      
+            </div>
+            <span>{{member.nickname}}</span>
           </div>
           <p class="member-title">成员：</p>
           <div class="member-item" v-for="member in groupMember" :key="member._id">
@@ -91,8 +109,6 @@
                      :userInfo="userInfo"
                      :isGroupMember="isGroupMember"
                      ></show-info-modal>
-    <edit-group-info-modal :modalShow="editModalShow"></edit-group-info-modal>
-    
   </div>
 </template>
 
@@ -117,7 +133,8 @@ export default {
       isShoweMojis: false,
       emojis: ['😂', '🙏', '😄', '😏', '😇', '😅', '😌', '😘', '😍', '🤓', '😜', '😎', '😊', '😳', '🙄', '😱', '😒', '😔', '😷', '👿', '🤗', '😩', '😤', '😣', '😰', '😴', '😬', '😭', '👻', '👍', '✌️', '👉', '👀', '🐶', '🐷', '😹', '⚡️', '🔥', '🌈', '🍏', '⚽️', '❤️', '🇨🇳'],
       imgPath: '',
-      isGroupMember: false
+      isGroupMember: false,
+      lock: false
     }
   },
   props: ['userChatTo'],
@@ -130,14 +147,17 @@ export default {
       return this.theGroup
     },
     groupMember () {
-      return this.theGroup.members.filter(member => member.role === 3)
+      return this.theGroup.members.filter(member => (member.role === 3 && member.relat))
+    },
+    groupManager () {
+      return this.theGroup.members.filter(member => (member.role === 2 && member.relat))
     },
     groupOwner () {
-      return this.theGroup.members.filter(member => member.role === 1)[0]
-    },
-    imOwner () {
-      return this.groupOwner._id === this.user._id
+      return this.theGroup.members.filter(member => (member.role === 1 && member.relat))[0]
     }
+    // imOwner () {
+    //   return this.groupOwner._id === this.user._id
+    // }
   },
   watch: {
     // userMessage () {
@@ -236,8 +256,18 @@ export default {
       this.message = this.message + item
     },
     uploadSuccess (res, file) {
-      this.$store.commit('sendMessage', res.result)
-      this.message = ''
+      if (res.success) {
+        this.$store.commit('sendMessage', res.result)
+        this.message = ''
+      } else {
+        this.$Message.warning(res.msg)
+      }
+    },
+    lockMsg () {
+      this.lock = true
+    },
+    unlockMsg () {
+      this.lock = false
     }
   },
   components: {
@@ -318,7 +348,12 @@ export default {
 .chat-layout .chat-text .other-fun botton {
   height: 10px;
 }
-
+.chat-layout .chat-text .other-fun .role-notice {
+  font-size: 12px;
+  color: rgb(185, 182, 182);
+  position: absolute;
+  right: 4px;
+}
 .chat-layout .chat-text textarea {
   width: 587px;
   height: 74px;
@@ -387,6 +422,11 @@ export default {
 .show-group-info .group-member .member-title {
   margin-left: -10px;
   margin-bottom: 10px;
+}
+.show-group-info .group-member .no-manager {
+  font-size: 12px;
+  color: rgb(185, 182, 182);
+  margin-bottom: 8px;
 }
 .show-group-info .group-member .member-list .member-item {
   display: inline-block;

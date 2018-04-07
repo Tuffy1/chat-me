@@ -18,8 +18,10 @@
           </div>
         </div>
         <div slot="footer" v-if="isGroupMember">
-          <Button type="error" v-if="imOwnerSelf" @click="removeGroupMember">移出群聊</Button>
-          <Button type="error" v-if="imMemberSelf" @click="leaveGroup">退出群聊</Button>
+          <Button type="primary" v-if="imOwnerSelf && isMember" @click="changeRole(2)">设为管理员</Button>
+          <Button type="primary" v-if="imOwnerSelf && isManager" @click="changeRole(3)">设为成员</Button>
+          <Button type="error" v-if="compareRole" @click="removeGroupMember">移出群聊</Button>
+          <Button type="error" v-if="imMemberSelf || imManagerSelf" @click="leaveGroup">退出群聊</Button>
         </div>
     </Modal>
   </div>
@@ -31,7 +33,8 @@ import { mapState } from 'vuex'
 export default {
   data () {
     return {
-      roleInGroup: 3
+      myRoleInGroup: 3,
+      hisRoleInGroup: 3
     }
   },
   props: ['modalShow', 'userInfo', 'isGroupMember'],
@@ -54,14 +57,43 @@ export default {
     },
     imOwnerSelf () {
       this.getRoleInGroup()
-      if (this.roleInGroup === 1 && this.user._id !== this.userInfo._id) {
+      if (this.myRoleInGroup === 1 && this.user._id !== this.userInfo._id) {
         return true
       }
       return false
     },
     imMemberSelf () {
       this.getRoleInGroup()
-      if (this.roleInGroup === 3 && this.user._id === this.userInfo._id) {
+      if (this.myRoleInGroup === 3 && this.user._id === this.userInfo._id) {
+        return true
+      }
+      return false
+    },
+    imManagerSelf () {
+      this.getRoleInGroup()
+      if (this.myRoleInGroup === 2 && this.user._id === this.userInfo._id) {
+        return true
+      }
+      return false
+    },
+    isMember () {
+      this.getHisRoleInGroup()
+      if (this.hisRoleInGroup === 3) {
+        return true
+      }
+      return false
+    },
+    isManager () {
+      this.getHisRoleInGroup()
+      if (this.hisRoleInGroup === 2) {
+        return true
+      }
+      return false
+    },
+    compareRole () {
+      this.getRoleInGroup()
+      this.getHisRoleInGroup()
+      if (this.myRoleInGroup < this.hisRoleInGroup) {
         return true
       }
       return false
@@ -73,7 +105,14 @@ export default {
     getRoleInGroup () {
       this.theGroup.members.forEach(member => {
         if (member._id === this.user._id) {
-          this.roleInGroup = member.role
+          this.myRoleInGroup = member.role
+        }
+      })
+    },
+    getHisRoleInGroup () {
+      this.theGroup.members.forEach(member => {
+        if (member._id === this.userInfo._id) {
+          this.hisRoleInGroup = member.role
         }
       })
     },
@@ -103,6 +142,20 @@ export default {
       }, msg => this.$Message.warning(msg))
       .then(() => {
         this.$Message.success('退出成功')
+        this.cancel()
+      }, msg => this.$Message.warning(msg))
+    },
+    changeRole (newRole) {
+      this.$store.dispatch('changeMemberRole', {
+        groupId: this.theGroup._id,
+        memberId: this.userInfo._id,
+        newRole: newRole
+      })
+      .then(() => {
+        this.$store.dispatch('getGroupInfo', this.theGroup._id)
+      }, msg => this.$Message.warning(msg))
+      .then(() => {
+        this.$Message.success('设置成功')
         this.cancel()
       }, msg => this.$Message.warning(msg))
     }

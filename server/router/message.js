@@ -21,10 +21,53 @@ router.post('/sendMessage', (req, res) => {
     let msg
     const groupId = req.body.chatTo
     if (req.body.type === 'group') {
+      let group = {}
       msg = new GroupMessage({
         from: payload.userId,
         to: req.body.chatTo,
         content: req.body.content
+      })
+      Group.findOne({_id: groupId}, (err, doc) => {
+        if (err) {
+          console.log(err)
+        } else {
+          if (doc.members.some(member => (member._id.toString() === payload.userId.toString()) && member.relat)) {
+            msg.save((err) => {
+              if (err) {
+                res.send({code: 700, msg: '存入数据库出错：' + err, success: false})
+              } else {
+                group = {
+                  _id: doc._id.toString(),
+                  avatar: doc.avatar,
+                  nickname: doc.nickname,
+                  username: doc.username,
+                  introduce: doc.introduce,
+                  creatAt: doc.creatAt,
+                  type: 'group'
+                }
+                let groupString = JSON.stringify(group)
+                group = JSON.parse(groupString)
+                doc.members.forEach(member => {
+                  if (member._id.toString() !== payload.userId.toString() && member.relat) {
+                    User.update({_id: member}, {'$addToSet': {'chatNow': group}}, (err, doc) => {
+                      if (err) {
+                        console.log(err)
+                      }
+                    })
+                  }
+                })
+                const form = {
+                  msg: msg,
+                  group: group
+                }
+                global.io.to(groupId.toString()).emit('GROUP_MESSAGE', form)
+                res.send({code: 200, result: msg, success: true})
+              }
+            })
+          } else {
+            res.send({code: 200, msg: '您不在此群聊中', success: false})
+          }
+        }
       })
     } else {
       msg = new UserMessage({
@@ -32,87 +75,191 @@ router.post('/sendMessage', (req, res) => {
         to: req.body.chatTo,
         content: req.body.content
       })
-    }
-    msg.save((err) => {
-      if (err) {
-        res.send({code: 700, msg: '存入数据库出错：' + err, success: false})
-      } else {
-        if (req.body.type === 'group') {
-          let group = {}
-          Group.findOne({_id: groupId}, (err, doc) => {
-            if (err) {
-              console.log(err)
-            } else {
-              group = {
-                _id: doc._id.toString(),
-                avatar: doc.avatar,
-                nickname: doc.nickname,
-                username: doc.username,
-                introduce: doc.introduce,
-                creatAt: doc.creatAt,
-                type: 'group'
-              }
-              doc.members.forEach(member => {
-                if (member._id.toString() !== payload.userId.toString()) {
-                  User.update({_id: member}, {'$addToSet': {'chatNow': group}}, (err, doc) => {
-                    if (err) {
-                      console.log(err)
-                    }
-                  })
-                }
-              })
-              const form = {
-                msg: msg,
-                group: group
-              }
-              global.io.to(groupId.toString()).emit('GROUP_MESSAGE', form)
-              res.send({code: 200, result: msg, success: true})
-            }
-          })
+      User.findOne({_id: payload.userId}, (err, doc) => {
+        let user = {}
+        user._id = doc._id
+        user.avatar = doc.avatar
+        user.nickname = doc.nickname
+        user.username = doc.username
+        user.introduce = doc.introduce
+        user.creatAt = doc.creatAt
+        user.type = 'user'
+        let userString = JSON.stringify(user)
+        user = JSON.parse(userString)
+        if (err) {
+          console.log(err)
         } else {
-          Auth.findOne({user: req.body.chatTo}, (err, doc) => {
-            if (err) {
-              res.send({code: 700, msg: '查询出错：' + err})
-            } else if (doc) {
-              const clients = doc.clients
-              let user = {}
-              User.findOne({_id: payload.userId}, (err, doc) => {
-                if (err) {
-                  console.log(err)
-                } else {
-                  user._id = doc._id
-                  user.avatar = doc.avatar
-                  user.nickname = doc.nickname
-                  user.username = doc.username
-                  user.introduce = doc.introduce
-                  user.creatAt = doc.creatAt
-                  user.type = 'user'
-                  User.update({_id: req.body.chatTo}, {'$addToSet': {'chatNow': user}}, (err, doc) => {
+          if (doc.friends.some(friend => (friend._id.toString() === req.body.chatTo.toString()) && friend.relat)) {
+            User.findOne({_id: req.body.chatTo}, (err, doc) => {
+              if (err) {
+                console.log(err)
+              } else {
+                if (doc.friends.some(friend => (friend._id.toString() === payload.userId.toString() && friend.relat))) {
+                  msg.save((err) => {
                     if (err) {
-                      console.log(err)
+                      res.send({code: 700, msg: '存入数据库出错：' + err, success: false})
                     } else {
-                      const form = {
-                        msg: msg,
-                        user: user
-                      }
-                      for (const client of clients) {
-                        global.io.to(client).emit('USER_MESSAGE', form)
-                      }
-                      res.send({code: 200, result: msg, success: true})
+                      Auth.findOne({user: req.body.chatTo}, (err, doc) => {
+                        if (err) {
+                          res.send({code: 700, msg: '查询出错：' + err})
+                        } else if (doc) {
+                          const clients = doc.clients
+                          console.log(typeof user._id)
+                          User.update({_id: req.body.chatTo}, {'$addToSet': {'chatNow': user}}, (err, doc) => {
+                            if (err) {
+                              console.log(err)
+                            } else {
+                              const form = {
+                                msg: msg,
+                                user: user
+                              }
+                              for (const client of clients) {
+                                global.io.to(client).emit('USER_MESSAGE', form)
+                              }
+                              res.send({code: 200, result: msg, success: true})
+                            }
+                          })
+                        } else if (!doc) {
+                          // 用户当前不在线
+                          res.send({code: 200, result: msg, success: true})
+                        }
+                      })
                     }
                   })
+                } else {
+                  res.send({code: 200, msg: '您不是对方好友', success: false})
                 }
-              })
-            } else if (!doc) {
-              // 用户当前不在线
-              res.send({code: 200, result: msg, success: true})
-            }
-          })
+              }
+            })
+          } else {
+            res.send({code: 200, msg: '对方不是您好友', success: false})
+          }
         }
-      }
-    })
+      })
+    }
   })
 })
+//       Auth.findOne({user: req.body.chatTo}, (err, doc) => {
+//         if (err) {
+//           res.send({code: 700, msg: '查询出错：' + err})
+//         } else if (doc) {
+//           const clients = doc.clients
+//           let user = {}
+//           User.findOne({_id: payload.userId}, (err, doc) => {
+//             if (err) {
+//               console.log(err)
+//             } else {
+//               user._id = doc._id
+//               user.avatar = doc.avatar
+//               user.nickname = doc.nickname
+//               user.username = doc.username
+//               user.introduce = doc.introduce
+//               user.creatAt = doc.creatAt
+//               user.type = 'user'
+//               User.update({_id: req.body.chatTo}, {'$addToSet': {'chatNow': user}}, (err, doc) => {
+//                 if (err) {
+//                   console.log(err)
+//                 } else {
+//                   const form = {
+//                     msg: msg,
+//                     user: user
+//                   }
+//                   for (const client of clients) {
+//                     global.io.to(client).emit('USER_MESSAGE', form)
+//                   }
+//                   res.send({code: 200, result: msg, success: true})
+//                 }
+//               })
+//             }
+//           })
+//         } else if (!doc) {
+//           // 用户当前不在线
+//           res.send({code: 200, result: msg, success: true})
+//         }
+//       })
+//     }
+//   }
+//     }
+//     msg.save((err) => {
+//       if (err) {
+//         res.send({code: 700, msg: '存入数据库出错：' + err, success: false})
+//       } else {
+//         if (req.body.type === 'group') {
+//           let group = {}
+//           Group.findOne({_id: groupId}, (err, doc) => {
+//             if (err) {
+//               console.log(err)
+//             } else {
+//               group = {
+//                 _id: doc._id.toString(),
+//                 avatar: doc.avatar,
+//                 nickname: doc.nickname,
+//                 username: doc.username,
+//                 introduce: doc.introduce,
+//                 creatAt: doc.creatAt,
+//                 type: 'group'
+//               }
+//               doc.members.forEach(member => {
+//                 if (member._id.toString() !== payload.userId.toString()) {
+//                   User.update({_id: member}, {'$addToSet': {'chatNow': group}}, (err, doc) => {
+//                     if (err) {
+//                       console.log(err)
+//                     }
+//                   })
+//                 }
+//               })
+//               const form = {
+//                 msg: msg,
+//                 group: group
+//               }
+//               global.io.to(groupId.toString()).emit('GROUP_MESSAGE', form)
+//               res.send({code: 200, result: msg, success: true})
+//             }
+//           })
+//         } else {
+//           Auth.findOne({user: req.body.chatTo}, (err, doc) => {
+//             if (err) {
+//               res.send({code: 700, msg: '查询出错：' + err})
+//             } else if (doc) {
+//               const clients = doc.clients
+//               let user = {}
+//               User.findOne({_id: payload.userId}, (err, doc) => {
+//                 if (err) {
+//                   console.log(err)
+//                 } else {
+//                   user._id = doc._id
+//                   user.avatar = doc.avatar
+//                   user.nickname = doc.nickname
+//                   user.username = doc.username
+//                   user.introduce = doc.introduce
+//                   user.creatAt = doc.creatAt
+//                   user.type = 'user'
+//                   User.update({_id: req.body.chatTo}, {'$addToSet': {'chatNow': user}}, (err, doc) => {
+//                     if (err) {
+//                       console.log(err)
+//                     } else {
+//                       const form = {
+//                         msg: msg,
+//                         user: user
+//                       }
+//                       for (const client of clients) {
+//                         global.io.to(client).emit('USER_MESSAGE', form)
+//                       }
+//                       res.send({code: 200, result: msg, success: true})
+//                     }
+//                   })
+//                 }
+//               })
+//             } else if (!doc) {
+//               // 用户当前不在线
+//               res.send({code: 200, result: msg, success: true})
+//             }
+//           })
+//         }
+//       }
+//     })
+//   })
+// })
 
 router.post('/uploadImg', (req, res) => {
   isLogin(req, res, (payload) => {
@@ -148,12 +295,53 @@ router.post('/uploadImg', (req, res) => {
       imgPath = 'http://localhost:8088/' + avatarName
       // res.send({code: 200, success: true, result: imgPath})
       let msg
-      if (req.body.type === 'group') {
+      if (userType === 'group') {
+        let group = {}
         msg = new GroupMessage({
           from: payload.userId,
           to: chatTo,
           content: imgPath,
           type: 'image'
+        })
+        Group.findOne({_id: chatTo}, (err, doc) => {
+          if (err) {
+            console.log(err)
+          } else {
+            if (doc.members.some(member => (member._id.toString() === payload.userId.toString()) && member.relat)) {
+              msg.save((err) => {
+                if (err) {
+                  res.send({code: 700, msg: '存入数据库出错：' + err, success: false})
+                } else {
+                  group = {
+                    _id: doc._id.toString(),
+                    avatar: doc.avatar,
+                    nickname: doc.nickname,
+                    username: doc.username,
+                    introduce: doc.introduce,
+                    creatAt: doc.creatAt,
+                    type: 'group'
+                  }
+                  doc.members.forEach(member => {
+                    if (member._id.toString() !== payload.userId.toString() && member.relat) {
+                      User.update({_id: member}, {'$addToSet': {'chatNow': group}}, (err, doc) => {
+                        if (err) {
+                          console.log(err)
+                        }
+                      })
+                    }
+                  })
+                  const form = {
+                    msg: msg,
+                    group: group
+                  }
+                  global.io.to(chatTo.toString()).emit('GROUP_MESSAGE', form)
+                  res.send({code: 200, result: msg, success: true})
+                }
+              })
+            } else {
+              res.send({code: 200, msg: '您不在此群聊中', success: false})
+            }
+          }
         })
       } else {
         msg = new UserMessage({
@@ -162,84 +350,158 @@ router.post('/uploadImg', (req, res) => {
           content: imgPath,
           type: 'image'
         })
-      }
-      msg.save((err) => {
-        if (err) {
-          res.send({code: 700, msg: '存入数据库出错：' + err, success: false})
-        } else {
-          if (userType === 'group') {
-            let group = {}
-            Group.findOne({_id: chatTo}, (err, doc) => {
-              if (err) {
-                console.log(err)
-              } else {
-                group._id = doc._id
-                group.avatar = doc.avatar
-                group.nickname = doc.nickname
-                group.username = doc.username
-                group.introduce = doc.introduce
-                group.creatAt = doc.creatAt
-                group.type = 'group'
-                // console.log(`doc: ${doc}`)
-                doc.members.forEach(member => {
-                  if (member.toString() !== payload.userId.toString()) {
-                    User.update({_id: member}, {'$addToSet': {'chatNow': group}}, (err, doc) => {
-                      if (err) {
-                        console.log(err)
-                      }
-                    })
-                  }
-                })
-                const form = {
-                  msg: msg,
-                  group: group
-                }
-                global.io.to(chatTo.toString()).emit('GROUP_MESSAGE', form)
-                res.send({code: 200, result: msg, success: true})
-              }
-            })
+        User.findOne({_id: payload.userId}, (err, doc) => {
+          let user = {}
+          user._id = doc._id
+          user.avatar = doc.avatar
+          user.nickname = doc.nickname
+          user.username = doc.username
+          user.introduce = doc.introduce
+          user.creatAt = doc.creatAt
+          user.type = 'user'
+          if (err) {
+            console.log(err)
           } else {
-            Auth.findOne({user: chatTo}, (err, doc) => {
-              if (err) {
-                res.send({code: 700, msg: '查询出错：' + err})
-              } else if (doc) {
-                const clients = doc.clients
-                let user = {}
-                User.findOne({_id: payload.userId}, (err, doc) => {
-                  if (err) {
-                    console.log(err)
-                  } else {
-                    user._id = doc._id
-                    user.avatar = doc.avatar
-                    user.nickname = doc.nickname
-                    user.username = doc.username
-                    user.introduce = doc.introduce
-                    user.creatAt = doc.creatAt
-                    user.type = 'user'
-                    User.update({_id: chatTo}, {'$addToSet': {'chatNow': user}}, (err, doc) => {
+            if (doc.friends.some(friend => (friend._id.toString() === chatTo.toString()) && friend.relat)) {
+              User.findOne({_id: chatTo}, (err, doc) => {
+                if (err) {
+                  console.log(err)
+                } else {
+                  if (doc.friends.some(friend => (friend._id.toString() === payload.userId.toString() && friend.relat))) {
+                    msg.save((err) => {
                       if (err) {
-                        console.log(err)
+                        res.send({code: 700, msg: '存入数据库出错：' + err, success: false})
                       } else {
-                        const form = {
-                          msg: msg,
-                          user: user
-                        }
-                        for (const client of clients) {
-                          global.io.to(client).emit('USER_MESSAGE', form)
-                        }
-                        res.send({code: 200, result: msg, success: true})
+                        Auth.findOne({user: chatTo}, (err, doc) => {
+                          if (err) {
+                            res.send({code: 700, msg: '查询出错：' + err})
+                          } else if (doc) {
+                            const clients = doc.clients
+                            User.update({_id: chatTo}, {'$addToSet': {'chatNow': user}}, (err, doc) => {
+                              if (err) {
+                                console.log(err)
+                              } else {
+                                const form = {
+                                  msg: msg,
+                                  user: user
+                                }
+                                for (const client of clients) {
+                                  global.io.to(client).emit('USER_MESSAGE', form)
+                                }
+                                res.send({code: 200, result: msg, success: true})
+                              }
+                            })
+                          } else if (!doc) {
+                            // 用户当前不在线
+                            res.send({code: 200, result: msg, success: true})
+                          }
+                        })
                       }
                     })
+                  } else {
+                    res.send({code: 200, msg: '您不是对方好友', success: false})
                   }
-                })
-              } else if (!doc) {
-                // 用户当前不在线
-                res.send({code: 200, result: msg, success: true})
-              }
-            })
+                }
+              })
+            } else {
+              res.send({code: 200, msg: '对方不是您好友', success: false})
+            }
           }
-        }
-      })
+        })
+      }
+      // let msg
+      // if (req.body.type === 'group') {
+      //   msg = new GroupMessage({
+      //     from: payload.userId,
+      //     to: chatTo,
+      //     content: imgPath,
+      //     type: 'image'
+      //   })
+      // } else {
+        // msg = new UserMessage({
+        //   from: payload.userId,
+        //   to: chatTo,
+        //   content: imgPath,
+        //   type: 'image'
+        // })
+      // }
+      // msg.save((err) => {
+      //   if (err) {
+      //     res.send({code: 700, msg: '存入数据库出错：' + err, success: false})
+      //   } else {
+      //     if (userType === 'group') {
+      //       let group = {}
+      //       Group.findOne({_id: chatTo}, (err, doc) => {
+      //         if (err) {
+      //           console.log(err)
+      //         } else {
+      //           group._id = doc._id
+      //           group.avatar = doc.avatar
+      //           group.nickname = doc.nickname
+      //           group.username = doc.username
+      //           group.introduce = doc.introduce
+      //           group.creatAt = doc.creatAt
+      //           group.type = 'group'
+      //           // console.log(`doc: ${doc}`)
+      //           doc.members.forEach(member => {
+      //             if (member.toString() !== payload.userId.toString()) {
+      //               User.update({_id: member}, {'$addToSet': {'chatNow': group}}, (err, doc) => {
+      //                 if (err) {
+      //                   console.log(err)
+      //                 }
+      //               })
+      //             }
+      //           })
+      //           const form = {
+      //             msg: msg,
+      //             group: group
+      //           }
+      //           global.io.to(chatTo.toString()).emit('GROUP_MESSAGE', form)
+      //           res.send({code: 200, result: msg, success: true})
+      //         }
+      //       })
+      //     } else {
+      //       Auth.findOne({user: chatTo}, (err, doc) => {
+      //         if (err) {
+      //           res.send({code: 700, msg: '查询出错：' + err})
+      //         } else if (doc) {
+      //           const clients = doc.clients
+      //           let user = {}
+      //           User.findOne({_id: payload.userId}, (err, doc) => {
+      //             if (err) {
+      //               console.log(err)
+      //             } else {
+      //               user._id = doc._id
+      //               user.avatar = doc.avatar
+      //               user.nickname = doc.nickname
+      //               user.username = doc.username
+      //               user.introduce = doc.introduce
+      //               user.creatAt = doc.creatAt
+      //               user.type = 'user'
+      //               User.update({_id: chatTo}, {'$addToSet': {'chatNow': user}}, (err, doc) => {
+      //                 if (err) {
+      //                   console.log(err)
+      //                 } else {
+      //                   const form = {
+      //                     msg: msg,
+      //                     user: user
+      //                   }
+      //                   for (const client of clients) {
+      //                     global.io.to(client).emit('USER_MESSAGE', form)
+      //                   }
+      //                   res.send({code: 200, result: msg, success: true})
+      //                 }
+      //               })
+      //             }
+      //           })
+      //         } else if (!doc) {
+      //           // 用户当前不在线
+      //           res.send({code: 200, result: msg, success: true})
+      //         }
+      //       })
+      //     }
+      //   }
+      // })
     })
   })
 })

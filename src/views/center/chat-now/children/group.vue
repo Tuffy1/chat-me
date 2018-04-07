@@ -5,7 +5,7 @@
         <div v-for="(message, index) in groupMessage" :key="index">
           <chat-bubble :isMe="message.from=== user._id"
                        :message="message"
-                       >
+                       :userOrGroup="'group'">
           </chat-bubble>
         </div>
       </template>

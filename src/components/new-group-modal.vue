@@ -93,6 +93,7 @@ export default {
       this.form.members.forEach(member => {
         tempMember = JSON.parse(member)
         tempMember.role = 3
+        tempMember.relat = true
         tempArr.push(tempMember)
       })
       this.form.members = tempArr

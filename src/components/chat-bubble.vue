@@ -3,22 +3,36 @@
     <div class="avatar-wrap">
       <img src="../assets/imgs/avatar.jpg" alt="avatar">
     </div>
-    <div class="talk-wrap">
-      <div class="talk-bubble" v-if="message.type === 'text'">{{contentTransfer}}</div>
+    <div class="main-box">
+    <div v-if="userOrGroup === 'group'" class="msg-name">{{msgName}}</div>
+    <div class="talk-wrap" :class="userOrGroup === 'group' ? 'group': ''">
+      <div class="talk-bubble" v-if="message.type === 'text'" v-html="contentTransfer"></div>
       <div class="img-wrap" v-else>
         <img :src="message.content" alt="">
       </div>
+    </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import textTransfer from '../assets/js/text-transfer'
 
 export default {
   computed: {
+    ...mapState(['theGroup']),
     contentTransfer () {
       return textTransfer(this.message.content)
+    },
+    msgName () {
+      let name = ''
+      this.theGroup.members.forEach(member => {
+        if (member._id === this.message.from.toString()) {
+          name = member.nickname
+        }
+      })
+      return name
     }
   },
   props: {
@@ -28,6 +42,9 @@ export default {
     },
     message: {
       type: Object
+    },
+    userOrGroup: {
+      type: String
     }
   }
 }
@@ -50,6 +67,21 @@ export default {
 }
 .chat-bubble .talk-wrap {
   flex: 0 0 auto;
+}
+.chat-bubble .group {
+  position: relative;
+  top: -5px;
+  
+}
+.chat-bubble .msg-name {
+  text-align: left;
+  position: relative;
+  top: -5px;
+  
+  max-width: 60px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .chat-bubble .talk-wrap .talk-bubble {
   text-align: left;

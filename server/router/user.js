@@ -1,17 +1,10 @@
 const express = require('express')
 const router = express.Router()
-// const jwt = require('jwt-simple')
 const mongoose = require('mongoose')
 const User = require('../models/user')
 const Group = require('../models/group')
 const Auth = require('../models/auth')
-// const Message = require('../models/user-message')
-
-// const serializeCookie = require('../util/serializeCookie')
 const isLogin = require('../util/isLogin')
-
-// const parseCookie = require('../util/parseCookie')
-// const secret = 'Joyee'
 const bcrypt = require('bcrypt')
 const saltRounds = 10
 
@@ -143,26 +136,73 @@ router.get('/getFriends', (req, res) => {
 
 router.post('/newFriend', (req, res) => {
   isLogin(req, res, (payload) => {
-    User.update({'_id': req.body.user.to._id}, {'$addToSet': {'friends': req.body.user.from}}, (err, doc) => {
+    User.find({'_id': req.body.user.to._id}, (err, doc) => {
       if (err) {
         console.log(err)
-        res.send({code: 700, msg: '查询出错：' + err, success: false})
-      } else {
-        Auth.findOne({user: req.body.user.to._id}, (err, doc) => {
+      } else if (doc) {
+        User.update({'_id': req.body.user.to._id}, {'$pull': {'friends': {'_id': req.body.user.from._id}}}, (err, doc) => {
           if (err) {
-            res.send({code: 700, msg: '查询出错：' + err})
-          } else if (doc) {
-            const clients = doc.clients
-            console.log('from')
-            console.log(req.body.user.from)
-            for (const client of clients) {
-              global.io.to(client).emit('NEW_FRIEND', req.body.user.from)
-            }
-            res.send({code: 200, result: '等待对方验证', success: true})
+            console.log(err)
+          } else {
+            User.update({'_id': req.body.user.to._id}, {'$addToSet': {'friends': req.body.user.from}}, (err, doc) => {
+              if (err) {
+                console.log(err)
+                res.send({code: 700, msg: '查询出错：' + err, success: false})
+              } else {
+                Auth.findOne({user: req.body.user.to._id}, (err, doc) => {
+                  if (err) {
+                    res.send({code: 700, msg: '查询出错：' + err})
+                  } else if (doc) {
+                    const clients = doc.clients
+                    for (const client of clients) {
+                      global.io.to(client).emit('NEW_FRIEND', req.body.user.from)
+                    }
+                    res.send({code: 200, result: '等待对方验证', success: true})
+                  }
+                })
+              }
+            })
+          }
+        })
+      } else if (!doc) {
+        User.update({'_id': req.body.user.to._id}, {'$addToSet': {'friends': req.body.user.from}}, (err, doc) => {
+          if (err) {
+            console.log(err)
+            res.send({code: 700, msg: '查询出错：' + err, success: false})
+          } else {
+            Auth.findOne({user: req.body.user.to._id}, (err, doc) => {
+              if (err) {
+                res.send({code: 700, msg: '查询出错：' + err})
+              } else if (doc) {
+                const clients = doc.clients
+                for (const client of clients) {
+                  global.io.to(client).emit('NEW_FRIEND', req.body.user.from)
+                }
+                res.send({code: 200, result: '等待对方验证', success: true})
+              }
+            })
           }
         })
       }
     })
+    // User.update({'_id': req.body.user.to._id}, {'$addToSet': {'friends': req.body.user.from}}, (err, doc) => {
+    //   if (err) {
+    //     console.log(err)
+    //     res.send({code: 700, msg: '查询出错：' + err, success: false})
+    //   } else {
+    //     Auth.findOne({user: req.body.user.to._id}, (err, doc) => {
+    //       if (err) {
+    //         res.send({code: 700, msg: '查询出错：' + err})
+    //       } else if (doc) {
+    //         const clients = doc.clients
+    //         for (const client of clients) {
+    //           global.io.to(client).emit('NEW_FRIEND', req.body.user.from)
+    //         }
+    //         res.send({code: 200, result: '等待对方验证', success: true})
+    //       }
+    //     })
+    //   }
+    // })
   })
 })
 
@@ -282,13 +322,29 @@ router.post('/newGroupMember', (req, res) => {
   let groupAddMembers = false
   let membersAddGroup = false
   req.body.newMembers.forEach((member, index) => {
-    Group.update({'_id': req.body.group._id}, {'$addToSet': {'members': member}}, (err, doc) => {
+    Group.findOne({'_id': req.body.group._id}, (err, doc) => {
       if (err) {
         console.log(err)
+      } else if (doc) {
+        Group.update({'_id': req.body.group._id, 'members._id': member._id}, {$set: {'members.$.relat': true, 'members.$.role': 3}}, (err, doc) => {
+          if (err) {
+            console.log(err)
+          } else {
+            if (index === req.body.newMembers.length) {
+              groupAddMembers = true
+            }
+          }
+        })
       } else {
-        if (index === req.body.newMembers.length) {
-          groupAddMembers = true
-        }
+        Group.update({'_id': req.body.group._id}, {'$addToSet': {'members': member}}, (err, doc) => {
+          if (err) {
+            console.log(err)
+          } else {
+            if (index === req.body.newMembers.length) {
+              groupAddMembers = true
+            }
+          }
+        })
       }
     })
     User.update({'_id': member._id}, {'$addToSet': {'groups': req.body.group}}, (err, doc) => {
@@ -326,7 +382,7 @@ router.post('/deleteGroupMember', (req, res) => {
         }
         for (let i = 0; i < theGroup.members.length; i++) {
           if (theGroup.members[i]._id === memberId) {
-            theGroup.members.splice(i, 1)
+            theGroup.members[i].relat = false
             break
           }
         }
@@ -335,11 +391,11 @@ router.post('/deleteGroupMember', (req, res) => {
             if (err) {
               console.log(err)
             } else {
-              User.update({'_id': memberId}, {'$pull': {'groups': {'_id': theGroup._id}}}, (err, doc) => {
+              User.update({'_id': mongoose.mongo.ObjectId(memberId)}, {'$pull': {'groups': {'_id': groupId}}}, (err, doc) => {
                 if (err) {
                   console.log(err)
                 } else {
-                  User.update({'_id': memberId}, {'$pull': {'chatNow': {'_id': theGroup._id}}}, (err, doc) => {
+                  User.update({'_id': mongoose.mongo.ObjectId(memberId)}, {'$pull': {'chatNow': {'_id': groupId}}}, (err, doc) => {
                     if (err) {
                       console.log(err)
                     } else {
@@ -352,6 +408,33 @@ router.post('/deleteGroupMember', (req, res) => {
           })
         } else {
           res.send({code: 200, result: '无权限', success: false})
+        }
+      }
+    })
+  })
+})
+
+router.post('/changeMemberRole', (req, res) => {
+  isLogin(req, res, (payload) => {
+    let groupId = req.body.groupId
+    let memberId = req.body.memberId
+    let newRole = req.body.newRole
+    Group.findOne({'_id': mongoose.mongo.ObjectId(groupId)}, (err, doc) => {
+      if (err) {
+        console.log(err)
+      } else if (!doc) {
+        res.send({code: 200, msg: '团队不存在', success: false})
+      } else {
+        if (doc.members.some(member => (member._id === payload.userId && member.role === 1))) {
+          Group.update({'_id': mongoose.mongo.ObjectId(groupId), 'members._id': memberId}, {$set: {'members.$.role': newRole}}, (err, doc) => {
+            if (err) {
+              console.log(err)
+            } else {
+              res.send({code: 200, result: '修改成功', success: true})
+            }
+          })
+        } else {
+          res.send({code: 200, msg: '无权进行此操作', success: false})
         }
       }
     })

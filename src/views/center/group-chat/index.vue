@@ -83,10 +83,21 @@ export default {
   //     this.newFriendInfo = form
   //   }
   // },
+  watch: {
+    $route () {
+      this.init()
+    }
+  },
   created () {
-    console.log(this.friends)
+    this.init()
   },
   methods: {
+    init () {
+      this.$store.dispatch('getFriends')
+      .then(() => {}, msg => this.$Message.warning(msg))
+      this.$store.dispatch('getGroups')
+      .then(() => {}, msg => this.$Message.warning(msg))
+    },
     newUser () {
       this.userModalShow = true
     },
