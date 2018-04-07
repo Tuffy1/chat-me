@@ -3,7 +3,7 @@
     <group-layout :userChatTo="userChatTo" :newFriend="true">
       <template slot="chat-user">
         <p>nickname: {{userChatTo.nickname}}</p>
-        <p>email: {{userChatTo.email}}</p>
+        <p>username: {{userChatTo.username}}</p>
       </template>
     </group-layout>
   </div>

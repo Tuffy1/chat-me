@@ -8,7 +8,6 @@
       <p class="info">{{user.introduce}}</p>
     </div>
     <div class="time">
-      <span>02.05</span>
     </div>
   </div>
 </template>

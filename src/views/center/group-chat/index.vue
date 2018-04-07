@@ -25,7 +25,7 @@
                 </side-bar-inner-item>
                 <side-bar-inner-item  v-if="!user.relat"
                                       :goto="`/center/groupchat/newFriendConfirm?from=${user._id}`">
-                  new friend
+                  <new-friend-user-item :user="user"></new-friend-user-item>
                 </side-bar-inner-item>
               </span>
             </p>
@@ -61,6 +61,7 @@ import sideBarInnerItem from '../../../components/side-bar-inner-item'
 import userItem from '../../../components/user-item'
 import newUserModal from '../../../components/new-user-modal'
 import newGroupModal from '../../../components/new-group-modal'
+import newFriendUserItem from '../../../components/new-friend-user-item'
 
 export default {
   data () {
@@ -104,7 +105,8 @@ export default {
     sideBarInnerItem,
     userItem,
     newUserModal,
-    newGroupModal
+    newGroupModal,
+    newFriendUserItem
   }
 }
 </script>
