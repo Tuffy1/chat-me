@@ -25,6 +25,10 @@ const GroupMessageSchema = new Schema({
   type: {
     type: String,
     default: 'text'
+  },
+  readRole: {
+    type: Number,
+    default: 3
   }
 })
 

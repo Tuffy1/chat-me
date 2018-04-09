@@ -4,7 +4,8 @@ export default form => {
   return axios.post('/api/message/sendMessage', {
     chatTo: form.chatTo,
     content: form.content,
-    type: form.type
+    type: form.type,
+    readRole: form.readRole
   })
   .then(res => {
     if (res.data.success) {

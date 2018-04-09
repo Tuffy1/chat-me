@@ -26,21 +26,21 @@
           <Icon type="happy-outline"></Icon>
         </i>
         <Upload action="/api/message/uploadImg"
-              :data="{'from':user._id, 'to':userChatTo._id, 'type':userChatTo.type}"
+              :data="{'from':user._id, 'to':userChatTo._id, 'type':userChatTo.type, 'readRole': readRole, 'importantMsg': importantMsg}"
               :show-upload-list="false"
               :on-success="uploadSuccess">
           <i class="fun-emojis">
             <Icon type="ios-upload-outline"></Icon>
           </i>
         </Upload>
-        <i class="fun-emojis" @click="lockMsg" v-if="!lock">
+        <i class="fun-emojis" @click="lockMsg" v-if="!lock && imMangerHigher">
           <Icon type="unlocked"></Icon>
         </i>
-        <i class="fun-emojis" @click="unlockMsg" v-if="lock">
+        <i class="fun-emojis" @click="unlockMsg" v-if="lock && imMangerHigher">
           <Icon type="locked"></Icon>
         </i>
-        <span class="role-notice" v-if="!lock">以下内容成员均可见</span>
-        <span class="role-notice" v-if="lock">以下内容成员不可见</span>
+        <span class="role-notice" v-if="!lock && imMangerHigher">以下内容成员均可见</span>
+        <span class="role-notice" v-if="lock && imMangerHigher">以下内容成员不可见</span>
       </div>
       <textarea name="" id="text" v-model="message" @keyup.ctrl.enter="onSubmit"></textarea>    
       <!-- <Button type="success" size="small" class="send-btn" @click="onSubmit()">发送</Button> -->
@@ -74,6 +74,9 @@
         </i>
         <span>编辑群信息</span>
       </div> -->
+      <div class="edit important" v-if="imOwner">
+        <i-Switch size="small" v-model="importantSwitch" @on-change="importantChange"></i-Switch><span class="span">特别关心</span>
+      </div>
       <div class="group-member" v-if="groupInfoShow">
         <div class="member-list">
           <p class="member-title">群主：</p>
@@ -134,7 +137,8 @@ export default {
       emojis: ['😂', '🙏', '😄', '😏', '😇', '😅', '😌', '😘', '😍', '🤓', '😜', '😎', '😊', '😳', '🙄', '😱', '😒', '😔', '😷', '👿', '🤗', '😩', '😤', '😣', '😰', '😴', '😬', '😭', '👻', '👍', '✌️', '👉', '👀', '🐶', '🐷', '😹', '⚡️', '🔥', '🌈', '🍏', '⚽️', '❤️', '🇨🇳'],
       imgPath: '',
       isGroupMember: false,
-      lock: false
+      lock: false,
+      importantSwitch: false,
     }
   },
   props: ['userChatTo'],
@@ -154,10 +158,25 @@ export default {
     },
     groupOwner () {
       return this.theGroup.members.filter(member => (member.role === 1 && member.relat))[0]
+    },
+    imMangerHigher () {
+      return this.theGroup.members.some(member => member._id === this.user._id && (member.role === 1 || member.role === 2))
+    },
+    readRole () {
+      if (this.lock) {
+        return 2
+      }
+      return 3
+    },
+    importantMsg () {
+      if (this.importantSwitch) {
+        return true
+      }
+      return false
+    },
+    imOwner () {
+      return this.groupOwner._id === this.user._id
     }
-    // imOwner () {
-    //   return this.groupOwner._id === this.user._id
-    // }
   },
   watch: {
     // userMessage () {
@@ -237,7 +256,9 @@ export default {
         this.$store.dispatch('sendMessage', {
           chatTo: this.userChatTo._id,
           content: this.message,
-          type: this.userChatTo.type
+          type: this.userChatTo.type,
+          readRole: this.readRole,
+          importantMsg: '1'
         })
         .then(() => {
           this.message = ''
@@ -268,6 +289,8 @@ export default {
     },
     unlockMsg () {
       this.lock = false
+    },
+    importantChange () {
     }
   },
   components: {
@@ -410,6 +433,10 @@ export default {
   text-align: left;
   margin: 5px 0 5px 5px;
   font-size: 12px;
+}
+.show-group-info .important .span {
+  margin-left: 10px;
+  margin-top: 4px;
 }
 .show-group-info .group-member {
   text-align: left;
