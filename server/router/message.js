@@ -27,7 +27,8 @@ router.post('/sendMessage', (req, res) => {
         from: payload.userId,
         to: req.body.chatTo,
         content: req.body.content,
-        readRole: req.body.readRole
+        readRole: req.body.readRole,
+        isImportant: req.body.isImportant
       })
       Group.findOne({_id: groupId}, (err, doc) => {
         if (err) {
@@ -178,6 +179,7 @@ router.post('/uploadImg', (req, res) => {
       let chatTo = fields.to
       let userType = fields.type
       let readRole = fields.readRole
+      let isImportant = files.file.isImportant
       let filename = files.file.name
       let uploadDir = 'public/'
       let avatarName = Date.now() + '_' + filename
@@ -192,7 +194,8 @@ router.post('/uploadImg', (req, res) => {
           to: chatTo,
           content: imgPath,
           type: 'image',
-          readRole: readRole
+          readRole: readRole,
+          isImportant: isImportant
         })
         Group.findOne({_id: chatTo}, (err, doc) => {
           if (err) {

@@ -5,7 +5,8 @@ export default form => {
     chatTo: form.chatTo,
     content: form.content,
     type: form.type,
-    readRole: form.readRole
+    readRole: form.readRole,
+    isImportant: form.isImportant
   })
   .then(res => {
     if (res.data.success) {

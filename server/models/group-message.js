@@ -29,6 +29,10 @@ const GroupMessageSchema = new Schema({
   readRole: {
     type: Number,
     default: 3
+  },
+  isImportant: {
+    type: Boolean,
+    default: false
   }
 })
 

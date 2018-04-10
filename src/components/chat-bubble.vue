@@ -4,12 +4,19 @@
       <img src="../assets/imgs/avatar.jpg" alt="avatar">
     </div>
     <div class="main-box">
-    <div v-if="userOrGroup === 'group'" class="msg-name">{{msgName}}</div>
+    <div v-if="userOrGroup === 'group'"
+         class="msg-name"
+         :class="isMe ? 'msg-name-right' : 'msg-name-left'">{{msgName}}</div>
     <div class="talk-wrap" :class="userOrGroup === 'group' ? 'group': ''">
-      <div class="talk-bubble" v-if="message.type === 'text'" v-html="contentTransfer"></div>
+      <span class="is-important" v-if="isMe && message.isImportant">(特别关心)</span>
+      <div class="talk-bubble" 
+           :class="message.isImportant ? 'deep-color' : ''"
+           v-if="message.type === 'text'"
+           v-html="contentTransfer"></div>
       <div class="img-wrap" v-else>
         <img :src="message.content" alt="">
       </div>
+      <span class="is-important" v-if="!isMe && message.isImportant">(特别关心)</span>
     </div>
     </div>
   </div>
@@ -23,6 +30,7 @@ export default {
   computed: {
     ...mapState(['theGroup']),
     contentTransfer () {
+      console.log(this.message.isImportant)
       return textTransfer(this.message.content)
     },
     msgName () {
@@ -77,14 +85,13 @@ export default {
   text-align: left;
   position: relative;
   top: -5px;
-  
-  max-width: 60px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 .chat-bubble .talk-wrap .talk-bubble {
   text-align: left;
+  display: inline-block;
   background-color: antiquewhite;
   border-radius: 5px;
   font-size: 14px;
@@ -128,8 +135,27 @@ export default {
   border-right-color: antiquewhite;
   left: -12px;
 }
+.chat-bubble .msg-name-right {
+  text-align: right;
+}
+.chat-bubble .msg-name-left {
+  text-align: left;
+}
+.chat-bubble .talk-wrap .deep-color{
+  background-color: #f5c380;
+}
+.chat-bubble.right .talk-wrap .deep-color::before {
+  border-left-color: #f5c380;
+}
+.chat-bubble.left .talk-wrap .deep-color::before {
+  border-right-color: #f5c380;
+}
 .img-wrap img {
   width: 120px;
   height: auto;
+}
+.is-important {
+  color: #bbb1a3;
+  margin: 0 10px;
 }
 </style>

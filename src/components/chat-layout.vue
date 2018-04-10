@@ -26,7 +26,7 @@
           <Icon type="happy-outline"></Icon>
         </i>
         <Upload action="/api/message/uploadImg"
-              :data="{'from':user._id, 'to':userChatTo._id, 'type':userChatTo.type, 'readRole': readRole, 'importantMsg': importantMsg}"
+              :data="{'from':user._id, 'to':userChatTo._id, 'type':userChatTo.type, 'readRole': readRole, 'isImportant': isImportant}"
               :show-upload-list="false"
               :on-success="uploadSuccess">
           <i class="fun-emojis">
@@ -74,8 +74,14 @@
         </i>
         <span>编辑群信息</span>
       </div> -->
+      <div class="sticky-note">
+        <i>
+          <Icon type="android-apps"></Icon>
+        </i>
+        <span class="link-like">便利贴</span>
+      </div>
       <div class="edit important" v-if="imOwner">
-        <i-Switch size="small" v-model="importantSwitch" @on-change="importantChange"></i-Switch><span class="span">特别关心</span>
+        <i-Switch size="small" v-model="isImportant" @on-change="importantChange"></i-Switch><span class="span">特别关心</span>
       </div>
       <div class="group-member" v-if="groupInfoShow">
         <div class="member-list">
@@ -138,7 +144,7 @@ export default {
       imgPath: '',
       isGroupMember: false,
       lock: false,
-      importantSwitch: false,
+      isImportant: false
     }
   },
   props: ['userChatTo'],
@@ -160,7 +166,7 @@ export default {
       return this.theGroup.members.filter(member => (member.role === 1 && member.relat))[0]
     },
     imMangerHigher () {
-      return this.theGroup.members.some(member => member._id === this.user._id && (member.role === 1 || member.role === 2))
+      return (this.userChatTo.type === 'group' && this.theGroup.members.some(member => member._id === this.user._id && (member.role === 1 || member.role === 2)))
     },
     readRole () {
       if (this.lock) {
@@ -258,7 +264,7 @@ export default {
           content: this.message,
           type: this.userChatTo.type,
           readRole: this.readRole,
-          importantMsg: '1'
+          isImportant: this.isImportant
         })
         .then(() => {
           this.message = ''
@@ -437,6 +443,14 @@ export default {
 .show-group-info .important .span {
   margin-left: 10px;
   margin-top: 4px;
+}
+.show-group-info .sticky-note {
+  text-align: left;
+  margin: 15px 0 15px 10px;
+  font-size: 12px;
+}
+.show-group-info .sticky-note span {
+  margin-left: 5px;
 }
 .show-group-info .group-member {
   text-align: left;
