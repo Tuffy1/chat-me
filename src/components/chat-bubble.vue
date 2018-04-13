@@ -30,7 +30,6 @@ export default {
   computed: {
     ...mapState(['theGroup']),
     contentTransfer () {
-      console.log(this.message.isImportant)
       return textTransfer(this.message.content)
     },
     msgName () {

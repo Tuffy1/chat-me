@@ -104,7 +104,8 @@ export default {
         introduce: this.user.introduce,
         creatAt: this.user.creatAt,
         avatar: this.user.avatar,
-        role: 1
+        role: 1,
+        relat: true
       }
       this.form.members.push(me)
       this.$store.dispatch('newGroup', this.form)

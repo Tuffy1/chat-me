@@ -111,6 +111,32 @@ export default {
     })
     Vue.set(state, 'chatNow', usersChatNow)
   },
+  newGroupTask (state, task) {
+    let group = state.theGroup
+    group.tasks.push(task)
+    Vue.set(state, 'theGroup', group)
+  },
+  editGroupTask (state, task) {
+    let group = state.theGroup
+    group.tasks.forEach(TASK => {
+      if (TASK._id === task._id) {
+        TASK.title = task.title
+        TASK.startTime = task.startTime
+        TASK.endTime = task.endTime
+        TASK.content = task.content
+      }
+    })
+    Vue.set(state, 'theGroup', group)
+  },
+  removeGroupTask (state, taskId) {
+    let group = state.theGroup
+    group.tasks.forEach((TASK, index) => {
+      if (TASK._id === taskId) {
+        group.tasks.splice(index, 1)
+      }
+    })
+    Vue.set(state, 'theGroup', group)
+  },
   setTheGroup (state, group) {
     Vue.set(state, 'theGroup', group)
   },

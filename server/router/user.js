@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const User = require('../models/user')
 const Group = require('../models/group')
 const Auth = require('../models/auth')
+const Task = require('../models/task')
 const isLogin = require('../util/isLogin')
 const bcrypt = require('bcrypt')
 const saltRounds = 10
@@ -438,6 +439,92 @@ router.post('/changeMemberRole', (req, res) => {
         }
       }
     })
+  })
+})
+
+router.post('/newGroupTask', (req, res) => {
+  isLogin(req, res, (payload) => {
+    let groupId = req.body.groupId
+    let task = req.body.task
+    User.findOne({'_id': mongoose.mongo.ObjectId(payload.userId)}, (err, doc) => {
+      if (err) {
+        console.log(err)
+      } else {
+        const nickname = doc.nickname
+        const creator = {
+          _id: payload.userId,
+          nickname: nickname
+        }
+        const theTask = new Task({
+          title: task.title,
+          creator: creator,
+          startTime: task.startTime,
+          endTime: task.endTime,
+          content: task.content
+        })
+        theTask.save((err) => {
+          if (err) {
+            console.log(err)
+          } else {
+            const form = {
+              _id: theTask._id.toString(),
+              title: theTask.title,
+              creator: theTask.creator,
+              creatAt: theTask.creatAt,
+              startTime: theTask.startTime,
+              endTime: theTask.endTime,
+              content: theTask.content
+            }
+            Group.update({'_id': mongoose.mongo.ObjectId(groupId)}, {$push: {tasks: form}}, (err, doc) => {
+              if (err) {
+                console.log(err)
+              } else {
+                res.send({code: 200, result: form, success: true})
+              }
+            })
+          }
+        })
+      }
+    })
+  })
+})
+
+router.post('/editGroupTask', (req, res) => {
+  let groupId = req.body.groupId
+  let task = req.body.task
+  Task.update({'_id': mongoose.mongo.ObjectId(task._id)}, {
+    'title': task.title,
+    'startTime': task.startTime,
+    'endTime': task.endTime,
+    'content': task.content}, (err, doc) => {
+      if (err) {
+        console.log(err)
+      } else {
+        Group.update({'_id': mongoose.mongo.ObjectId(groupId), 'tasks._id': task._id}, {
+          'tasks.$.title': task.title,
+          'tasks.$.startTime': task.startTime,
+          'tasks.$.endTime': task.endTime,
+          'tasks.$.content': task.content
+        }, (err, doc) => {
+          if (err) {
+            console.log(err)
+          } else {
+            res.send({code: 200, result: task, success: true})
+          }
+        })
+      }
+    })
+})
+
+router.post('/removeGroupTask', (req, res) => {
+  let groupId = req.body.groupId
+  let taskId = req.body.taskId
+  Group.update({'_id': mongoose.mongo.ObjectId(groupId)}, {'$pull': {'tasks': {'_id': taskId}}}, (err, doc) => {
+    if (err) {
+      console.log(err)
+    } else {
+      res.send({code: 200, result: taskId, success: true})
+    }
   })
 })
 

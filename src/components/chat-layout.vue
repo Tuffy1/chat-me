@@ -78,7 +78,7 @@
         <i>
           <Icon type="android-apps"></Icon>
         </i>
-        <span class="link-like">便利贴</span>
+        <span class="link-like" @click="showStickyNote">便签</span>
       </div>
       <div class="edit important" v-if="imOwner">
         <i-Switch size="small" v-model="isImportant" @on-change="importantChange"></i-Switch><span class="span">特别关心</span>
@@ -114,10 +114,14 @@
       </div>
     </div>
     <show-info-modal :modalShow="infoModalShow"
-                     @closeModal="closeModal"
+                     @closeModal="closeInfoModal"
                      :userInfo="userInfo"
                      :isGroupMember="isGroupMember"
                      ></show-info-modal>
+    <sticky-note-modal :modalShow="noteModalShow"
+                     @closeModal="closeNoteModal"
+                     @showModal="showStickyNote"
+                     ></sticky-note-modal>
   </div>
 </template>
 
@@ -129,6 +133,7 @@ import { mapState } from 'vuex'
 import newMemberCard from './new-member-card'
 import showInfoModal from './show-info-modal'
 import editGroupInfoModal from './edit-group-info-modal'
+import stickyNoteModal from './sticky-note-modal'
 
 export default {
   data () {
@@ -138,6 +143,7 @@ export default {
       // groupChatTo: {},
       infoModalShow: false,
       groupInfoShow: false,
+      noteModalShow: false,
       editModalShow: false,
       isShoweMojis: false,
       emojis: ['😂', '🙏', '😄', '😏', '😇', '😅', '😌', '😘', '😍', '🤓', '😜', '😎', '😊', '😳', '🙄', '😱', '😒', '😔', '😷', '👿', '🤗', '😩', '😤', '😣', '😰', '😴', '😬', '😭', '👻', '👍', '✌️', '👉', '👀', '🐶', '🐷', '😹', '⚡️', '🔥', '🌈', '🍏', '⚽️', '❤️', '🇨🇳'],
@@ -181,7 +187,7 @@ export default {
       return false
     },
     imOwner () {
-      return this.groupOwner._id === this.user._id
+      return (this.theGroup.members.filter(member => (member.role === 1 && member.relat))[0])._id === this.user._id
     }
   },
   watch: {
@@ -254,8 +260,14 @@ export default {
       this.$store.dispatch('removeChat', this.userChatTo)
       .then(() => this.$Message.success('关闭会话成功'), msg => this.$Message.warning(msg))
     },
-    closeModal () {
+    closeInfoModal () {
       this.infoModalShow = false
+    },
+    closeNoteModal () {
+      this.noteModalShow = false
+    },
+    showStickyNote () {
+      this.noteModalShow = true
     },
     onSubmit () {
       if (this.message !== '') {
@@ -302,7 +314,8 @@ export default {
   components: {
     newMemberCard,
     showInfoModal,
-    editGroupInfoModal
+    editGroupInfoModal,
+    stickyNoteModal
   }
 }
 </script>

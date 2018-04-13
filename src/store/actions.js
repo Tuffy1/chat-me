@@ -18,6 +18,9 @@ import newGroupMember from '../api/new-group-member'
 import deleteGroupMember from '../api/delete-group-member'
 import changeMemberRole from '../api/change-member-role'
 import getGroupInfo from '../api/get-group-info'
+import newGroupTask from '../api/new-group-task'
+import editGroupTask from '../api/edit-group-task'
+import removeGroupTask from '../api/remove-group-task'
 import getUserMessage from '../api/get-user-message'
 import getGroupMessage from '../api/get-group-message'
 import showInfo from '../api/show-info'
@@ -154,6 +157,24 @@ export default {
       commit('setTheGroup', result)
       return Promise.resolve(result)
     }, msg => Promise.reject(msg))
+  },
+  newGroupTask: ({commit}, form) => {
+    return newGroupTask(form)
+    .then((result) => {
+      commit('newGroupTask', result)
+      return Promise.resolve(result)
+    }, msg => Promise.reject(msg))
+  },
+  editGroupTask: ({commit}, form) => {
+    return editGroupTask(form)
+    .then((result) => {
+      commit('editGroupTask', result)
+      return Promise.resolve(result)
+    }, msg => Promise.reject(msg))
+  },
+  removeGroupTask: ({commit}, form) => {
+    return removeGroupTask(form)
+    .then((result) => Promise.resolve(result), msg => Promise.reject(msg))
   },
   getUserMessage: ({commit}) => {
     return getUserMessage()

@@ -31,6 +31,9 @@ const GroupSchema = new Schema({
   messages: [{
     type: Schema.Types.ObjectId,
     ref: 'GroupMessage'
+  }],
+  tasks: [{
+    type: Schema.Types.Mixed
   }]
 })
 
