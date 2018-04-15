@@ -5,10 +5,10 @@
         <img src="../../../assets/imgs/avatar.jpg" alt="">
       </div>
       <div class="group-info">
-        <p>昵称: {{user.nickname}}</p>
-        <p>用户名: {{user.username}}</p>
-        <p>邮箱: {{user.email}}</p>
-        <p>个人简介: {{user.introduce}}</p>
+        <p><span>昵称: </span>{{user.nickname}}</p>
+        <p><span>用户名: </span>{{user.username}}</p>
+        <p><span>邮箱: </span>{{user.email}}</p>
+        <p><span>个人简介: </span>{{user.introduce}}</p>
       </div>
     </div>  
     <div class="btn-wrap">
@@ -56,7 +56,12 @@ export default {
 }
 .overview .group-info {
   margin-left: 12px;
+  margin-top: 5px;
   overflow: hidden;
+}
+.overview .group-info span {
+  display: inline-block;
+  width: 80px;
 }
 .overview .btn-wrap {
   width: 300px;

@@ -14,7 +14,9 @@ export default {
 <style scoped>
 .side-bar {
   width: 50px;
-  height: 500px;
-  background-color: rgb(6, 103, 160);
+  height: 501px;
+  background-color: #2a2c2dc7;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
 }
 </style>

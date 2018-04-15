@@ -2,8 +2,8 @@
   <div class="chat-now">
     <group-layout :userChatTo="groupChatTo" :newFriend="false">
       <template slot="chat-group">
-        <p>nickname: {{groupChatTo.nickname}}</p>
-        <p>introduce: {{groupChatTo.introduce}}</p>
+        <p><span class="label">昵称:</span> {{groupChatTo.nickname}}</p>
+        <p><span class="label">用户名:</span> {{groupChatTo.introduce}}</p>
       </template>
     </group-layout>
   </div>
@@ -55,4 +55,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.chat-now .label {
+  display: inline-block;
+  width: 60px;
+}
 </style>

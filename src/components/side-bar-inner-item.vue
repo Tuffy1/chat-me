@@ -36,15 +36,16 @@ export default {
   height: 50px;
   padding: 5px;
   position: relative;
+  background-color: #eae9ea;
 }
 .side-bar-inner-item:hover,
 .side-bar-inner-item:focus {
   cursor: pointer;
-  background-color: rgb(235, 233, 233);
+  background-color: #e4e4e4f2;
 }
 .side-bar-inner-item:isactive,
 .side-bar-inner-item:active {
-  background-color: rgb(235, 233, 233);
+  background-color: #e4e4e4f2;
 }
 .item-wrap {
   width: 40px;
@@ -67,10 +68,10 @@ export default {
 .side-bar-inner-item-setting:hover,
 .side-bar-inner-item-setting:focus {
   cursor: pointer;
-  background-color: rgb(235, 233, 233);
+  background-color: #e4e4e4f2;
 }
 .side-bar-inner-item-setting:isactive,
 .side-bar-inner-item-setting:active {
-  background-color: rgb(235, 233, 233);
+  background-color: #e4e4e4f2;
 }
 </style>

@@ -16,7 +16,9 @@ export default {
   width: 800px;
   height: 501px;
   margin: 30px auto;
-  border: 1px solid rgb(185, 182, 182);
-  background-color: #eee;
+  /* border: 1px solid rgb(185, 182, 182); */
+  background-color: #fdfdfde6;
+  border-radius: 10px;
+  box-shadow: 0 0px 10px rgba(0, 0, 0, 0.25);
 }
 </style>

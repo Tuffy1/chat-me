@@ -108,6 +108,7 @@ export default {
 }
 .group-layout .group-info {
   margin-left: 12px;
+  margin-top: 5px;
   overflow: hidden;
 }
 .group-layout .btn-wrap {

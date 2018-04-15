@@ -403,6 +403,7 @@ export default {
   border: 0;
   outline: none;
   padding: 5px 15px 5px 5px;
+  background-color: #fdfdfd00;
 }
 .chat-layout .chat-text .send-btn {
   margin-right: 5px;

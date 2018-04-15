@@ -39,12 +39,12 @@ export default {
 }
 .side-bar-item:hover,
 .side-bar-item:focus {
-  background-color: rgb(24, 110, 160);
+  background-color: #6f6f6bd1;
   cursor: pointer;
 }
 .side-bar-item:isactive,
 .side-bar-item:active {
-  background-color: rgb(24, 110, 160);
+  background-color: #6f6f6bd1;
 }
 .item-wrap {
   width: 35px;

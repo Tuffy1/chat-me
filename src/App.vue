@@ -45,4 +45,13 @@ export default {
 #group-chat .ivu-collapse-content>.ivu-collapse-content-box {
   padding: 0;
 }
+#form .ivu-input {
+  background-color: #ffffffeb;
+}
+#panel .ivu-collapse>.ivu-collapse-item>.ivu-collapse-header {
+  background-color: #eae9ea;
+}
+#panel .ivu-collapse-content {
+  background-color: transparent;
+}
 </style>

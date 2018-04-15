@@ -117,7 +117,7 @@ img {
   height: 35px;
 }
 .side-icon {
-  color: rgb(126, 181, 212);
+  color: rgba(197, 197, 193, 0.77);
   margin: 4px 4px 0 0;
 }
 </style>

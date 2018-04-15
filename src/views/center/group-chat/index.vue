@@ -7,6 +7,7 @@
              size="small"
              placeholder="Enter something..."
              class="search-input"
+             disabled
            >
         </Input>
       </template>
@@ -30,7 +31,7 @@
               </span>
             </p>
           </Panel>
-          <Panel name="group" class="panel">
+          <Panel name="group" class="panel" id="panel">
             群聊
             <div class="icon-plus link-like" @click="newGroup()"><Icon type="plus"></Icon></div>
             <p slot="content" v-if="groups.length === 0">未添加群聊</p>

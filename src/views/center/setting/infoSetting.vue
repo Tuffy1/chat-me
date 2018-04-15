@@ -1,6 +1,6 @@
 <template>
   <div class="setting">
-    <Form :model="infoForm" ref="infoForm" :rules="infoRuleValidate" :label-width="80" label-position="left" class="form">
+    <Form :model="infoForm" ref="infoForm" :rules="infoRuleValidate" :label-width="80" label-position="left" class="form" id="form">
       <FormItem prop="nickname" label="昵称">
         <i-input v-model="infoForm.nickname" placeholder="输入昵称"></i-input>
       </FormItem>
