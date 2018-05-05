@@ -49,14 +49,16 @@ export default {
   methods: {
     init () {
       this.userId = this.$route.query.user
-      this.chatNow.forEach(user => {
-        if (user._id === this.userId) {
-          // this.userChatTo._id = user._id
-          this.userChatTo = cloneDeep(user)
-        }
-      })
-      this.$store.dispatch('getGroupMessage', this.userId)
-      .then(() => {}, msg => this.$Message.warning(msg))
+      if (this.userId) {
+        this.chatNow.forEach(user => {
+          if (user._id === this.userId) {
+            // this.userChatTo._id = user._id
+            this.userChatTo = cloneDeep(user)
+          }
+        })
+        this.$store.dispatch('getGroupMessage', this.userId)
+        .then(() => {}, msg => this.$Message.warning(msg))
+      }
     }
   },
   components: {

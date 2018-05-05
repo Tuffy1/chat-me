@@ -6,16 +6,12 @@
             <p slot="title">
                 登陆
             </p>
-            <a href="#" slot="extra" @click.prevent="changeLimit">
-                <Icon type="ios-loop-strong"></Icon>
-                Change
-            </a>
             <Form :model="form" ref="form" :rules="ruleValidate" :label-width="80" label-position="left" class="form">
               <FormItem prop="username" label="用户名">
                 <i-input v-model="form.username" placeholder="输入用户名"></i-input>
               </FormItem>
               <FormItem prop="password" label="密码">
-                <i-input v-model="form.password" placeholder="输入密码"></i-input>
+                <i-input v-model="form.password" type="password" placeholder="输入密码"></i-input>
               </FormItem>
               <p class="to-register">未有账号？<a @click="toRegister">注册</a></p>
               <FormItem id="submit-btn">
@@ -36,7 +32,7 @@ export default {
   data () {
     const validatePass = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('Please enter your password'))
+        callback(new Error('请输入密码'))
       } else {
         callback()
       }
@@ -48,7 +44,7 @@ export default {
       },
       ruleValidate: {
         username: [
-          { required: true, message: 'The name cannot be empty', trigger: 'blur' }
+          { required: true, message: '请输入用户名', trigger: 'blur' }
         ],
         password: [
           { required: true, validator: validatePass, trigger: 'blur' }

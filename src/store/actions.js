@@ -2,6 +2,7 @@ import authRe from '../api/auth-re'
 import authDel from '../api/auth-del'
 import register from '../api/register'
 import login from '../api/login'
+import logout from '../api/logout'
 import userSearch from '../api/user-search'
 import getUserInfo from '../api/get-user-info'
 import getChatNow from '../api/get-chat-now'
@@ -52,6 +53,9 @@ export default {
       commit('loginInit')
       return Promise.resolve(result)
     }, msg => Promise.reject(msg))
+  },
+  logout: (context) => {
+    return logout().then(result => Promise.resolve(result), msg => Promise.reject(msg))
   },
   userSearch: (context, form) => {
     return userSearch(form)

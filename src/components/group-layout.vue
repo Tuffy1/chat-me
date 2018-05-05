@@ -100,7 +100,6 @@ export default {
 .group-layout .group-wrap .group-avatar {
   width: 120px;
   height: 120px;
-  overflow: hidden;
 }
 .group-layout .group-wrap .group-avatar img {
   width: 120px;

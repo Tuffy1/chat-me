@@ -32,6 +32,18 @@ router.post('/register', (req, res) => {
   })
 })
 
+router.post('/logout', (req, res) => {
+  isLogin(req, res, (payload) => {
+    Auth.remove({'user': mongoose.mongo.ObjectId(payload.userId)}, (err, doc) => {
+      if (err) {
+        res.send({code: 700, msg: '查询出错：' + err, success: false})
+      } else {
+        res.send({code: 200, result: '注销成功', success: true})
+      }
+    })
+  })
+})
+
 router.get('/info', (req, res) => {
   isLogin(req, res, (payload) => {
     User.findById({'_id': payload.userId}, (err, doc) => {
@@ -322,43 +334,46 @@ router.post('/deleteGroup', (req, res) => {
 router.post('/newGroupMember', (req, res) => {
   let groupAddMembers = false
   let membersAddGroup = false
-  req.body.newMembers.forEach((member, index) => {
-    Group.findOne({'_id': req.body.group._id}, (err, doc) => {
-      if (err) {
-        console.log(err)
-      } else if (doc) {
-        Group.update({'_id': req.body.group._id, 'members._id': member._id}, {$set: {'members.$.relat': true, 'members.$.role': 3}}, (err, doc) => {
-          if (err) {
-            console.log(err)
-          } else {
-            if (index === req.body.newMembers.length) {
-              groupAddMembers = true
+  
+  Group.findOne({'_id': req.body.group._id}, (err, doc) => {
+    if (err) {
+      console.log(err)
+    } else if (doc) {
+      req.body.newMembers.forEach((member, index) => {
+        if (doc.members.some(mem => mem._id === member._id)) {
+          Group.update({'_id': req.body.group._id, 'members._id': member._id}, {$set: {'members.$.relat': true, 'members.$.role': 3}}, (err, doc) => {
+            if (err) {
+              console.log(err)
+            } else {
+              if (index === req.body.newMembers.length) {
+                groupAddMembers = true
+              }
             }
-          }
-        })
-      } else {
-        Group.update({'_id': req.body.group._id}, {'$addToSet': {'members': member}}, (err, doc) => {
-          if (err) {
-            console.log(err)
-          } else {
-            if (index === req.body.newMembers.length) {
-              groupAddMembers = true
+          })
+        } else {
+          Group.update({'_id': req.body.group._id}, {'$addToSet': {'members': member}}, (err, doc) => {
+            if (err) {
+              console.log(err)
+            } else {
+              if (index === req.body.newMembers.length) {
+                groupAddMembers = true
+              }
             }
-          }
-        })
-      }
-    })
-    User.update({'_id': member._id}, {'$addToSet': {'groups': req.body.group}}, (err, doc) => {
-      if (err) {
-        console.log(err)
-      } else {
-        if (index === req.body.newMembers.length) {
-          membersAddGroup = true
+          })
         }
+        User.update({'_id': member._id}, {'$addToSet': {'groups': req.body.group}}, (err, doc) => {
+          if (err) {
+            console.log(err)
+          } else {
+            if (index === req.body.newMembers.length) {
+              membersAddGroup = true
+            }
+          }
+        })
+      })
+      if (groupAddMembers && membersAddGroup) {
+        res.send({code: 200, result: '添加成功', success: true})
       }
-    })
-    if (groupAddMembers && membersAddGroup) {
-      res.send({code: 200, result: '添加成功', success: true})
     }
   })
 })

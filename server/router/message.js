@@ -56,9 +56,17 @@ router.post('/sendMessage', (req, res) => {
                 }
                 doc.members.forEach(member => {
                   if (member._id.toString() !== payload.userId.toString() && member.relat) {
-                    User.update({_id: member}, {'$addToSet': {'chatNow': group}}, (err, doc) => {
+                    User.findOne({_id: member}, (err, doc) => {
                       if (err) {
                         console.log(err)
+                      } else if (doc) {
+                        if (!doc.chatNow.some(user => user._id.toString() === group._id.toString())) {
+                          User.update({_id: member}, {'$addToSet': {'chatNow': group}}, (err, doc) => {
+                            if (err) {
+                              console.log(err)
+                            }
+                          })
+                        }
                       }
                     })
                   }
@@ -106,6 +114,12 @@ router.post('/sendMessage', (req, res) => {
               if (err) {
                 console.log(err)
               } else {
+                let chatNowEdit
+                if (doc.chatNow.some(user => user._id.toString() === payload.userId.toString())) {
+                  chatNowEdit = true
+                } else {
+                  chatNowEdit = false
+                }
                 if (doc.friends.some(friend => (friend._id.toString() === payload.userId.toString() && friend.relat))) {
                   msg.save((err) => {
                     if (err) {
@@ -116,20 +130,31 @@ router.post('/sendMessage', (req, res) => {
                           res.send({code: 700, msg: '查询出错：' + err})
                         } else if (doc) {
                           const clients = doc.clients
-                          User.update({_id: req.body.chatTo}, {'$addToSet': {'chatNow': user}}, (err, doc) => {
-                            if (err) {
-                              console.log(err)
-                            } else {
-                              const form = {
-                                msg: msg,
-                                user: user
+                          if (!chatNowEdit) {
+                            User.update({_id: req.body.chatTo}, {'$addToSet': {'chatNow': user}}, (err, doc) => {
+                              if (err) {
+                                console.log(err)
+                              } else {
+                                const form = {
+                                  msg: msg,
+                                  user: user
+                                }
+                                for (const client of clients) {
+                                  global.io.to(client).emit('USER_MESSAGE', form)
+                                }
+                                res.send({code: 200, result: msg, success: true})
                               }
-                              for (const client of clients) {
-                                global.io.to(client).emit('USER_MESSAGE', form)
-                              }
-                              res.send({code: 200, result: msg, success: true})
+                            })
+                          } else {
+                            const form = {
+                              msg: msg,
+                              user: user
                             }
-                          })
+                            for (const client of clients) {
+                              global.io.to(client).emit('USER_MESSAGE', form)
+                            }
+                            res.send({code: 200, result: msg, success: true})
+                          }
                         } else if (!doc) {
                           // 用户当前不在线
                           res.send({code: 200, result: msg, success: true})
@@ -221,9 +246,17 @@ router.post('/uploadImg', (req, res) => {
                   }
                   doc.members.forEach(member => {
                     if (member._id.toString() !== payload.userId.toString() && member.relat) {
-                      User.update({_id: member}, {'$addToSet': {'chatNow': group}}, (err, doc) => {
+                      User.findOne({_id: member}, (err, doc) => {
                         if (err) {
                           console.log(err)
+                        } else if (doc) {
+                          if (!doc.chatNow.some(user => user._id.toString() === group._id.toString())) {
+                            User.update({_id: member}, {'$addToSet': {'chatNow': group}}, (err, doc) => {
+                              if (err) {
+                                console.log(err)
+                              }
+                            })
+                          }
                         }
                       })
                     }
@@ -265,6 +298,12 @@ router.post('/uploadImg', (req, res) => {
           if (err) {
             console.log(err)
           } else {
+            let chatNowEdit
+            if (doc.chatNow.some(user => user._id.toString() === payload.userId.toString())) {
+              chatNowEdit = true
+            } else {
+              chatNowEdit = false
+            }
             if (doc.friends.some(friend => (friend._id.toString() === chatTo.toString()) && friend.relat)) {
               User.findOne({_id: chatTo}, (err, doc) => {
                 if (err) {
@@ -280,20 +319,31 @@ router.post('/uploadImg', (req, res) => {
                             res.send({code: 700, msg: '查询出错：' + err})
                           } else if (doc) {
                             const clients = doc.clients
-                            User.update({_id: chatTo}, {'$addToSet': {'chatNow': user}}, (err, doc) => {
-                              if (err) {
-                                console.log(err)
-                              } else {
-                                const form = {
-                                  msg: msg,
-                                  user: user
+                            if (!chatNowEdit) {
+                              User.update({_id: chatTo}, {'$addToSet': {'chatNow': user}}, (err, doc) => {
+                                if (err) {
+                                  console.log(err)
+                                } else {
+                                  const form = {
+                                    msg: msg,
+                                    user: user
+                                  }
+                                  for (const client of clients) {
+                                    global.io.to(client).emit('USER_MESSAGE', form)
+                                  }
+                                  res.send({code: 200, result: msg, success: true})
                                 }
-                                for (const client of clients) {
-                                  global.io.to(client).emit('USER_MESSAGE', form)
-                                }
-                                res.send({code: 200, result: msg, success: true})
+                              })
+                            } else {
+                              const form = {
+                                msg: msg,
+                                user: user
                               }
-                            })
+                              for (const client of clients) {
+                                global.io.to(client).emit('USER_MESSAGE', form)
+                              }
+                              res.send({code: 200, result: msg, success: true})
+                            }
                           } else if (!doc) {
                             // 用户当前不在线
                             res.send({code: 200, result: msg, success: true})
@@ -344,7 +394,7 @@ router.get('/getGroupMessage', (req, res) => {
         Group.findOne({'_id': req.query.groupId}, (err, doc) => {
           if (err) {
             console.log(err)
-          } else {
+          } else if (doc) {
             let roleInGroup = 3
             let messages
             doc.members.forEach(member => {

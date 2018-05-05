@@ -2,7 +2,7 @@
   <div class="new-group">
     <Modal
         v-model="modalShow"
-        title="添加新联系人"
+        title="创建新群"
         @on-ok="submit"
         @on-cancel="cancel">
         <Form :model="form" ref="form" :rules="ruleValidate" class="form">

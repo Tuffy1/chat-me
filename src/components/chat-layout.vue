@@ -155,7 +155,7 @@ export default {
   },
   props: ['userChatTo'],
   computed: {
-    ...mapState(['user', 'userMessage', 'groupMessage', 'theGroup']),
+    ...mapState(['user', 'userMessage', 'groupMessage', 'theGroup', 'chatNow']),
     creatAt () {
       return moment(this.groupChatTo.creatAt).format('YYYY-MM-DD')
     },
@@ -223,11 +223,13 @@ export default {
   },
   methods: {
     init () {
-      if (this.userChatTo.type === 'group') {
-        this.$store.dispatch('getGroupInfo', this.userChatTo._id)
-        .then(() => {}, msg => this.$Message.warning(msg))
-      } else {
-        this.userInfo = cloneDeep(this.userChatTo)
+      if (this.userChatTo && this.userChatTo._id) {
+        if (this.userChatTo.type === 'group') {
+          this.$store.dispatch('getGroupInfo', this.userChatTo._id)
+          .then(() => {}, msg => this.$Message.warning(msg))
+        } else {
+          this.userInfo = cloneDeep(this.userChatTo)
+        }
       }
     },
     showInfo () {
@@ -258,7 +260,14 @@ export default {
     },
     removeChat () {
       this.$store.dispatch('removeChat', this.userChatTo)
-      .then(() => this.$Message.success('关闭会话成功'), msg => this.$Message.warning(msg))
+      .then(() => {
+        this.$Message.success('关闭会话成功')
+        if (this.chatNow.length > 0) {
+          this.$router.push(`./groupdetail?user=${this.chatNow[0]._id}`)
+        } else {
+          this.$router.push('./groupdetail')
+        }
+      }, msg => this.$Message.warning(msg))
     },
     closeInfoModal () {
       this.infoModalShow = false
@@ -355,7 +364,8 @@ export default {
 .chat-layout .emojis {
   position: absolute;
   bottom: 130px;
-  border: 1px solid black;
+  border: 1px solid #ada8a8;
+  border-radius: 5px;
 }
 .chat-layout .emojis ul {
   display: flex;
