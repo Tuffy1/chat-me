@@ -10,7 +10,8 @@
           <div v-for="task in theGroup.tasks" :key="task._id">
             <sticky-note-card :task="task" @closeModal="cancel" @showModal="showModal"></sticky-note-card>
           </div>
-          <new-sticky-note-card @closeModal="cancel" @showModal="showModal"></new-sticky-note-card>
+          <div v-if="theGroup.tasks.length === 0 && !imOwner">暂无群便签</div>
+          <new-sticky-note-card @closeModal="cancel" @showModal="showModal" v-if="imOwner"></new-sticky-note-card>
         </div>
         <div slot="footer"></div>
     </Modal>
@@ -44,6 +45,9 @@ export default {
       },
       set: function () {
       }
+    },
+    imOwner () {
+      return (this.theGroup.members.filter(member => (member.role === 1 && member.relat))[0])._id === this.user._id
     }
   },
   methods: {

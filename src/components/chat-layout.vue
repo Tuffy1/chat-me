@@ -263,9 +263,13 @@ export default {
       .then(() => {
         this.$Message.success('关闭会话成功')
         if (this.chatNow.length > 0) {
-          this.$router.push(`./groupdetail?user=${this.chatNow[0]._id}`)
+          if (this.chatNow[0].type === 'user') {
+            this.$router.push(`./userdetail?user=${this.chatNow[0]._id}`)
+          } else {
+            this.$router.push(`./groupdetail?user=${this.chatNow[0]._id}`)
+          }
         } else {
-          this.$router.push('./groupdetail')
+          this.$router.push('./')
         }
       }, msg => this.$Message.warning(msg))
     },

@@ -2,7 +2,7 @@
   <div class="sticky-note-card">
     <Card class="card">
       <p class="title">{{task.title}}</p>
-      <i class="link-like edit-note" @click="editNote">
+      <i class="link-like edit-note" @click="editNote" v-if="imOwner">
         <Icon type="edit" :size="5"></Icon>
       </i>
       <span><i class="icon"><Icon type="calendar" :size="5"></Icon></i>{{task.startTime}}-{{task.endTime}}</span>
@@ -23,8 +23,9 @@
 
 
 <script>
-import editNoteModal from './edit-note-modal'
+import { mapState } from 'vuex'
 
+import editNoteModal from './edit-note-modal'
 export default {
   data () {
     return {
@@ -33,6 +34,10 @@ export default {
   },
   props: ['task'],
   computed: {
+    ...mapState(['user', 'theGroup']),
+    imOwner () {
+      return (this.theGroup.members.filter(member => (member.role === 1 && member.relat))[0])._id === this.user._id
+    }
   },
   watch: {
   },
