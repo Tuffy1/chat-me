@@ -4,6 +4,7 @@
       <template slot="chat-user">
         <p><span class="label">昵称: </span>{{userChatTo.nickname}}</p>
         <p><span class="label">用户名: </span>{{userChatTo.username}}</p>
+        <p><span class="label">简介: </span>{{userChatTo.introduce}}</p>
       </template>
     </group-layout>
   </div>

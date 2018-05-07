@@ -3,7 +3,8 @@
     <group-layout :userChatTo="groupChatTo" :newFriend="false">
       <template slot="chat-group">
         <p><span class="label">昵称:</span> {{groupChatTo.nickname}}</p>
-        <p><span class="label">用户名:</span> {{groupChatTo.introduce}}</p>
+        <p><span class="label">用户名:</span> {{groupChatTo.username}}</p>
+        <p><span class="label">简介:</span> {{groupChatTo.introduce}}</p>
       </template>
     </group-layout>
   </div>

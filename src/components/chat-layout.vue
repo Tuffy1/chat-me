@@ -192,22 +192,18 @@ export default {
   },
   watch: {
     // userMessage () {
-    //   const container = document.getElementById("chatContent")
+    //   const container = document.getElementById('chatContent')
     //   container.scrollTop = container.scrollHeight
     // },
     // groupMessage () {
-    //   const container = document.getElementById("chatContent")
+    //   const container = document.getElementById('chatContent')
     //   container.scrollTop = container.scrollHeight
-    // }
+    // },
     $route () {
       this.init()
     }
   },
   created () {
-    this.$nextTick(() => {
-      const container = document.getElementById('chatContent')
-      container.scrollTop = container.scrollHeight
-    })
     this.init()
   },
   mounted () {
@@ -219,6 +215,8 @@ export default {
           this.isShoweMojis = false
         }
       })
+      const container = document.getElementById('chatContent')
+      container.scrollTop = container.scrollHeight
     })
   },
   methods: {
