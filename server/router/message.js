@@ -74,7 +74,7 @@ router.post('/sendMessage', (req, res) => {
                     Auth.findOne({'user': mongoose.mongo.ObjectId(member._id)}, (err, doc) => {
                       if (err) {
                         console.log(err)
-                      } else {
+                      } else if (doc) {
                         doc.clients.forEach(client => global.io.to(client).emit('GROUP_MESSAGE', form))
                       }
                     })
@@ -264,7 +264,7 @@ router.post('/uploadImg', (req, res) => {
                       Auth.findOne({'user': mongoose.mongo.ObjectId(member._id)}, (err, doc) => {
                         if (err) {
                           console.log(err)
-                        } else {
+                        } else if (doc) {
                           doc.clients.forEach(client => global.io.to(client).emit('GROUP_MESSAGE', form))
                         }
                       })

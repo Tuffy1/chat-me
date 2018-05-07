@@ -11,7 +11,7 @@
         <i-input v-model="passwordForm.checkPassword" placeholder="再次输入新密码"></i-input>
       </FormItem>
       <FormItem>
-      <Button type="success" id="submit-btn" @click="onSubmit">Submit</Button>
+      <Button type="success" id="submit-btn" @click="onSubmit">确定</Button>
       </FormItem>
     </Form>
   </div>

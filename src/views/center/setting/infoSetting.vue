@@ -14,7 +14,7 @@
         <i-input v-model="infoForm.introduce" placeholder="输入简介"></i-input>
       </FormItem>
       <FormItem>
-      <Button type="success" id="submit-btn" @click="onSubmit">Submit</Button>
+      <Button type="success" id="submit-btn" @click="onSubmit">确定</Button>
       </FormItem>
     </Form>
   </div>

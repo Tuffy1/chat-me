@@ -13,8 +13,7 @@
     </div>  
     <div class="btn-wrap" v-if="!newFriend">
       <Button type="success" @click="joinChat">聊天</Button>
-      <Button type="error" @click="deleteGroup" v-if="this.userChatTo.type === 'group'">退出群聊</Button>
-      <Button type="error" @click="deleteFriend" v-else>删除</Button>
+      <Button type="error" @click="deleteFriend" v-if="this.userChatTo.type === 'user'">删除</Button>
     </div>
     <div class="btn-wrap" v-else>
       <Button type="success" @click="friendConfirm">同意</Button>
